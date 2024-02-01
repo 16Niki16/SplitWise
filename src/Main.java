@@ -1,0 +1,13 @@
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
+import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
+
+// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
+// then press Enter. You can now see whitespace characters in your code.
+public class Main {
+    public static void main(String[] args) {
+        String DIRECTORY = "DataFiles\\UserData.txt";
+        CommandExecutor ex = new CommandExecutor(DIRECTORY);
+        Server server = new Server(ex);
+        server.serverStart();
+    }
+}

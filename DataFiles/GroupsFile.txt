@@ -1,0 +1,3 @@
+
+firstGroup | niki 0, niki123 0, koki 0, kolio 0
+secondGroup | niki 0, niki123 0, koki 0
