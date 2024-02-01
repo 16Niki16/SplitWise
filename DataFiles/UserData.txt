@@ -1,5 +1,5 @@
-niki | niki123 | Kiri 0, kolio 277.5, Ili 0, koli 350.0
-niki123 | niki | niki 0
-kolio | koliooo | niki 0
-koki | kirrr
+niki | niki123 | koki 30.0
+niki123 | niki
+kolio | koliooo
+koki | kirrr | niki 0
 

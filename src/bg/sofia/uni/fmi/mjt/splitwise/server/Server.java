@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrect;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class Server {
             String[] lineSplit = line.split(" ");
             clientOutput(buffer, sc, lineSplit[0]);
 
-        } catch (PasswordNotCorrect e) {
+        } catch (PasswordNotCorrectException e) {
             String messageWrongPassword = "Entered wrong password";
             clientOutput(buffer, sc, messageWrongPassword);
         }

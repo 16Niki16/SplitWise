@@ -5,8 +5,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        String DIRECTORY = "DataFiles\\UserData.txt";
-        CommandExecutor ex = new CommandExecutor(DIRECTORY);
+        String directory = "DataFiles\\UserData.txt";
+        String groupsDirectory = "DataFiles\\GroupsFile.txt";
+        CommandExecutor ex = new CommandExecutor(directory, groupsDirectory);
         Server server = new Server(ex);
         server.serverStart();
     }

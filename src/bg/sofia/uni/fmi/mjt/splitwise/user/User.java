@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.user;
 
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrect;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,7 +26,7 @@ public class User {
         this.friendList = friendList;
     }
 
-    public static User of(String line, String path) throws PasswordNotCorrect {
+    public static User of(String line, String path) throws PasswordNotCorrectException {
         String[] splitedUser = line.split("\\|");
         try (BufferedWriter wr = new BufferedWriter(new FileWriter(path, true));
              BufferedReader re = new BufferedReader(new FileReader(path))) {
@@ -37,7 +37,7 @@ public class User {
                 if (lineRe[USER].trim().equals(splitedUser[USER].trim())) {
                     isUser = true;
                     if (!lineRe[PASSWORD].trim().equals(splitedUser[PASSWORD].trim())) {
-                        throw new PasswordNotCorrect("Entered password not correct");
+                        throw new PasswordNotCorrectException("Entered password not correct");
                     } else if (lineRe.length == THREE) {
                         return new User(splitedUser[USER], splitedUser[PASSWORD],
                             extractFriends(lineRe[FRIEND_LIST]));

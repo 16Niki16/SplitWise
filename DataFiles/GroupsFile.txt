@@ -1,3 +1,4 @@
-
-firstGroup | niki 0, niki123 0, koki 0, kolio 0
+firstGroup | niki -60.0, niki123 20.0, koki 20.0, kolio 20.0
 secondGroup | niki 0, niki123 0, koki 0
+thirdGroup | niki 0, kolio 0, koki 0
+forthGroup | niki 0, koki 0, kolio 0

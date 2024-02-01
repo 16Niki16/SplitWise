@@ -12,11 +12,9 @@ public class Constants {
     public static final int FRIEND_LIST = 2;
     public static final int COMMAND_NAME = 0;
     public static final int FRIEND_NAME = 1;
-    public static final int FRIEND_OWES = 2;
     public static final int GROUP_NAME = 1;
     public static final int THREE = 3;
     public static final int FOUR = 4;
-
     public static final int USERNAME_OWE = 2;
     public static final int AMOUNT = 1;
     public static final int REASON = 3;
@@ -30,6 +28,6 @@ public class Constants {
     public static final String SPLIT_GROUP = "split-group";
     public static final String GET_STATUS = "get-status";
     public static final String HELP = "help";
-    public static final String PAYED = "payed";
+    public static final String PAID = "paid";
 
 }
