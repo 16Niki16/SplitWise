@@ -89,13 +89,13 @@ public class Status implements StatusAPI {
             if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
                 return String.format("*%s owes you %s LV.\n", splitMoney[USER], splitMoney[AMOUNT]);
             } else {
-                return String.format("*You owe %s to %s LV.\n", splitMoney[AMOUNT], splitMoney[USER]);
+                return String.format("*You owe %s to %s LV.\n", splitMoney[AMOUNT].substring(1), splitMoney[USER]);
             }
         } else {
             if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
                 return String.format("*%s owes to the group %s LV.\n", splitMoney[USER], splitMoney[AMOUNT]);
             } else {
-                return String.format("*Group owe %s to %s LV.\n", splitMoney[AMOUNT], splitMoney[USER]);
+                return String.format("*Group owe %s to %s LV.\n", splitMoney[AMOUNT].substring(1), splitMoney[USER]);
             }
         }
     }

@@ -18,7 +18,6 @@ public class Constants {
     public static final int USERNAME_OWE = 2;
     public static final int AMOUNT = 1;
     public static final int REASON = 3;
-    public static final int MOMENT_MONEY = 1;
     public static final int TWO = 2;
 
     //type commands constants
@@ -29,5 +28,6 @@ public class Constants {
     public static final String GET_STATUS = "get-status";
     public static final String HELP = "help";
     public static final String PAID = "paid";
+    public static final String GROUP_PAID = "group-paid";
 
 }

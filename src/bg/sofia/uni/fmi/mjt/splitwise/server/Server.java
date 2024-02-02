@@ -19,11 +19,10 @@ import java.util.Set;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.BUFFER_SIZE;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_HOST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_PORT;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Server {
     private static final String DIRECTORY = "DataFiles\\UserData.txt";
-    private static final String GROUPS_DIRECTORY = "DataFiles\\GroupsFile.txt";
-
     private Set<User> users;
     private CommandExecutor commandExecutor;
 
@@ -34,13 +33,10 @@ public class Server {
 
     public void serverStart() {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
-
             serverSocketChannel.bind(new InetSocketAddress(SERVER_HOST, SERVER_PORT));
             serverSocketChannel.configureBlocking(false);
-
             Selector selector = Selector.open();
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
             ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 
             while (true) {
@@ -48,35 +44,43 @@ public class Server {
                 if (readyChannels == 0) {
                     continue;
                 }
-
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
-
                 while (keyIterator.hasNext()) {
                     SelectionKey key = keyIterator.next();
                     if (key.isReadable()) {
                         SocketChannel sc = (SocketChannel) key.channel();
-                        String line = clientInput(buffer, sc);
-                        if (line == null) {
-                            continue;
-                        } else if (line.contains("|")) {
-                            creatingUser(line, buffer, sc);
-                        } else {
-                            String commandResult = commandExecutor.execute(CommandCreator.newCommand(line));
-                            clientOutput(buffer, sc, commandResult);
-                        }
-
+                        readable(sc, buffer);
                     } else if (key.isAcceptable()) {
                         acceptable(key, selector);
                     }
-
                     keyIterator.remove();
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException("There is a problem with the server socket", e);
         }
+    }
+
+    private void readable(SocketChannel sc, ByteBuffer buffer) throws IOException {
+        String line = clientInput(buffer, sc);
+        if (line == null) {
+
+        } else if (line.contains("|")) {
+            creatingUser(line, buffer, sc);
+        } else {
+            String[] user = line.split(" ");
+            String commandResult =
+                commandExecutor.execute(CommandCreator.newCommand(line), getUser(user[USER]));
+            clientOutput(buffer, sc, commandResult);
+        }
+    }
+
+    private User getUser(String username) {
+        return users.stream()
+            .filter(p -> p.getUsername().trim().equals(username.trim()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Mistake in files for user"));
     }
 
     private void clientOutput(ByteBuffer buffer, SocketChannel sc, String line) throws IOException {
@@ -103,12 +107,11 @@ public class Server {
     }
 
     private void creatingUser(String line, ByteBuffer buffer, SocketChannel sc) throws IOException {
-
         try {
             User userSession = User.of(line, DIRECTORY);
             this.users.add(userSession);
             String[] lineSplit = line.split(" ");
-            clientOutput(buffer, sc, lineSplit[0]);
+            clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[0]));
 
         } catch (PasswordNotCorrectException e) {
             String messageWrongPassword = "Entered wrong password";

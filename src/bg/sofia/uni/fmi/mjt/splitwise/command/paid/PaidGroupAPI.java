@@ -2,9 +2,9 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 
-public interface PaidAPI {
+public interface PaidGroupAPI {
     /**
-     * made payment to a person
+     * making payment to a group
      * */
-    String personPay(Command command);
+    String personPaidToGroup(Command command);
 }
