@@ -1,2 +1,4 @@
 firstGroup | niki123 0.00, niki 0.00, kolio 0.00
 secondGroup | niki123 0.00, niki 0.00, kolio 0.00
+thirdGroup | pepi 0.00, niki 0.00, kolio 0.00
+testGroup | koki -5.67, ili 4.33, niki 1.33

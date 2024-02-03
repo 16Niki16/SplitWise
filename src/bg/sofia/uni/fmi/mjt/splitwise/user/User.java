@@ -3,11 +3,10 @@ package bg.sofia.uni.fmi.mjt.splitwise.user;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,10 +29,10 @@ public class User implements UserAPI {
         this.friendList = friendList;
     }
 
-    public static User of(String line, String path) throws PasswordNotCorrectException {
+    public static User of(String line, ReaderWriterCreator path) throws PasswordNotCorrectException {
         String[] splitedUser = line.split("\\|");
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(path, true));
-             BufferedReader re = new BufferedReader(new FileReader(path))) {
+        try (BufferedWriter wr = new BufferedWriter(path.getAppend());
+             BufferedReader re = new BufferedReader(path.getRead())) {
             String lineR;
             while ((lineR = re.readLine()) != null) {
                 String[] lineRe = lineR.split("\\|");
@@ -85,7 +84,7 @@ public class User implements UserAPI {
 
     public void checkAlreadyFriends(String friend) throws AlreadyFriendsException {
         if (friendList.containsKey(friend)) {
-            throw new AlreadyFriendsException("they are friends already");
+            throw new AlreadyFriendsException("They are friends already");
         }
     }
 

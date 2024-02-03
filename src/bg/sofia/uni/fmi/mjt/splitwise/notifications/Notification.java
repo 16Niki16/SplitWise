@@ -1,11 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +17,9 @@ public class Notification implements NotificationAPI {
     private static final int FRIEND_NAME = 1;
     private static final int FRIEND_PAY = 2;
     private static final int REASON = 3;
-    private String notificationsDirectory;
+    private final ReaderWriterCreator notificationsDirectory;
 
-    public Notification(String notificationsDirectory) {
+    public Notification(ReaderWriterCreator notificationsDirectory) {
         this.notificationsDirectory = notificationsDirectory;
     }
 
@@ -54,7 +53,7 @@ public class Notification implements NotificationAPI {
 
     private void appendAtPositionPayment(Command command) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
             String line;
             boolean reachedSection = false;
 
@@ -81,7 +80,7 @@ public class Notification implements NotificationAPI {
 
     private void appendAtPositionSplit(Command command) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
             String line;
             boolean reachedSection = false;
             while ((line = r.readLine()) != null) {
@@ -134,7 +133,7 @@ public class Notification implements NotificationAPI {
 
     private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason)
         throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(notificationsDirectory, true))) {
+        try (BufferedWriter wr = new BufferedWriter(notificationsDirectory.getAppend())) {
             StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
             if (paid) {
                 build.append(
@@ -150,7 +149,7 @@ public class Notification implements NotificationAPI {
     }
 
     private boolean checkSectionAlreadyExist(String friend) throws IOException {
-        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
@@ -163,7 +162,7 @@ public class Notification implements NotificationAPI {
     }
 
     private void addInformation(List<String> lines) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(notificationsDirectory, false))) {
+        try (BufferedWriter wr = new BufferedWriter(notificationsDirectory.getNotAppend())) {
             for (String line : lines) {
                 wr.write(line);
                 wr.newLine();

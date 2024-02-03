@@ -2,15 +2,12 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,25 +15,17 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class AddFriend implements AddFriendAPI {
-    private String directory;
+    private ReaderWriterCreator creator;
     private User user;
-    private Reader reader;
-    private Writer append;
 
-    public AddFriend(String directory, User user) {
-        this.directory = directory;
+    public AddFriend(ReaderWriterCreator creator, User user) {
+        this.creator = creator;
         this.user = user;
-        try {
-            this.reader = new FileReader(directory);
-            this.append = new FileWriter(directory, false);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
     public String addingFriend(String username, String... friend) {
-        try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
             checkInFile(friend[FRIEND_NAME]);
             this.user.checkAlreadyFriends(friend[FRIEND_NAME]);
             String lineRead;
@@ -65,7 +54,7 @@ public class AddFriend implements AddFriendAPI {
     }
 
     private void addNewInformation(List<String> information) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(directory, false))) {
+        try (BufferedWriter wr = new BufferedWriter(creator.getNotAppend())) {
             for (String updatedLine : information) {
                 wr.write(updatedLine);
                 wr.newLine();
@@ -74,7 +63,7 @@ public class AddFriend implements AddFriendAPI {
     }
 
     private void checkInFile(String username) throws FriendNotRegisteredException, IOException {
-        try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String user;
             while ((user = r.readLine()) != null) {
                 String[] splitU = user.split("\\|");
@@ -82,7 +71,7 @@ public class AddFriend implements AddFriendAPI {
                     return;
                 }
             }
-            throw new FriendNotRegisteredException("This person is not registered yet");
+            throw new FriendNotRegisteredException("This person is not registered yet.");
         }
     }
 }

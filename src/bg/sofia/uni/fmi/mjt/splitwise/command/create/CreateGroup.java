@@ -5,11 +5,10 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupAlreadyExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughParticipantsForGroupException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FOUR;
@@ -17,25 +16,25 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class CreateGroup implements CreateGroupAPI {
-    private String directory;
-    private String groupsDirectory;
+    private ReaderWriterCreator friends;
+    private ReaderWriterCreator group;
     private static final int GROUP_NAME = 0;
 
-    public CreateGroup(String directory, String groupsDirectory) {
-        this.directory = directory;
-        this.groupsDirectory = groupsDirectory;
+    public CreateGroup(ReaderWriterCreator friends, ReaderWriterCreator groupsDirectory) {
+        this.friends = friends;
+        this.group = groupsDirectory;
     }
 
     @Override
     public String createGroup(String username, String... participants) {
         try {
             if (participants.length < FOUR) {
-                throw new NotEnoughParticipantsForGroupException("groups participants are not enough");
+                throw new NotEnoughParticipantsForGroupException("Groups participants are not enough.");
             }
             checkAllExist(participants);
             checkGroupName(participants[Constants.GROUP_NAME]);
             Group newGroup = Group.of(username, participants);
-            return appendToFile(newGroup.toString());
+            return "Group: " + appendToFile(newGroup.toString());
         } catch (NotEnoughParticipantsForGroupException | FriendNotRegisteredException | GroupAlreadyExistException e) {
             return e.getLocalizedMessage();
         } catch (IOException e) {
@@ -44,12 +43,12 @@ public class CreateGroup implements CreateGroupAPI {
     }
 
     private void checkGroupName(String name) throws GroupAlreadyExistException, IOException {
-        try (BufferedReader r = new BufferedReader(new FileReader(groupsDirectory))) {
+        try (BufferedReader r = new BufferedReader(group.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] getName = line.split("\\|");
                 if (name.trim().equals(getName[GROUP_NAME].trim())) {
-                    throw new GroupAlreadyExistException("Group with this name already exist");
+                    throw new GroupAlreadyExistException("Group with this name already exist.");
                 }
             }
         }
@@ -61,16 +60,16 @@ public class CreateGroup implements CreateGroupAPI {
         }
     }
 
-    private String appendToFile(String group) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(groupsDirectory, true))) {
-            wr.write(group);
+    private String appendToFile(String groupp) throws IOException {
+        try (BufferedWriter wr = new BufferedWriter(group.getAppend())) {
+            wr.write(groupp);
             wr.newLine();
-            return group;
+            return groupp;
         }
     }
 
     private void checkInFile(String username) throws FriendNotRegisteredException, IOException {
-        try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
+        try (BufferedReader r = new BufferedReader(friends.getRead())) {
             String user;
             while ((user = r.readLine()) != null) {
                 String[] splitU = user.split("\\|");
@@ -78,7 +77,7 @@ public class CreateGroup implements CreateGroupAPI {
                     return;
                 }
             }
-            throw new FriendNotRegisteredException(String.format("%s is not registered yet", username));
+            throw new FriendNotRegisteredException(String.format("%s is not registered yet.", username));
         }
     }
 }

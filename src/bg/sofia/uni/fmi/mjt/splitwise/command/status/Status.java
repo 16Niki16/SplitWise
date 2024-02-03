@@ -1,9 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.status;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
@@ -14,17 +14,17 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 public class Status implements StatusAPI {
 
     private static final int GROUP = 0;
-    private String directory;
-    private String groupsDirectory;
+    private ReaderWriterCreator directory;
+    private ReaderWriterCreator groupsDirectory;
 
-    public Status(String directory, String groupsDirectory) {
+    public Status(ReaderWriterCreator directory, ReaderWriterCreator groupsDirectory) {
         this.directory = directory;
         this.groupsDirectory = groupsDirectory;
     }
 
     public String getStatus(Command command) {
         StringBuilder build = new StringBuilder("Friend list:\n");
-        try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
+        try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] splitedLine = line.split("\\|");
@@ -46,7 +46,7 @@ public class Status implements StatusAPI {
     }
 
     public String groupAppend(Command command) {
-        try (BufferedReader r = new BufferedReader(new FileReader(groupsDirectory))) {
+        try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
             StringBuilder build = new StringBuilder("Groups: \n");
             String line;
             while ((line = r.readLine()) != null) {

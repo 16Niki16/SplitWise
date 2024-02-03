@@ -1,0 +1,18 @@
+name: niki
+Friends:
+koki approved your payment 10 LV.
+koki approved your payment 5 LV.
+You owes koki 10.00 LV[qjca]
+You owes pepi 10.00[qjca].
+Groups:
+*testGroup - koki approved your payment 2 LV.
+*testGroup - You owes koki 3.3333333333333335 LV[qjca]
+name: ili
+Groups:
+*testGroup - You owes koki 3.3333333333333335 LV[qjca]
+name: pepi
+Friends:
+You owes niki 10.00 LV[qjca]
+You owes niki 10.00[qjca].
+Groups:
+No information!

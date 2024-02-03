@@ -1,11 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,9 @@ public class GroupNotification implements GroupNotificationAPI {
     private static final int FRIEND_NAME = 1;
     private static final int GROUP_NAME = 2;
     private static final int GROUP_PAYMENT = 3;
-    private String notificationsDirectory;
+    private ReaderWriterCreator notificationsDirectory;
 
-    public GroupNotification(String notificationsDirectory) {
+    public GroupNotification(ReaderWriterCreator notificationsDirectory) {
         this.notificationsDirectory = notificationsDirectory;
     }
 
@@ -52,7 +51,7 @@ public class GroupNotification implements GroupNotificationAPI {
 
     private void appendAtPositionSplit(Command command, String friend, String amount) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
             String line;
             boolean reachedSection = false;
             boolean reachedGroups = false;
@@ -95,7 +94,7 @@ public class GroupNotification implements GroupNotificationAPI {
 
     private void appendAtPositionPayment(Command command, String friend) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
             String line;
             boolean reachedSection = false;
             boolean reachedGroups = false;
@@ -136,7 +135,7 @@ public class GroupNotification implements GroupNotificationAPI {
 
     private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason, String groupName)
         throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(notificationsDirectory, true))) {
+        try (BufferedWriter wr = new BufferedWriter(notificationsDirectory.getAppend())) {
             StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
             if (paid) {
                 build.append(String.format("Groups:\n*%s - %s approved your payment %s LV.", groupName, name, amount));
@@ -149,7 +148,7 @@ public class GroupNotification implements GroupNotificationAPI {
     }
 
     private boolean checkSectionAlreadyExist(String friend) throws IOException {
-        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
@@ -162,7 +161,7 @@ public class GroupNotification implements GroupNotificationAPI {
     }
 
     private void addInformation(List<String> lines) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(notificationsDirectory, false))) {
+        try (BufferedWriter wr = new BufferedWriter(notificationsDirectory.getNotAppend())) {
             for (String line : lines) {
                 wr.write(line);
                 wr.newLine();

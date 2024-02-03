@@ -4,12 +4,11 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.NotificationAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +19,26 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Split implements SplitAPI {
-    private String notificationDirectory = "DataFiles\\Notifications.txt";
-    private String directory;
+    private ReaderWriterCreator friends;
+    private ReaderWriterCreator notifications;
     private User user;
 
-    public Split(String directory, User user) {
+    public Split(ReaderWriterCreator friends, User user, ReaderWriterCreator notifications) {
         this.user = user;
-        this.directory = directory;
+        this.friends = friends;
+        this.notifications = notifications;
     }
 
     @Override
     public String moneyOwe(Command command) {
-        try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
+        try (BufferedReader r = new BufferedReader(friends.getRead())) {
             String readline;
             List<String> newLines = new ArrayList<>();
 
             while ((readline = r.readLine()) != null) {
                 String[] splited = readline.split("\\|");
                 if (command.line().equals(splited[USER].trim())) {
-                    NotificationAPI noti = new Notification(notificationDirectory);
+                    NotificationAPI noti = new Notification(notifications);
                     noti.addNotificationFriendSplit(command);
                     newLines.add(user.appendMoney(command.args()[USERNAME_OWE].trim(),
                         -1 * Double.parseDouble(command.args()[AMOUNT])));
@@ -50,9 +50,8 @@ public class Split implements SplitAPI {
                     newLines.add(readline);
                 }
             }
-
             appendNewInformation(newLines);
-            return command.args()[REASON];
+            return "Successfully split the money!";
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -62,7 +61,7 @@ public class Split implements SplitAPI {
     }
 
     private void appendNewInformation(List<String> lines) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(directory, false))) {
+        try (BufferedWriter wr = new BufferedWriter(friends.getNotAppend())) {
             for (String updatedLine : lines) {
                 wr.write(updatedLine);
                 wr.newLine();

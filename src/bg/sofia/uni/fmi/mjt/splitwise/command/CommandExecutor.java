@@ -14,6 +14,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.split.Split;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.StatusAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.ADD_FRIEND;
@@ -27,15 +28,15 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SPLIT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SPLIT_GROUP;
 
 public class CommandExecutor {
-    private String groupsDirectory;
-    private String directory;
-    private String notificationsDirectory;
+    private final ReaderWriterCreator groupsDirectory;
+    private final ReaderWriterCreator directory;
+    private final ReaderWriterCreator notificationsDirectory;
 
     public CommandExecutor(String directory, String groupsDirectory, String notificationsDirectory) {
 
-        this.directory = directory;
-        this.groupsDirectory = groupsDirectory;
-        this.notificationsDirectory = notificationsDirectory;
+        this.directory = new ReaderWriterCreator(directory);
+        this.groupsDirectory = new ReaderWriterCreator(groupsDirectory);
+        this.notificationsDirectory = new ReaderWriterCreator(notificationsDirectory);
     }
 
     public String execute(Command command, User user) {
@@ -55,11 +56,11 @@ public class CommandExecutor {
     private String executePaid(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case PAID -> {
-                PaidAPI paid = new Paid(directory, user);
+                PaidAPI paid = new Paid(directory, user, notificationsDirectory);
                 yield paid.personPay(command);
             }
             case GROUP_PAID -> {
-                PaidGroupAPI payment = new PaidGroup(groupsDirectory);
+                PaidGroupAPI payment = new PaidGroup(groupsDirectory, notificationsDirectory);
                 yield payment.personPaidToGroup(command);
             }
             default -> "Unknown command";
@@ -83,11 +84,11 @@ public class CommandExecutor {
     private String executeSplit(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case SPLIT -> {
-                SplitAPI split = new Split(directory, user);
+                SplitAPI split = new Split(directory, user, notificationsDirectory);
                 yield split.moneyOwe(command);
             }
             case SPLIT_GROUP -> {
-                GroupSplitAPI splitG = new GroupSplit(groupsDirectory);
+                GroupSplitAPI splitG = new GroupSplit(groupsDirectory, notificationsDirectory);
                 yield splitG.groupsOwe(command);
             }
             default -> "Unknown command";

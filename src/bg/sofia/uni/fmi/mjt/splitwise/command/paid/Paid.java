@@ -4,12 +4,11 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.NotificationAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +18,18 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Paid implements PaidAPI {
-    private String notificationDirectory = "DataFiles\\Notifications.txt";
-    private String directory;
+    private ReaderWriterCreator notificationDirectory;
+    private ReaderWriterCreator directory;
     private User user;
 
-    public Paid(String directory, User user) {
+    public Paid(ReaderWriterCreator directory, User user, ReaderWriterCreator notificationDirectory) {
         this.directory = directory;
         this.user = user;
+        this.notificationDirectory = notificationDirectory;
     }
 
     public String personPay(Command command) {
-        try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
+        try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String readline;
             List<String> newLines = new ArrayList<>();
 
@@ -49,7 +49,7 @@ public class Paid implements PaidAPI {
                 }
             }
             appendNewInformation(newLines);
-            return "Successfully paid";
+            return "Successfully paid!";
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (PersonNotFriendException ee) {
@@ -60,7 +60,7 @@ public class Paid implements PaidAPI {
     }
 
     private void appendNewInformation(List<String> lines) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(directory, false))) {
+        try (BufferedWriter wr = new BufferedWriter(directory.getNotAppend())) {
             for (String updatedLine : lines) {
                 wr.write(updatedLine);
                 wr.newLine();

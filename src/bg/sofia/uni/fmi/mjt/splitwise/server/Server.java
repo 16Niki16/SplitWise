@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class Server {
 
     private void creatingUser(String line, ByteBuffer buffer, SocketChannel sc) throws IOException {
         try {
-            User userSession = User.of(line, DIRECTORY);
+            User userSession = User.of(line, new ReaderWriterCreator(DIRECTORY));
             this.users.add(userSession);
             String[] lineSplit = line.split(" ");
             clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[0]));
