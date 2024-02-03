@@ -29,14 +29,44 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SPLIT_GROUP;
 public class CommandExecutor {
     private String groupsDirectory;
     private String directory;
+    private String notificationsDirectory;
 
-    public CommandExecutor(String directory, String groupsDirectory) {
+    public CommandExecutor(String directory, String groupsDirectory, String notificationsDirectory) {
 
         this.directory = directory;
         this.groupsDirectory = groupsDirectory;
+        this.notificationsDirectory = notificationsDirectory;
     }
 
     public String execute(Command command, User user) {
+        return switch (command.args()[COMMAND_NAME]) {
+            case ADD_FRIEND, CREATE_GROUP -> executeCreate(command, user);
+            case SPLIT, SPLIT_GROUP -> executeSplit(command, user);
+            case PAID, GROUP_PAID -> executePaid(command, user);
+            case GET_STATUS -> {
+                StatusAPI status = new Status(directory, groupsDirectory);
+                yield status.getStatus(command);
+            }
+            case HELP -> helpCommand(command);
+            default -> "Unknown command";
+        };
+    }
+
+    private String executePaid(Command command, User user) {
+        return switch (command.args()[COMMAND_NAME]) {
+            case PAID -> {
+                PaidAPI paid = new Paid(directory, user);
+                yield paid.personPay(command);
+            }
+            case GROUP_PAID -> {
+                PaidGroupAPI payment = new PaidGroup(groupsDirectory);
+                yield payment.personPaidToGroup(command);
+            }
+            default -> "Unknown command";
+        };
+    }
+
+    private String executeCreate(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case ADD_FRIEND -> {
                 AddFriendAPI friend = new AddFriend(directory, user);
@@ -46,6 +76,12 @@ public class CommandExecutor {
                 CreateGroupAPI group = new CreateGroup(directory, groupsDirectory);
                 yield group.createGroup(command.line(), command.args());
             }
+            default -> "Unknown command";
+        };
+    }
+
+    private String executeSplit(Command command, User user) {
+        return switch (command.args()[COMMAND_NAME]) {
             case SPLIT -> {
                 SplitAPI split = new Split(directory, user);
                 yield split.moneyOwe(command);
@@ -54,19 +90,6 @@ public class CommandExecutor {
                 GroupSplitAPI splitG = new GroupSplit(groupsDirectory);
                 yield splitG.groupsOwe(command);
             }
-            case GET_STATUS -> {
-                StatusAPI status = new Status(directory, groupsDirectory);
-                yield status.getStatus(command);
-            }
-            case PAID -> {
-                PaidAPI paid = new Paid(directory, user);
-                yield paid.personPay(command);
-            }
-            case GROUP_PAID -> {
-                PaidGroupAPI payment = new PaidGroup(groupsDirectory);
-                yield payment.personPaidToGroup(command);
-            }
-            case HELP -> helpCommand(command);
             default -> "Unknown command";
         };
     }

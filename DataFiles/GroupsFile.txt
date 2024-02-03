@@ -1,7 +1,2 @@
-firstGroup | niki -76.85, niki123 -22.85, koki 3.16, kolio 56.48
-secondGroup | niki -53.33, niki123 26.67, koki 26.67
-thirdGroup | niki 0, kolio 0, koki 0
-forthGroup | niki 0, koki 0, kolio 0
-last | misho 0, niki 0, kolio 0
-userGr | user 0.00, niki 0.00, niki123 0.00
-iliGroup | random -26.67, niki 13.33, niki123 13.33
+firstGroup | niki123 0.00, niki 0.00, kolio 0.00
+secondGroup | niki123 0.00, niki 0.00, kolio 0.00

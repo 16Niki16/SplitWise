@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.GroupNotification;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GROUP_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Group implements GroupAPI {
+    private String notificationDirectory = "DataFiles\\Notifications.txt";
     private static final int AMOUNT_INDEX = 1;
     private static final int PAYER = 2;
     private static final int GROUP_INDEX = 0;
@@ -56,6 +58,8 @@ public class Group implements GroupAPI {
                 double balance = map.getValue() - totalAmount + sumToPay;
                 this.members.put(map.getKey(), balance);
             } else {
+                GroupNotification group = new GroupNotification(notificationDirectory);
+                group.appendToGroupSplit(command, map.getKey(), Double.toString(sumToPay));
                 double balance = map.getValue() + sumToPay;
                 this.members.put(map.getKey(), balance);
             }
@@ -69,6 +73,8 @@ public class Group implements GroupAPI {
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getKey().equals(command.args()[PAYER])) {
+                GroupNotification group = new GroupNotification(notificationDirectory);
+                group.appendToGroupPayment(command, map.getKey());
                 double balance = map.getValue() - totalAmount;
                 this.members.put(map.getKey(), balance);
             } else {

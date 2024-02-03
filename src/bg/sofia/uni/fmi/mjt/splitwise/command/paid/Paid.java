@@ -50,7 +50,6 @@ public class Paid implements PaidAPI {
             }
             appendNewInformation(newLines);
             return "Successfully paid";
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (PersonNotFriendException ee) {
@@ -60,14 +59,12 @@ public class Paid implements PaidAPI {
         }
     }
 
-    private void appendNewInformation(List<String> lines) {
+    private void appendNewInformation(List<String> lines) throws IOException {
         try (BufferedWriter wr = new BufferedWriter(new FileWriter(directory, false))) {
             for (String updatedLine : lines) {
                 wr.write(updatedLine);
                 wr.newLine();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

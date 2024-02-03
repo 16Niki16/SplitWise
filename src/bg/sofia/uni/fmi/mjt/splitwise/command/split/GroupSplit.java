@@ -45,7 +45,7 @@ public class GroupSplit implements GroupSplitAPI {
         return "Information successfully added";
     }
 
-    private void checkGroupExist(String name) throws GroupDoesNotExistException {
+    private void checkGroupExist(String name) throws GroupDoesNotExistException, IOException {
         try (BufferedReader r = new BufferedReader(new FileReader(groupsDirectory))) {
             String line;
             while ((line = r.readLine()) != null) {
@@ -55,19 +55,15 @@ public class GroupSplit implements GroupSplitAPI {
                 }
             }
             throw new GroupDoesNotExistException("Group with that name does not exist");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    private void appendNewInformation(List<String> lines) {
+    private void appendNewInformation(List<String> lines) throws IOException {
         try (BufferedWriter wr = new BufferedWriter(new FileWriter(groupsDirectory, false))) {
             for (String updatedLine : lines) {
                 wr.write(updatedLine);
                 wr.newLine();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

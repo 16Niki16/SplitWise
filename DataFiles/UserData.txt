@@ -1,10 +1,3 @@
-niki | niki123 | koki 36.00, niki123 85.00, kolio -15.00, misho 0.00, kooo 0.00, ili -20.00, newUser 0.00, iliyana 0.00, random 20.00
-niki123 | niki | niki -85.00, misho 0.00, kooo 0.00, kolio 0.00, random 0.00
-kolio | koliooo | niki 15.00, misho 0.00, kooo 10.00, ili 10.00, niki123 0.00
-koki | kirrr | niki -6.00, misho 0.00
-misho | misho1 | niki 0.00, niki123 0.00, kolio 0.00, koki 0.00
-kooo | kooo | niki 0.00, kolio -10.00, niki123 0.00
-ili | ili123 | niki 20.00, kolio -10.00
-newUser | passworduser | niki 0.00
-iliyana | ili123 | niki 0.00
-random | 123 | niki -20.00, niki123 0.00
+niki | niki123 | kolio 0.00
+kolio | kolio123 | niki 0.00
+niki123 | niki

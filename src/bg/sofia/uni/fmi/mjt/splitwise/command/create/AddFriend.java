@@ -9,6 +9,8 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +20,18 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 public class AddFriend implements AddFriendAPI {
     private String directory;
     private User user;
+    private Reader reader;
+    private Writer append;
 
     public AddFriend(String directory, User user) {
         this.directory = directory;
         this.user = user;
+        try {
+            this.reader = new FileReader(directory);
+            this.append = new FileWriter(directory, false);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -63,7 +73,7 @@ public class AddFriend implements AddFriendAPI {
         }
     }
 
-    private void checkInFile(String username) throws FriendNotRegisteredException {
+    private void checkInFile(String username) throws FriendNotRegisteredException, IOException {
         try (BufferedReader r = new BufferedReader(new FileReader(directory))) {
             String user;
             while ((user = r.readLine()) != null) {
@@ -73,8 +83,6 @@ public class AddFriend implements AddFriendAPI {
                 }
             }
             throw new FriendNotRegisteredException("This person is not registered yet");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

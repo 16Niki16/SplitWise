@@ -49,6 +49,7 @@ public class User implements UserAPI {
                 }
             }
             wr.write(line);
+            wr.newLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

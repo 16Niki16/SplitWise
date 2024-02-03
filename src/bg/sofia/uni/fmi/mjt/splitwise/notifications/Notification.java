@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 
 public class Notification implements NotificationAPI {
     private static final int NAME = 0;
@@ -56,16 +57,18 @@ public class Notification implements NotificationAPI {
         try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
             String line;
             boolean reachedSection = false;
+
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
+
                 if (checkName[NAME].trim().equals("name") &&
                     checkName[FRIEND_NAME].trim().equals(command.args()[FRIEND_PAY])) {
                     reachedSection = true;
                     lines.add(line);
-                } else if (reachedSection && line.trim().equals("Friends:")) {
+
+                } else if (reachedSection) {
+                    appendInListPaid(lines, line, command);
                     reachedSection = false;
-                    lines.add(line);
-                    lines.add(String.format("%s approved your payment %s LV.", command.line(), command.args()[AMOUNT]));
                 } else {
                     lines.add(line);
                 }
@@ -87,11 +90,9 @@ public class Notification implements NotificationAPI {
                     checkName[FRIEND_NAME].trim().equals(command.args()[FRIEND_PAY])) {
                     lines.add(line);
                     reachedSection = true;
-                } else if (reachedSection && line.trim().equals("Friends:")) {
+                } else if (reachedSection) {
+                    appendInList(lines, line, command);
                     reachedSection = false;
-                    lines.add(line);
-                    lines.add(String.format(String.format("You owes %s %s[%s]", command.line(), command.args()[AMOUNT],
-                        command.args()[REASON])));
                 } else {
                     lines.add(line);
                 }
@@ -102,14 +103,46 @@ public class Notification implements NotificationAPI {
         }
     }
 
+    private void appendInListPaid(List<String> lines, String line, Command command) {
+        if (line.trim().equals("Friends:")) {
+            lines.add(line);
+            lines.add(
+                String.format("%s approved your payment %s LV.", command.line(), command.args()[AMOUNT]));
+        } else {
+            lines.add("Friends:");
+            lines.add(
+                String.format("%s approved your payment %s LV.", command.line(), command.args()[AMOUNT]));
+            lines.add(line);
+        }
+    }
+
+    private void appendInList(List<String> lines, String line, Command command) {
+        double am = Double.parseDouble(command.args()[AMOUNT]) / TWO;
+        if (!line.trim().equals("Friends:")) {
+            lines.add("Friends:");
+            lines.add(
+                String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
+                    command.args()[REASON])));
+            lines.add(line);
+        } else {
+            lines.add(line);
+            lines.add(
+                String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
+                    command.args()[REASON])));
+        }
+    }
+
     private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason)
         throws IOException {
         try (BufferedWriter wr = new BufferedWriter(new FileWriter(notificationsDirectory, true))) {
             StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
             if (paid) {
-                build.append(String.format("Friends:\n%s approved your payment %s LV.", name, amount));
+                build.append(
+                    String.format("Friends:\n%s approved your payment %s LV.\nGroups:\nNo information!", name, amount));
             } else {
-                build.append(String.format("Friends:\nYou owes %s %s[%s]", name, amount, reason));
+                double am = Double.parseDouble(amount) / TWO;
+                build.append(
+                    String.format("Friends:\nYou owes %s %.2f[%s].\nGroups:\nNo information!", name, am, reason));
             }
             wr.write(String.valueOf(build));
             wr.newLine();
