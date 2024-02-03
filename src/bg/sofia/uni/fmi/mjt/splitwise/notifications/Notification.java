@@ -16,6 +16,7 @@ public class Notification implements NotificationAPI {
     private static final int NAME = 0;
     private static final int FRIEND_NAME = 1;
     private static final int FRIEND_PAY = 2;
+    private static final int REASON = 3;
     private String notificationsDirectory;
 
     public Notification(String notificationsDirectory) {
@@ -36,11 +37,18 @@ public class Notification implements NotificationAPI {
 
     }
 
+    @Override
     public void addNotificationFriendSplit(Command command) {
-    }
-
-    public void addNotificationGroup(Command command) {
-
+        try {
+            if (!checkSectionAlreadyExist(command.args()[FRIEND_PAY])) {
+                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], false,
+                    command.args()[REASON]);
+            } else {
+                appendAtPositionSplit(command);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void appendAtPositionPayment(Command command) {
@@ -53,10 +61,37 @@ public class Notification implements NotificationAPI {
                 if (checkName[NAME].trim().equals("name") &&
                     checkName[FRIEND_NAME].trim().equals(command.args()[FRIEND_PAY])) {
                     reachedSection = true;
+                    lines.add(line);
                 } else if (reachedSection && line.trim().equals("Friends:")) {
                     reachedSection = false;
                     lines.add(line);
                     lines.add(String.format("%s approved your payment %s LV.", command.line(), command.args()[AMOUNT]));
+                } else {
+                    lines.add(line);
+                }
+            }
+            addInformation(lines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void appendAtPositionSplit(Command command) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader r = new BufferedReader(new FileReader(notificationsDirectory))) {
+            String line;
+            boolean reachedSection = false;
+            while ((line = r.readLine()) != null) {
+                String[] checkName = line.split(":");
+                if (checkName[NAME].trim().equals("name") &&
+                    checkName[FRIEND_NAME].trim().equals(command.args()[FRIEND_PAY])) {
+                    lines.add(line);
+                    reachedSection = true;
+                } else if (reachedSection && line.trim().equals("Friends:")) {
+                    reachedSection = false;
+                    lines.add(line);
+                    lines.add(String.format(String.format("You owes %s %s[%s]", command.line(), command.args()[AMOUNT],
+                        command.args()[REASON])));
                 } else {
                     lines.add(line);
                 }
@@ -79,10 +114,6 @@ public class Notification implements NotificationAPI {
             wr.write(String.valueOf(build));
             wr.newLine();
         }
-    }
-
-    private void appendGroupAtEnd() {
-
     }
 
     private boolean checkSectionAlreadyExist(String friend) throws IOException {

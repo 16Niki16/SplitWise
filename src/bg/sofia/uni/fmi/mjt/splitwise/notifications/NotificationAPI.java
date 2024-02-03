@@ -7,4 +7,9 @@ public interface NotificationAPI {
      * add information about payment
      * */
     void addNotificationFriendPayment(Command command);
+
+    /**
+     * add information about split
+     * */
+    void addNotificationFriendSplit(Command command);
 }
