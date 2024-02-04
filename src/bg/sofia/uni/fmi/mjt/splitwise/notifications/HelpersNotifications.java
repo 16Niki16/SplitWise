@@ -1,18 +1,22 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
+import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
+
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class HelpersNotifications {
     private static final int NAME = 0;
     private static final int FRIEND_NAME = 1;
 
-    public static boolean checkSectionAlreadyExist(String friend, Reader reader) throws IOException {
-        try (BufferedReader r = new BufferedReader(reader)) {
+    public static boolean checkSectionAlreadyExist(String friend, ReaderWriterCreator reader) throws IOException {
+        try (BufferedReader r = new BufferedReader(reader.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
@@ -24,12 +28,33 @@ public class HelpersNotifications {
         return false;
     }
 
-    public static void addInformation(List<String> lines, Writer writer) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(writer)) {
-            for (String line : lines) {
-                wr.write(line);
-                wr.newLine();
+    public static String getNotifications(String username, ReaderWriterCreator search, ReaderWriterCreator exception) {
+        StringBuilder build = new StringBuilder();
+        List<String> updatedList = new ArrayList<>();
+        try (BufferedReader r = new BufferedReader(search.getRead())) {
+            String line;
+            boolean isName = false;
+            while ((line = r.readLine()) != null) {
+                String[] checkName = line.split(":");
+                if (checkName[USER].trim().equals("name") && checkName[FRIEND_NAME].trim().equals(username)) {
+                    isName = true;
+                    build.append("*** Notifications ***\n");
+                } else if (isName) {
+                    if (checkName[USER].trim().equals("name")) {
+                        updatedList.add(line);
+                        isName = false;
+                    } else {
+                        build.append(line).append('\n');
+                    }
+                } else {
+                    updatedList.add(line);
+                }
             }
+            Helpers.addInformation(updatedList, search);
+        } catch (IOException e) {
+            ExceptionFormater.exceptionAdd(username, "Could not get the notification", e.getStackTrace(), exception);
+            throw new RuntimeException("Unsuccessfully send notifications");
         }
+        return (build.isEmpty()) ? "No notifications!" : build.toString();
     }
 }

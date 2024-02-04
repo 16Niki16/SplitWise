@@ -6,8 +6,12 @@ public class Main {
         String directory = "DataFiles\\UserData.txt";
         String groupsDirectory = "DataFiles\\GroupsFile.txt";
         String notificationsDirectory = "DataFiles\\Notifications.txt";
-        CommandExecutor ex = new CommandExecutor(directory, groupsDirectory, notificationsDirectory);
-        Server server = new Server(ex);
+        String exceptionsDirectory = "DataFiles\\Exceptions.txt";
+        String temporaryNotifications = "DataFiles\\TemporaryNotifications.txt";
+        CommandExecutor ex =
+            new CommandExecutor(directory, groupsDirectory, notificationsDirectory, exceptionsDirectory,
+                temporaryNotifications);
+        Server server = new Server(ex, directory, temporaryNotifications, exceptionsDirectory);
         server.serverStart();
     }
 }

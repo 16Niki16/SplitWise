@@ -1,11 +1,3 @@
-name: kolio
-Friends:
-You owes niki 10.00 LV[]
-You owes niki 10.00 LV[]
-You owes niki 10.00[].
-Groups:
-*secondGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
-*firstGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
 name: ili
 Friends:
 You owes niki 10.00 LV[]
@@ -19,6 +11,10 @@ You owes kolio 10.00[].
 Groups:
 No information!
 name: niki123
+Groups:
+*secondGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
+*firstGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
+name: kolio
 Groups:
 *secondGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
 *firstGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]

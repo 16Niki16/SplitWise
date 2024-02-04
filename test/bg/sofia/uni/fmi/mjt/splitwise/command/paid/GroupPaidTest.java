@@ -19,11 +19,15 @@ public class GroupPaidTest {
     private PaidGroupAPI paid;
     private ReaderWriterCreator notifications;
     private ReaderWriterCreator group;
+    private ReaderWriterCreator exc;
+    private ReaderWriterCreator tempNotif;
     private String groups;
     private String notif;
+    private String except;
 
     @BeforeEach
     void setUp() {
+        except = "";
         notif = """
             name: niki
             Friends:
@@ -39,7 +43,9 @@ public class GroupPaidTest {
 
         notifications = mock();
         group = mock();
-        paid = new PaidGroup(group, group);
+        exc = mock();
+        tempNotif = mock();
+        paid = new PaidGroup(group, notifications, exc, tempNotif);
     }
 
     @Test
@@ -49,9 +55,30 @@ public class GroupPaidTest {
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
+        when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
         when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(paid.personPaidToGroup(command), "Successful payment in a group!", "failed test pay in group.");
+    }
+
+    @Test
+    void testCreateGroupNotValid() {
+        String groupTest = groups;
+        Command command = CommandCreator.newCommand("niki group-paid NotNumber pepi secondGroup");
+        when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
+        when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
+        when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
+        when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
+        when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(group.getAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
+        assertEquals(paid.personPaidToGroup(command), "Number format is not correct", "failed test pay in group.");
     }
 }

@@ -3,6 +3,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
@@ -23,13 +25,18 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_PORT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Server {
-    private static final String DIRECTORY = "DataFiles\\UserData.txt";
     private Set<User> users;
     private CommandExecutor commandExecutor;
+    private ReaderWriterCreator friends;
+    private ReaderWriterCreator tempNotifications;
+    private ReaderWriterCreator exception;
 
-    public Server(CommandExecutor commandExecutor) {
+    public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;
         this.users = new LinkedHashSet<>();
+        this.friends = new ReaderWriterCreator(friends);
+        this.tempNotifications = new ReaderWriterCreator(tempNotifications);
+        this.exception = new ReaderWriterCreator(exception);
     }
 
     public void serverStart() {
@@ -66,7 +73,6 @@ public class Server {
     private void readable(SocketChannel sc, ByteBuffer buffer) throws IOException {
         String line = clientInput(buffer, sc);
         if (line == null) {
-
         } else if (line.contains("|")) {
             creatingUser(line, buffer, sc);
         } else {
@@ -109,11 +115,16 @@ public class Server {
 
     private void creatingUser(String line, ByteBuffer buffer, SocketChannel sc) throws IOException {
         try {
-            User userSession = User.of(line, new ReaderWriterCreator(DIRECTORY));
+            User userSession = User.of(line, friends);
             this.users.add(userSession);
             String[] lineSplit = line.split(" ");
-            clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[0]));
-
+            if (!Helpers.checkInFileNoException(lineSplit[USER].trim(), friends)) {
+                clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[USER].trim()));
+            } else {
+                clientOutput(buffer, sc,
+                    String.format("Welcome %s!\n%s", lineSplit[USER].trim(),
+                        HelpersNotifications.getNotifications(lineSplit[USER].trim(), tempNotifications, exception)));
+            }
         } catch (PasswordNotCorrectException e) {
             String messageWrongPassword = "Entered wrong password";
             clientOutput(buffer, sc, messageWrongPassword);

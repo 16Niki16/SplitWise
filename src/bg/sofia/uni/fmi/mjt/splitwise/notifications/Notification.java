@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
@@ -18,18 +19,27 @@ public class Notification implements NotificationAPI {
     private static final int FRIEND_PAY = 2;
     private static final int REASON = 3;
     private final ReaderWriterCreator notificationsDirectory;
+    private final ReaderWriterCreator tempNotif;
 
-    public Notification(ReaderWriterCreator notificationsDirectory) {
+    public Notification(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
         this.notificationsDirectory = notificationsDirectory;
+        this.tempNotif = tempNotif;
     }
 
     @Override
     public void addNotificationFriendPayment(Command command) {
         try {
-            if (!checkSectionAlreadyExist(command.args()[FRIEND_PAY])) {
-                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], true, " ");
+            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], notificationsDirectory)) {
+                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], true, " ",
+                    notificationsDirectory);
             } else {
-                appendAtPositionPayment(command);
+                appendAtPositionPayment(command, notificationsDirectory);
+            }
+            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], tempNotif)) {
+                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], true, " ",
+                    tempNotif);
+            } else {
+                appendAtPositionPayment(command, tempNotif);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -40,20 +50,26 @@ public class Notification implements NotificationAPI {
     @Override
     public void addNotificationFriendSplit(Command command) {
         try {
-            if (!checkSectionAlreadyExist(command.args()[FRIEND_PAY])) {
+            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], notificationsDirectory)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], false,
-                    command.args()[REASON]);
+                    Helpers.getReason(command), notificationsDirectory);
             } else {
-                appendAtPositionSplit(command);
+                appendAtPositionSplit(command, notificationsDirectory);
+            }
+            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], tempNotif)) {
+                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], false,
+                    Helpers.getReason(command), tempNotif);
+            } else {
+                appendAtPositionSplit(command, tempNotif);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void appendAtPositionPayment(Command command) {
+    private void appendAtPositionPayment(Command command, ReaderWriterCreator creator) throws IOException {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             boolean reachedSection = false;
 
@@ -72,15 +88,13 @@ public class Notification implements NotificationAPI {
                     lines.add(line);
                 }
             }
-            addInformation(lines);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            Helpers.addInformation(lines, creator);
         }
     }
 
-    private void appendAtPositionSplit(Command command) {
+    private void appendAtPositionSplit(Command command, ReaderWriterCreator creator) throws IOException {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             boolean reachedSection = false;
             while ((line = r.readLine()) != null) {
@@ -96,9 +110,7 @@ public class Notification implements NotificationAPI {
                     lines.add(line);
                 }
             }
-            addInformation(lines);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            Helpers.addInformation(lines, creator);
         }
     }
 
@@ -121,19 +133,20 @@ public class Notification implements NotificationAPI {
             lines.add("Friends:");
             lines.add(
                 String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
-                    command.args()[REASON])));
+                    Helpers.getReason(command))));
             lines.add(line);
         } else {
             lines.add(line);
             lines.add(
                 String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
-                    command.args()[REASON])));
+                    Helpers.getReason(command))));
         }
     }
 
-    private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason)
+    private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason,
+                             ReaderWriterCreator creator)
         throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(notificationsDirectory.getAppend())) {
+        try (BufferedWriter wr = new BufferedWriter(creator.getAppend())) {
             StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
             if (paid) {
                 build.append(
@@ -145,28 +158,6 @@ public class Notification implements NotificationAPI {
             }
             wr.write(String.valueOf(build));
             wr.newLine();
-        }
-    }
-
-    private boolean checkSectionAlreadyExist(String friend) throws IOException {
-        try (BufferedReader r = new BufferedReader(notificationsDirectory.getRead())) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                String[] checkName = line.split(":");
-                if (checkName[NAME].trim().equals("name") && checkName[FRIEND_NAME].trim().equals(friend.trim())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void addInformation(List<String> lines) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(notificationsDirectory.getNotAppend())) {
-            for (String line : lines) {
-                wr.write(line);
-                wr.newLine();
-            }
         }
     }
 }

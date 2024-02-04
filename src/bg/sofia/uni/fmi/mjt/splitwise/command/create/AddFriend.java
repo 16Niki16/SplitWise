@@ -2,6 +2,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
@@ -18,15 +20,18 @@ public class AddFriend implements AddFriendAPI {
     private ReaderWriterCreator creator;
     private User user;
 
-    public AddFriend(ReaderWriterCreator creator, User user) {
+    private ReaderWriterCreator exceptionDirectory;
+
+    public AddFriend(ReaderWriterCreator creator, User user, ReaderWriterCreator exceptionDirectory) {
         this.creator = creator;
         this.user = user;
+        this.exceptionDirectory = exceptionDirectory;
     }
 
     @Override
     public String addingFriend(String username, String... friend) {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
-            checkInFile(friend[FRIEND_NAME]);
+            Helpers.checkInFile(friend[FRIEND_NAME], creator);
             this.user.checkAlreadyFriends(friend[FRIEND_NAME]);
             String lineRead;
             List<String> lines = new ArrayList<>();
@@ -43,12 +48,14 @@ public class AddFriend implements AddFriendAPI {
                     lines.add(lineRead);
                 }
             }
-
             addNewInformation(lines);
         } catch (FriendNotRegisteredException | AlreadyFriendsException ee) {
+            ExceptionFormater.exceptionAdd(username, ee.getLocalizedMessage(), ee.getStackTrace(), exceptionDirectory);
             return ee.getLocalizedMessage();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionFormater.exceptionAdd(username, "Add friend directory mistake", e.getStackTrace(),
+                exceptionDirectory);
+            throw new RuntimeException("Could not add the friend successfully", e);
         }
         return String.format("Friend %s is added.", friend[1]);
     }
@@ -62,16 +69,4 @@ public class AddFriend implements AddFriendAPI {
         }
     }
 
-    private void checkInFile(String username) throws FriendNotRegisteredException, IOException {
-        try (BufferedReader r = new BufferedReader(creator.getRead())) {
-            String user;
-            while ((user = r.readLine()) != null) {
-                String[] splitU = user.split("\\|");
-                if (splitU[USER].trim().equals(username)) {
-                    return;
-                }
-            }
-            throw new FriendNotRegisteredException("This person is not registered yet.");
-        }
-    }
 }

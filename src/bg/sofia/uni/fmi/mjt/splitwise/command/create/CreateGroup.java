@@ -5,6 +5,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupAlreadyExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughParticipantsForGroupException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
@@ -13,16 +15,18 @@ import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FOUR;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class CreateGroup implements CreateGroupAPI {
     private ReaderWriterCreator friends;
     private ReaderWriterCreator group;
+    private ReaderWriterCreator exception;
     private static final int GROUP_NAME = 0;
 
-    public CreateGroup(ReaderWriterCreator friends, ReaderWriterCreator groupsDirectory) {
+    public CreateGroup(ReaderWriterCreator friends, ReaderWriterCreator groupsDirectory,
+                       ReaderWriterCreator exception) {
         this.friends = friends;
         this.group = groupsDirectory;
+        this.exception = exception;
     }
 
     @Override
@@ -36,9 +40,11 @@ public class CreateGroup implements CreateGroupAPI {
             Group newGroup = Group.of(username, participants);
             return "Group: " + appendToFile(newGroup.toString());
         } catch (NotEnoughParticipantsForGroupException | FriendNotRegisteredException | GroupAlreadyExistException e) {
+            ExceptionFormater.exceptionAdd(username, e.getLocalizedMessage(), e.getStackTrace(), exception);
             return e.getLocalizedMessage();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionFormater.exceptionAdd(username, "mistake in file creating group.", e.getStackTrace(), exception);
+            throw new RuntimeException("Creating group fail IO.", e);
         }
     }
 
@@ -56,7 +62,7 @@ public class CreateGroup implements CreateGroupAPI {
 
     private void checkAllExist(String... participants) throws FriendNotRegisteredException, IOException {
         for (int i = FRIEND_LIST; i < participants.length; i++) {
-            checkInFile(participants[i]);
+            Helpers.checkInFile(participants[i], friends);
         }
     }
 
@@ -68,16 +74,4 @@ public class CreateGroup implements CreateGroupAPI {
         }
     }
 
-    private void checkInFile(String username) throws FriendNotRegisteredException, IOException {
-        try (BufferedReader r = new BufferedReader(friends.getRead())) {
-            String user;
-            while ((user = r.readLine()) != null) {
-                String[] splitU = user.split("\\|");
-                if (splitU[USER].trim().equals(username)) {
-                    return;
-                }
-            }
-            throw new FriendNotRegisteredException(String.format("%s is not registered yet.", username));
-        }
-    }
 }

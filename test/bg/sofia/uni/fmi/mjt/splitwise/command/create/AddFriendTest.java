@@ -16,9 +16,12 @@ import static org.mockito.Mockito.when;
 
 public class AddFriendTest {
     private ReaderWriterCreator creator;
+    private ReaderWriterCreator exc;
     private User user;
     private AddFriendAPI addFriend;
     private String data;
+    private String except;
+
     @BeforeEach
     void setUp() {
         data = """
@@ -26,9 +29,11 @@ public class AddFriendTest {
             kolio | kolio123
             pepi | pepi123 | niki -10.00
                     """;
+        except = "";
         creator = mock();
+        exc = mock();
         user = User.of("niki | niki123 | pepi 10.00");
-        addFriend = new AddFriend(creator, user);
+        addFriend = new AddFriend(creator, user, exc);
     }
 
     @Test
@@ -43,13 +48,18 @@ public class AddFriendTest {
     void testAddFriendAlreadyFriends() {
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(addFriend.addingFriend("niki", "add-friend", "pepi"), "They are friends already",
             "mistake in adding");
     }
+
     @Test
-    void testAddFriendNotRegistered(){
+    void testAddFriendNotRegistered() {
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(addFriend.addingFriend("niki", "add-friend", "unknown"), "This person is not registered yet.",
             "mistake in adding");
     }

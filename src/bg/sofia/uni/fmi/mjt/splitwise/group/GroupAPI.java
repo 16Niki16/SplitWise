@@ -6,6 +6,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 public interface GroupAPI {
     /**
      * add new balance to group people
-     * */
-    String addInformation(Command command, ReaderWriterCreator notifications);
+     */
+    String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif);
 }

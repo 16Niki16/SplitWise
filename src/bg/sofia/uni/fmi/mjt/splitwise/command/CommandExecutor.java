@@ -31,12 +31,17 @@ public class CommandExecutor {
     private final ReaderWriterCreator groupsDirectory;
     private final ReaderWriterCreator directory;
     private final ReaderWriterCreator notificationsDirectory;
+    private final ReaderWriterCreator exceptionsDirectory;
+    private final ReaderWriterCreator tempNotif;
 
-    public CommandExecutor(String directory, String groupsDirectory, String notificationsDirectory) {
+    public CommandExecutor(String directory, String groupsDirectory, String notificationsDirectory,
+                           String exceptionsDirectory, String tempNotif) {
 
         this.directory = new ReaderWriterCreator(directory);
         this.groupsDirectory = new ReaderWriterCreator(groupsDirectory);
         this.notificationsDirectory = new ReaderWriterCreator(notificationsDirectory);
+        this.exceptionsDirectory = new ReaderWriterCreator(exceptionsDirectory);
+        this.tempNotif = new ReaderWriterCreator(tempNotif);
     }
 
     public String execute(Command command, User user) {
@@ -56,11 +61,12 @@ public class CommandExecutor {
     private String executePaid(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case PAID -> {
-                PaidAPI paid = new Paid(directory, user, notificationsDirectory);
+                PaidAPI paid = new Paid(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield paid.personPay(command);
             }
             case GROUP_PAID -> {
-                PaidGroupAPI payment = new PaidGroup(groupsDirectory, notificationsDirectory);
+                PaidGroupAPI payment =
+                    new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield payment.personPaidToGroup(command);
             }
             default -> "Unknown command";
@@ -70,11 +76,11 @@ public class CommandExecutor {
     private String executeCreate(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case ADD_FRIEND -> {
-                AddFriendAPI friend = new AddFriend(directory, user);
+                AddFriendAPI friend = new AddFriend(directory, user, exceptionsDirectory);
                 yield friend.addingFriend(command.line(), command.args());
             }
             case CREATE_GROUP -> {
-                CreateGroupAPI group = new CreateGroup(directory, groupsDirectory);
+                CreateGroupAPI group = new CreateGroup(directory, groupsDirectory, exceptionsDirectory);
                 yield group.createGroup(command.line(), command.args());
             }
             default -> "Unknown command";
@@ -84,11 +90,12 @@ public class CommandExecutor {
     private String executeSplit(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case SPLIT -> {
-                SplitAPI split = new Split(directory, user, notificationsDirectory);
+                SplitAPI split = new Split(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield split.moneyOwe(command);
             }
             case SPLIT_GROUP -> {
-                GroupSplitAPI splitG = new GroupSplit(groupsDirectory, notificationsDirectory);
+                GroupSplitAPI splitG =
+                    new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield splitG.groupsOwe(command);
             }
             default -> "Unknown command";
@@ -97,13 +104,12 @@ public class CommandExecutor {
 
     private String helpCommand(Command command) {
         return """
-            Login: Username and password
             * Commands:
              - add-friend <username>
              - create-group <group_name> <username> <username> ... <username>
              - split <amount> <username> <reason_for_payment>
              - split-group <amount> <group_name> <reason_for_payment>
-             - get-status +
+             - get-status
              - paid <amount> <username>
              - group-paid <amount> <user> <group_name>
              """;

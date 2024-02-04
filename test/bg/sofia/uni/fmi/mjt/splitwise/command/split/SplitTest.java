@@ -18,12 +18,16 @@ public class SplitTest {
     private Split split;
     private ReaderWriterCreator friends;
     private ReaderWriterCreator notifications;
+    private ReaderWriterCreator exc;
+    private ReaderWriterCreator tempNotif;
     private User user;
     private String friend;
     private String notif;
+    private String except;
 
     @BeforeEach
     void setUp() {
+        except = "";
         notif = """
             name: niki
             Friends:
@@ -40,7 +44,9 @@ public class SplitTest {
         user = User.of("niki | niki123 | pepi 10.00, kolio 0.00, ili 0.00, koki 5.00");
         friends = mock();
         notifications = mock();
-        split = new Split(friends, user, notifications);
+        exc = mock();
+        tempNotif = mock();
+        split = new Split(friends, user, notifications,exc, tempNotif);
     }
 
     @Test
@@ -53,6 +59,9 @@ public class SplitTest {
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
+        when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(split.moneyOwe(command),"Successfully split the money!", "failed test split.");
     }
 
@@ -66,6 +75,11 @@ public class SplitTest {
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
+        when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(split.moneyOwe(command),"You are not still friends", "failed test split not valid.");
     }
 

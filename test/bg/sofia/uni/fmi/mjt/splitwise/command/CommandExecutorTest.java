@@ -29,7 +29,7 @@ public class CommandExecutorTest {
 
     @BeforeEach
     void setUp() {
-        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM);
+        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM,RANDOM, RANDOM);
     }
 
     @Test

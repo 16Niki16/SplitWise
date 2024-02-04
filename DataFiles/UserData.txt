@@ -1,5 +1,5 @@
-niki | niki123 | pepi -10.00, kolio 0.00, ili 0.00, koki -5.00
-kolio | kolio123 | niki 0.00
+niki | niki123 | pepi -10.00, kolio -45.00, ili -20.00, koki -5.00
+kolio | kolio123 | niki 45.00, ili -10.00
 pepi | pepi123 | niki 10.00
-ili | ili123 | niki 0.00, koki 0.00
+ili | ili123 | niki 20.00, koki 0.00, kolio 10.00
 koki | koki123 | niki 5.00, ili 0.00

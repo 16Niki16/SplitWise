@@ -16,11 +16,14 @@ public class CreateGroupTest {
     private CreateGroup create;
     private ReaderWriterCreator friends;
     private ReaderWriterCreator group;
+    private ReaderWriterCreator exc;
     private String friend;
     private String groups;
+    private String except;
 
     @BeforeEach
     void setUp() {
+        except = "";
         friend = """
             niki | niki123 | pepi 10.00, kolio 0.00, ili 0.00, koki 5.00
             kolio | kolio123 | niki 0.00
@@ -28,10 +31,10 @@ public class CreateGroupTest {
         groups = """
             firstGroup | niki123 0.00, niki 0.00, kolio 0.00
             secondGroup | niki123 0.00, niki 0.00, kolio 0.00""";
-
+        exc = mock();
         friends = mock();
         group = mock();
-        create = new CreateGroup(friends, group);
+        create = new CreateGroup(friends, group, exc);
     }
 
     @Test
@@ -56,6 +59,8 @@ public class CreateGroupTest {
         when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(create.createGroup("niki", "create-group", "thirdGroup", "kolio"),
             "Groups participants are not enough.", "Wrong testing participants not enough!");
         assertEquals(create.createGroup("niki", "create-group", "firstGroup", "kolio", "pepi"),

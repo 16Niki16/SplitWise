@@ -19,11 +19,26 @@ public class PaidTest {
     private PaidAPI paid;
     private ReaderWriterCreator notifications;
     private ReaderWriterCreator friend;
+    private ReaderWriterCreator exceptions;
+    private ReaderWriterCreator temp;
     private User user;
     private String friends;
     private String notif;
+    private String except;
+    private String tempNotif;
+
     @BeforeEach
     void setUp() {
+        tempNotif = """
+            name: niki
+            Friends:
+            koki approved your payment 5 LV.
+            Groups:
+            *testGroup - koki approved your payment 2 LV.
+            name: ili
+            Groups:
+            *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
+        except = "";
         notif = """
             name: niki
             Friends:
@@ -40,7 +55,9 @@ public class PaidTest {
         user = User.of("niki | niki123 | pepi 10.00, kolio 0.00, ili 0.00, koki 5.00");
         friend = mock();
         notifications = mock();
-        paid = new Paid(friend, user, notifications);
+        exceptions = mock();
+        temp = mock();
+        paid = new Paid(friend, user, notifications, exceptions, temp);
     }
 
     @Test
@@ -53,6 +70,11 @@ public class PaidTest {
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(paid.personPay(command),"Successfully paid!", "failed test pay.");
+        when(temp.getRead()).thenAnswer(x -> new StringReader(tempNotif));
+        when(temp.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(temp.getAppend()).thenAnswer(x -> new StringWriter());
+        when(exceptions.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exceptions.getAppend()).thenAnswer(x -> new StringWriter());
+        assertEquals(paid.personPay(command), "Successfully paid!", "failed test pay.");
     }
 }
