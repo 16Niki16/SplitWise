@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.status;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_NAME;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Status implements StatusAPI {
@@ -16,19 +18,32 @@ public class Status implements StatusAPI {
     private static final int GROUP = 0;
     private ReaderWriterCreator directory;
     private ReaderWriterCreator groupsDirectory;
+    private ReaderWriterCreator exceptions;
 
-    public Status(ReaderWriterCreator directory, ReaderWriterCreator groupsDirectory) {
+    public Status(ReaderWriterCreator directory, ReaderWriterCreator groupsDirectory,
+                  ReaderWriterCreator exceptionsDirectory) {
         this.directory = directory;
         this.groupsDirectory = groupsDirectory;
+        this.exceptions = exceptionsDirectory;
     }
 
     public String getStatus(Command command) {
+        StringBuilder build = new StringBuilder();
+        build.append(peopleOwes(command));
+        build.append(groupAppend(command));
+        return build.toString();
+    }
+
+    private String peopleOwes(Command command) {
         StringBuilder build = new StringBuilder("Friend list:\n");
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] splitedLine = line.split("\\|");
                 if (splitedLine[USER].trim().equals(command.line())) {
+                    if (splitedLine.length == TWO) {
+                        return "You do not have any friends\n";
+                    }
                     String[] splitfr = splitedLine[FRIEND_LIST].split(",");
                     for (String fr : splitfr) {
                         String[] splitMoney = fr.trim().split(" ");
@@ -38,16 +53,17 @@ public class Status implements StatusAPI {
                     }
                 }
             }
-            build.append(groupAppend(command));
+            return build.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionFormater.exceptionAdd(command.line(), "Could not extract in status friends", e.getStackTrace(),
+                exceptions);
+            throw new RuntimeException("Could not extract friends. IO", e);
         }
-        return build.toString();
     }
 
-    public String groupAppend(Command command) {
+    private String groupAppend(Command command) {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
-            StringBuilder build = new StringBuilder("Groups: \n");
+            StringBuilder build = new StringBuilder("Groups:\n");
             String line;
             while ((line = r.readLine()) != null) {
                 String[] splitLine = line.split("\\|");
@@ -67,9 +83,11 @@ public class Status implements StatusAPI {
                     }
                 }
             }
-            return build.toString();
+            return (build.toString().equals("Groups:\n")) ? "You do not participate in any groups" : build.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionFormater.exceptionAdd(command.line(), "Could not extract in status groups", e.getStackTrace(),
+                exceptions);
+            throw new RuntimeException("Could not extract groups. IO", e);
         }
     }
 
@@ -87,9 +105,9 @@ public class Status implements StatusAPI {
     private String appendToBuilder(String[] splitMoney, boolean isInGroup) {
         if (!isInGroup) {
             if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
-                return String.format("*%s owes you %s LV.\n", splitMoney[USER], splitMoney[AMOUNT]);
+                return String.format("*You owe %s to %s LV.\n", splitMoney[AMOUNT], splitMoney[USER]);
             } else {
-                return String.format("*You owe %s to %s LV.\n", splitMoney[AMOUNT].substring(1), splitMoney[USER]);
+                return String.format("*%s owes you %s LV.\n", splitMoney[USER], splitMoney[AMOUNT].substring(1));
             }
         } else {
             if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {

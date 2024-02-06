@@ -8,4 +8,10 @@ public interface GroupAPI {
      * add new balance to group people
      */
     String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif);
+
+    /**
+     * make payment in a group
+     * */
+    String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif);
+
 }

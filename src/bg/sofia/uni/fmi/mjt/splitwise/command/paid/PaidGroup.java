@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -37,7 +38,7 @@ public class PaidGroup implements PaidGroupAPI {
             while ((line = r.readLine()) != null) {
                 String[] getData = line.split("\\|");
                 if (getData[GROUP_NAME].trim().equals(command.args()[GROUP_INDEX])) {
-                    Group updateGroup = Group.ofSplit(line);
+                    GroupAPI updateGroup = Group.ofSplit(line);
                     lines.add(updateGroup.payInGroup(command, notifications, tempNotif));
                 } else {
                     lines.add(line);
@@ -55,6 +56,8 @@ public class PaidGroup implements PaidGroupAPI {
             ExceptionFormater.exceptionAdd(command.line(), "Number format is not correct", e.getStackTrace(),
                 exceptions);
             return "Number format is not correct";
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "Not enough arguments";
         }
     }
 

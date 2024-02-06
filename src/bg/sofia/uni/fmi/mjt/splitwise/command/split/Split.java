@@ -8,6 +8,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.NotificationAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class Split implements SplitAPI {
                     newLines.add(user.appendMoney(command.args()[USERNAME_OWE].trim(),
                         -1 * Double.parseDouble(command.args()[AMOUNT])));
                 } else if (splited[USER].trim().equals(command.args()[USERNAME_OWE].trim())) {
-                    User friend = User.of(readline);
+                    UserAPI friend = User.of(readline);
                     newLines.add(friend.appendMoney(command.line().trim(),
                         Double.parseDouble(command.args()[AMOUNT])));
                 } else {

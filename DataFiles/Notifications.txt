@@ -1,24 +1,37 @@
-name: kolio
-Friends:
-You owes niki 10.00 LV[]
-You owes niki 10.00 LV[]
-You owes niki 10.00[].
-Groups:
-*secondGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
-*firstGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
-name: ili
-Friends:
-You owes niki 10.00 LV[]
-You owes kolio 10.00 LV[]
-You owes niki 10.00[].
-Groups:
-No information!
 name: koki
 Friends:
-You owes kolio 10.00[].
+niki approved your payment 5 LV.
+You owes niki 10.00[party at home ].
+Groups:
+*firstGroup - niki approved your payment 10 LV.
+*firstGroup - You owes niki 6.666666666666667 LV[party at home ]
+*firstGroup - niki approved your payment 3 LV.
+*firstGroup - You owes niki 3.3333333333333335 LV[party ]
+name: ili
+Friends:
+You owes niki 10.00 LV[taka ]
+Groups:
+*firstGroup - You owes niki 6.666666666666667 LV[party at home ]
+*firstGroup - You owes niki 3.3333333333333335 LV[party ]
+name: kolio
+Friends:
+You owes niki 5.00 LV[taka ]
+You owes niki 5.00 LV[prosto taka ]
+You owes niki 5.00[party ].
 Groups:
 No information!
-name: niki123
+name: unknown
+Friends:
+You owes niki 10.00[taka ].
 Groups:
-*secondGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
-*firstGroup - You owes niki 6.666666666666667 LV[na mama podaruk ]
+No information!
+name: test
+Friends:
+You owes niki 10.00[taka ].
+Groups:
+No information!
+name: niki
+Friends:
+You owes test 10.00[taka ].
+Groups:
+No information!

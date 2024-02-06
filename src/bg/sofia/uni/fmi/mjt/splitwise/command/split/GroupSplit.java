@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -37,7 +38,7 @@ public class GroupSplit implements GroupSplitAPI {
             while ((line = r.readLine()) != null) {
                 String[] searchGr = line.split("\\|");
                 if (searchGr[GROUP_NAME].trim().equals(command.args()[GROUP_INDEX])) {
-                    Group updateGroup = Group.ofSplit(line);
+                    GroupAPI updateGroup = Group.ofSplit(line);
                     info.add(updateGroup.addInformation(command, notifications, tempNotif));
                 } else {
                     info.add(line);

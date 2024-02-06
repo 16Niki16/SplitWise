@@ -1,5 +1,3 @@
-firstGroup | niki123 6.67, niki -13.33, kolio 6.67
-secondGroup | niki123 6.67, niki -13.33, kolio 6.67
-thirdGroup | pepi 0.00, niki 0.00, kolio 0.00
-testGroup | koki -5.67, ili 4.33, niki 1.33
-test | kolio 0.00, ili 0.00, niki 0.00
+firstGroup | niki -8.50, koki 2.00, ili 21.50
+testGroup | niki 0.00, ili 0.00, kolio 0.00
+thirdGroup | niki 0.00, kolio 0.00, ili 0.00

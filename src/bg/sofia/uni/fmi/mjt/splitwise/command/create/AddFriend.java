@@ -6,6 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -42,7 +43,7 @@ public class AddFriend implements AddFriendAPI {
                 if (splitedUser[USER].trim().equals(username)) {
                     lines.add(user.addFriend(friend[FRIEND_NAME]));
                 } else if (splitedUser[USER].trim().equals(friend[FRIEND_NAME])) {
-                    User friendU = User.of(lineRead);
+                    UserAPI friendU = User.of(lineRead);
                     lines.add(friendU.addFriend(username));
                 } else {
                     lines.add(lineRead);

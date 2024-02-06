@@ -28,4 +28,9 @@ public interface UserAPI {
      * @throws PersonNotFriendException if they are not still friends
      */
     String appendMoney(String friend, double amount) throws PersonNotFriendException;
+
+    /**
+     * paid money
+     **/
+    String paidMoney(String friend, double amount) throws PersonNotFriendException;
 }

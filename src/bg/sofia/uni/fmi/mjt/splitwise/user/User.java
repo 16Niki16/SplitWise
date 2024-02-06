@@ -8,7 +8,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
@@ -43,7 +43,7 @@ public class User implements UserAPI {
                         return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(),
                             extractFriends(lineRe[FRIEND_LIST]));
                     } else {
-                        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new LinkedHashMap<>());
+                        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new HashMap<>());
                     }
                 }
             }
@@ -52,7 +52,7 @@ public class User implements UserAPI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new LinkedHashMap<>());
+        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new HashMap<>());
     }
 
     public static User of(String line) {
@@ -60,12 +60,12 @@ public class User implements UserAPI {
         if (splitLine.length == THREE) {
             return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), extractFriends(splitLine[FRIEND_LIST]));
         }
-        return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), new LinkedHashMap<>());
+        return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), new HashMap<>());
     }
 
     private static Map<String, Double> extractFriends(String friends) {
         String[] splitedFriends = friends.split(",");
-        Map<String, Double> friendsOwes = new LinkedHashMap<>();
+        Map<String, Double> friendsOwes = new HashMap<>();
         for (String spl : splitedFriends) {
             String[] mapItem = spl.trim().split(" ");
             friendsOwes.put(mapItem[USER], Double.valueOf(mapItem[AMOUNT]));

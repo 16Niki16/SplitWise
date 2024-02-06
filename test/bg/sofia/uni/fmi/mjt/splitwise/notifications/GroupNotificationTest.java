@@ -63,7 +63,7 @@ public class GroupNotificationTest {
         when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notificationTest));
         when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
-        notification.appendToGroupSplit(command, "ili","5");
+        notification.appendToGroupSplit(command, "ili", "5");
         verify(notificationsDirectory, times(2)).getRead();
         verify(notificationsDirectory).getNotAppend();
         verify(notificationsDirectory, never()).getAppend();

@@ -56,7 +56,7 @@ public class NotificationTest {
     @Test
     void addNotificationFriendSplitValid() {
         String notificationTest = notif;
-        Command command = new Command("koki", "split", "10", "niki","qjca");
+        Command command = new Command("koki", "split", "10", "niki", "qjca");
         when(notificationsDirectory.getRead()).thenAnswer(x -> new StringReader(notificationTest));
         when(notificationsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notificationsDirectory.getAppend()).thenAnswer(x -> new StringWriter());

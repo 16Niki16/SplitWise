@@ -46,7 +46,7 @@ public class SplitTest {
         notifications = mock();
         exc = mock();
         tempNotif = mock();
-        split = new Split(friends, user, notifications,exc, tempNotif);
+        split = new Split(friends, user, notifications, exc, tempNotif);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SplitTest {
         when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
         when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(split.moneyOwe(command),"Successfully split the money!", "failed test split.");
+        assertEquals(split.moneyOwe(command), "Successfully split the money!", "failed test split.");
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SplitTest {
         when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(split.moneyOwe(command),"You are not still friends", "failed test split not valid.");
+        assertEquals(split.moneyOwe(command), "You are not still friends", "failed test split not valid.");
     }
 
 }

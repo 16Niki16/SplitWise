@@ -60,6 +60,7 @@ public class GroupSplitTest {
         when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(split.groupsOwe(command), "Information successfully added", "failed test split group.");
     }
+
     @Test
     void testGroupsOweException() {
         String testGroups = groups;
@@ -72,6 +73,7 @@ public class GroupSplitTest {
         when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(split.groupsOwe(command), "Group with that name does not exist", "failed test split group invalid.");
+        assertEquals(split.groupsOwe(command), "Group with that name does not exist",
+            "failed test split group invalid.");
     }
 }

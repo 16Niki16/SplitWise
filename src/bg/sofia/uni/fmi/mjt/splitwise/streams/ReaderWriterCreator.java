@@ -18,7 +18,7 @@ public class ReaderWriterCreator {
         try {
             return new FileReader(directory);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not use the directory for reading", e);
         }
     }
 
@@ -26,7 +26,7 @@ public class ReaderWriterCreator {
         try {
             return new FileWriter(directory, true);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not use the directory for writing", e);
         }
     }
 
@@ -34,7 +34,7 @@ public class ReaderWriterCreator {
         try {
             return new FileWriter(directory, false);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not use the directory for writing", e);
         }
     }
 }

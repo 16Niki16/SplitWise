@@ -17,6 +17,6 @@ public class CommandCreatorTest {
     @Test
     void testCommandCreator() {
         Command testCommand = CommandCreator.newCommand("kiro split 20 niki gas");
-        assertEquals(command.line(),testCommand.line());
+        assertEquals(command.line(), testCommand.line());
     }
 }

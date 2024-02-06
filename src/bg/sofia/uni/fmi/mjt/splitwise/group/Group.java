@@ -67,6 +67,7 @@ public class Group implements GroupAPI {
         return toString();
     }
 
+    @Override
     public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif) {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
         double sumToAdd = totalAmount / (members.size() - 1);

@@ -98,27 +98,28 @@ public class Server {
     }
 
     private String clientInput(ByteBuffer buffer, SocketChannel sc) throws IOException {
-        buffer.clear(); // switch to writing mode
-        int r = sc.read(buffer); // buffer fill
+        buffer.clear();
+        int r = sc.read(buffer);
         if (r < 0) {
             System.out.println("Client has closed the connection");
             sc.close();
             return null;
         }
-        buffer.flip(); // switch to reading mode
+        buffer.flip();
 
         byte[] byteArray = new byte[buffer.remaining()];
         buffer.get(byteArray);
 
-        return new String(byteArray, "UTF-8"); // buffer drain
+        return new String(byteArray, "UTF-8");
     }
 
     private void creatingUser(String line, ByteBuffer buffer, SocketChannel sc) throws IOException {
         try {
+            String[] lineSplit = line.split(" ");
+            boolean inFile = Helpers.checkInFileNoException(lineSplit[USER].trim(), friends);
             User userSession = User.of(line, friends);
             this.users.add(userSession);
-            String[] lineSplit = line.split(" ");
-            if (!Helpers.checkInFileNoException(lineSplit[USER].trim(), friends)) {
+            if (!inFile) {
                 clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[USER].trim()));
             } else {
                 clientOutput(buffer, sc,

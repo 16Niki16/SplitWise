@@ -29,23 +29,23 @@ public class CommandExecutorTest {
 
     @BeforeEach
     void setUp() {
-        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM,RANDOM, RANDOM);
+        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM, RANDOM, RANDOM);
     }
 
     @Test
     void testExecuteHelp() {
-        when(command.args()).thenReturn(new String[] {"help"}); // Stub the behavior for args()
+        when(command.args()).thenReturn(new String[] {"help"});
 
-        assertNotNull(command.args()); // Ensure args() is not null before accessing it
+        assertNotNull(command.args());
         assertTrue(
             executor.execute(command, user).contains("create-group <group_name> <username> <username> ... <username>"));
     }
 
     @Test
     void testExecuteUnknown() {
-        when(command.args()).thenReturn(new String[] {"unknown"}); // Stub the behavior for args()
+        when(command.args()).thenReturn(new String[] {"unknown"});
 
-        assertNotNull(command.args()); // Ensure args() is not null before accessing it
+        assertNotNull(command.args());
         assertEquals(executor.execute(command, user), "Unknown command");
     }
 

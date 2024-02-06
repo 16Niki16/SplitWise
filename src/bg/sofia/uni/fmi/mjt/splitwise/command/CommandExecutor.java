@@ -18,14 +18,18 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.ADD_FRIEND;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.COMMAND_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.CREATE_GROUP;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FOUR;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GET_STATUS;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GROUP_PAID;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.HELP;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.PAID;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SPLIT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SPLIT_GROUP;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.THREE;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 
 public class CommandExecutor {
     private final ReaderWriterCreator groupsDirectory;
@@ -50,7 +54,7 @@ public class CommandExecutor {
             case SPLIT, SPLIT_GROUP -> executeSplit(command, user);
             case PAID, GROUP_PAID -> executePaid(command, user);
             case GET_STATUS -> {
-                StatusAPI status = new Status(directory, groupsDirectory);
+                StatusAPI status = new Status(directory, groupsDirectory, exceptionsDirectory);
                 yield status.getStatus(command);
             }
             case HELP -> helpCommand(command);
@@ -61,10 +65,16 @@ public class CommandExecutor {
     private String executePaid(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case PAID -> {
+                if (command.args().length < THREE) {
+                    yield "Not enough arguments";
+                }
                 PaidAPI paid = new Paid(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield paid.personPay(command);
             }
             case GROUP_PAID -> {
+                if (command.args().length < FOUR) {
+                    yield "Not enough arguments";
+                }
                 PaidGroupAPI payment =
                     new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield payment.personPaidToGroup(command);
@@ -76,6 +86,9 @@ public class CommandExecutor {
     private String executeCreate(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case ADD_FRIEND -> {
+                if (command.args().length < TWO) {
+                    yield "Not enough arguments";
+                }
                 AddFriendAPI friend = new AddFriend(directory, user, exceptionsDirectory);
                 yield friend.addingFriend(command.line(), command.args());
             }
@@ -90,10 +103,18 @@ public class CommandExecutor {
     private String executeSplit(Command command, User user) {
         return switch (command.args()[COMMAND_NAME]) {
             case SPLIT -> {
+                if (command.args().length < FOUR) {
+                    yield "Not enough arguments";
+                } else if (!command.args()[AMOUNT].matches("-?\\d+(\\.\\d+)?")) {
+                    yield "Amount is not a number type";
+                }
                 SplitAPI split = new Split(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield split.moneyOwe(command);
             }
             case SPLIT_GROUP -> {
+                if (command.args().length < FOUR) {
+                    yield "Not enough arguments";
+                }
                 GroupSplitAPI splitG =
                     new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield splitG.groupsOwe(command);
