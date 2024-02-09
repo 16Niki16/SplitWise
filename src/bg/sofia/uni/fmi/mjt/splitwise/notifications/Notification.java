@@ -158,6 +158,7 @@ public class Notification implements NotificationAPI {
             }
             wr.write(String.valueOf(build));
             wr.newLine();
+            wr.flush();
         }
     }
 }

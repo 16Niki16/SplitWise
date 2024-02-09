@@ -21,6 +21,7 @@ public class Helpers {
             for (String line : lines) {
                 wr.write(line);
                 wr.newLine();
+                wr.flush();
             }
         }
     }

@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -15,8 +16,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.BUFFER_SIZE;
@@ -33,7 +34,7 @@ public class Server {
 
     public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;
-        this.users = new LinkedHashSet<>();
+        this.users = new HashSet<>();
         this.friends = new ReaderWriterCreator(friends);
         this.tempNotifications = new ReaderWriterCreator(tempNotifications);
         this.exception = new ReaderWriterCreator(exception);
@@ -57,8 +58,14 @@ public class Server {
                 while (keyIterator.hasNext()) {
                     SelectionKey key = keyIterator.next();
                     if (key.isReadable()) {
-                        SocketChannel sc = (SocketChannel) key.channel();
-                        readable(sc, buffer);
+                        try {
+                            SocketChannel sc = (SocketChannel) key.channel();
+                            readable(sc, buffer);
+                        } catch (IOException e) {
+                            ExceptionFormater.exceptionAdd("server connection", "connection closed from client",
+                                e.getStackTrace(), exception);
+                            continue;
+                        }
                     } else if (key.isAcceptable()) {
                         acceptable(key, selector);
                     }
@@ -66,6 +73,8 @@ public class Server {
                 }
             }
         } catch (IOException e) {
+            ExceptionFormater.exceptionAdd("server", "There is a problem with the server socket", e.getStackTrace(),
+                exception);
             throw new RuntimeException("There is a problem with the server socket", e);
         }
     }

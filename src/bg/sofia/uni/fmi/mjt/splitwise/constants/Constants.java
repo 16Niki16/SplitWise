@@ -20,14 +20,4 @@ public class Constants {
     public static final int REASON = 3;
     public static final int TWO = 2;
 
-    //type commands constants
-    public static final String ADD_FRIEND = "add-friend";
-    public static final String CREATE_GROUP = "create-group";
-    public static final String SPLIT = "split";
-    public static final String SPLIT_GROUP = "split-group";
-    public static final String GET_STATUS = "get-status";
-    public static final String HELP = "help";
-    public static final String PAID = "paid";
-    public static final String GROUP_PAID = "group-paid";
-
 }

@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.GroupNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
@@ -13,6 +14,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GROUP_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Group implements GroupAPI {
+    private static final int ZERO = 0;
     private static final int AMOUNT_INDEX = 1;
     private static final int PAYER = 2;
     private static final int GROUP_INDEX = 0;
@@ -49,8 +51,12 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif) {
+    public String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
+        throws NegativeAmountException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT_INDEX]);
+        if (totalAmount < ZERO) {
+            throw new NegativeAmountException("Can not split negative amount");
+        }
         double sumToPay = totalAmount / members.size();
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
@@ -68,8 +74,12 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif) {
+    public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
+        throws NegativeAmountException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
+        if (totalAmount < ZERO) {
+            throw new NegativeAmountException("Can not pay negative amount");
+        }
         double sumToAdd = totalAmount / (members.size() - 1);
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {

@@ -5,8 +5,25 @@ Groups:
 No information!
 name: koki
 Groups:
+*firstGroup - You owes niki 6.666666666666667 LV[taka ]
+*firstGroup - You owes niki 6.666666666666667 LV[taka ]
 *firstGroup - niki approved your payment 10 LV.
 *firstGroup - You owes niki 6.666666666666667 LV[party at home ]
 name: ili
+Friends:
+You owes niki 10.00 LV[taka ]
 Groups:
+*firstGroup - You owes niki 6.666666666666667 LV[taka ]
+*ExamGroup - user3 approved your payment 5 LV.
+*ExamGroup - You owes user3 6.666666666666667 LV[party ]
+*firstGroup - You owes niki 6.666666666666667 LV[taka ]
 *firstGroup - You owes niki 6.666666666666667 LV[party at home ]
+name: kolio
+Friends:
+You owes niki 10.00 LV[taka ]
+You owes niki 10.00 LV[taka ]
+niki approved your payment -20 LV.
+niki approved your payment 20 LV.
+You owes niki 10.00[taka ].
+Groups:
+No information!

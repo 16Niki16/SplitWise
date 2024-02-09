@@ -1,0 +1,28 @@
+package bg.sofia.uni.fmi.mjt.splitwise.command;
+
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
+
+public enum CommandType {
+    ADD_FRIEND("add-friend"),
+    CREATE_GROUP("create-group"),
+    SPLIT("split"),
+    SPLIT_GROUP("split-group"),
+    GET_STATUS("get-status"),
+    HELP("help"),
+    PAID("paid"),
+    GROUP_PAID("paid-group");
+    private String type;
+
+    CommandType(String type) {
+        this.type = type;
+    }
+
+    public static CommandType of(String type) throws UnknownCommandException {
+        for (CommandType value : values()) {
+            if (value.type.equals(type)) {
+                return value;
+            }
+        }
+        throw new UnknownCommandException("Unknown command");
+    }
+}

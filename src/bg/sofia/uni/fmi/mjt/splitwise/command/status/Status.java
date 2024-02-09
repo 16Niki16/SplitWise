@@ -28,10 +28,8 @@ public class Status implements StatusAPI {
     }
 
     public String getStatus(Command command) {
-        StringBuilder build = new StringBuilder();
-        build.append(peopleOwes(command));
-        build.append(groupAppend(command));
-        return build.toString();
+        return peopleOwes(command) +
+            groupAppend(command);
     }
 
     private String peopleOwes(Command command) {

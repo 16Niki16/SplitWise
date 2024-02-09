@@ -9,7 +9,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class AddFriend implements AddFriendAPI {
                     lines.add(lineRead);
                 }
             }
-            addNewInformation(lines);
+            Helpers.addInformation(lines, creator);
         } catch (FriendNotRegisteredException | AlreadyFriendsException ee) {
             ExceptionFormater.exceptionAdd(username, ee.getLocalizedMessage(), ee.getStackTrace(), exceptionDirectory);
             return ee.getLocalizedMessage();
@@ -60,14 +59,4 @@ public class AddFriend implements AddFriendAPI {
         }
         return String.format("Friend %s is added.", friend[1]);
     }
-
-    private void addNewInformation(List<String> information) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(creator.getNotAppend())) {
-            for (String updatedLine : information) {
-                wr.write(updatedLine);
-                wr.newLine();
-            }
-        }
-    }
-
 }

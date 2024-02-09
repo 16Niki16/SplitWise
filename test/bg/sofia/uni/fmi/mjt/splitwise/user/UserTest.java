@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.user;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ public class UserTest {
     }
 
     @Test
-    void testPaidMoney() throws PersonNotFriendException {
+    void testPaidMoney() throws PersonNotFriendException, NegativeAmountException {
         User userTest = User.of(userString);
         String str = userTest.appendMoney("kiro", 20);
         assertEquals(userTest.paidMoney("kiro", 5), "niki | niki123 | kiro 5.00",

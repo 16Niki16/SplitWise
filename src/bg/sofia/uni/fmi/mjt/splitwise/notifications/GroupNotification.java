@@ -158,6 +158,7 @@ public class GroupNotification implements GroupNotificationAPI {
             }
             wr.write(String.valueOf(build));
             wr.newLine();
+            wr.flush();
         }
     }
 }

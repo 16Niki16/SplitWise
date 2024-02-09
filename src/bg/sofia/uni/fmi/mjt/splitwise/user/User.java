@@ -19,6 +19,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class User implements UserAPI {
     private static final double START = 0.00;
+    private static final int ZERO = 0;
     private String username;
     private String password;
     private Map<String, Double> friendList;
@@ -58,7 +59,7 @@ public class User implements UserAPI {
     public static User of(String line) {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == THREE) {
-            return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), extractFriends(splitLine[FRIEND_LIST]));
+            return new User(splitLine[USER].strip(), splitLine[PASSWORD].trim(), extractFriends(splitLine[FRIEND_LIST]));
         }
         return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), new HashMap<>());
     }

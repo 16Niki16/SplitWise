@@ -70,6 +70,7 @@ public class CreateGroup implements CreateGroupAPI {
         try (BufferedWriter wr = new BufferedWriter(group.getAppend())) {
             wr.write(groupp);
             wr.newLine();
+            wr.flush();
             return groupp;
         }
     }

@@ -51,7 +51,7 @@ public class GroupPaidTest {
     @Test
     void testCreateGroupValid() {
         String groupTest = groups;
-        Command command = CommandCreator.newCommand("niki group-paid 10 pepi secondGroup");
+        Command command = CommandCreator.newCommand("niki paid-group 10 pepi secondGroup");
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
