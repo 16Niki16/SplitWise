@@ -52,9 +52,6 @@ public class GroupSplit implements GroupSplitAPI {
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd(command.line(), "Group file IO exception.", e.getStackTrace(), exceptions);
             throw new RuntimeException("Group not found.", e);
-        } catch (NumberFormatException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "Number format not correct", e.getStackTrace(), exceptions);
-            return "Number format exception";
         }
         return "Information successfully added";
     }

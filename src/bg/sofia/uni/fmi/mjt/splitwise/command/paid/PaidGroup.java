@@ -53,10 +53,6 @@ public class PaidGroup implements PaidGroupAPI {
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd(command.line(), "Problem pay in group IO", e.getStackTrace(), exceptions);
             throw new RuntimeException("Server problem pay in group", e);
-        } catch (NumberFormatException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "Number format is not correct", e.getStackTrace(),
-                exceptions);
-            return "Number format is not correct";
         } catch (ArrayIndexOutOfBoundsException e) {
             return "Not enough arguments";
         }

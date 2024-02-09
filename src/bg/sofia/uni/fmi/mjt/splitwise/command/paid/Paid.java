@@ -45,11 +45,11 @@ public class Paid implements PaidAPI {
                     NotificationAPI notif = new Notification(notificationDirectory, tempNotif);
                     notif.addNotificationFriendPayment(command);
                     newLines.add(user.paidMoney(command.args()[USERNAME_OWE].trim(),
-                        -1 * Double.parseDouble(command.args()[AMOUNT])));
+                            -1 * Double.parseDouble(command.args()[AMOUNT])));
                 } else if (splited[USER].trim().equals(command.args()[USERNAME_OWE].trim())) {
                     UserAPI friend = User.of(readline);
                     newLines.add(friend.paidMoney(command.line().trim(),
-                        Double.parseDouble(command.args()[AMOUNT])));
+                            Double.parseDouble(command.args()[AMOUNT])));
                 } else {
                     newLines.add(readline);
                 }
@@ -61,8 +61,6 @@ public class Paid implements PaidAPI {
             throw new RuntimeException("could not pay, server problem!", e);
         } catch (PersonNotFriendException ee) {
             return ee.getLocalizedMessage();
-        } catch (NumberFormatException e) {
-            return "Number format exception";
         }
     }
 

@@ -42,7 +42,7 @@ public class User implements UserAPI {
                         throw new PasswordNotCorrectException("Entered password not correct");
                     } else if (lineRe.length == THREE) {
                         return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(),
-                            extractFriends(lineRe[FRIEND_LIST]));
+                                extractFriends(lineRe[FRIEND_LIST]));
                     } else {
                         return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new HashMap<>());
                     }
@@ -59,7 +59,8 @@ public class User implements UserAPI {
     public static User of(String line) {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == THREE) {
-            return new User(splitLine[USER].strip(), splitLine[PASSWORD].trim(), extractFriends(splitLine[FRIEND_LIST]));
+            return new User(splitLine[USER].strip(), splitLine[PASSWORD].trim(),
+                    extractFriends(splitLine[FRIEND_LIST]));
         }
         return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), new HashMap<>());
     }
