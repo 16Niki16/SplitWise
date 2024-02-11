@@ -2,12 +2,14 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.GroupContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
+import bg.sofia.uni.fmi.mjt.splitwise.login.Login;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,28 +18,33 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.BUFFER_SIZE;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.PASSWORD;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_HOST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_PORT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Server {
-    private Set<User> users;
+    private ClientContainer users;
+    private GroupContainer groups;
     private CommandExecutor commandExecutor;
     private ReaderWriterCreator friends;
     private ReaderWriterCreator tempNotifications;
     private ReaderWriterCreator exception;
+    private ReaderWriterCreator groupDirectory;
 
-    public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
+    public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception,
+                  String groupsDirectory) {
         this.commandExecutor = commandExecutor;
-        this.users = new HashSet<>();
         this.friends = new ReaderWriterCreator(friends);
         this.tempNotifications = new ReaderWriterCreator(tempNotifications);
         this.exception = new ReaderWriterCreator(exception);
+        this.groupDirectory = new ReaderWriterCreator(groupsDirectory);
+        this.users = new ClientContainer(this.friends);
+        this.groups = new GroupContainer(this.groupDirectory);
     }
 
     public void serverStart() {
@@ -48,15 +55,22 @@ public class Server {
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 
+            users.connectUserAtStart(friends);
+            groups.connectGroupsAtStart(groupDirectory);
+
             while (true) {
                 int readyChannels = selector.select();
+
                 if (readyChannels == 0) {
                     continue;
                 }
+
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
+
                 while (keyIterator.hasNext()) {
                     SelectionKey key = keyIterator.next();
+
                     if (key.isReadable()) {
                         try {
                             SocketChannel sc = (SocketChannel) key.channel();
@@ -87,16 +101,9 @@ public class Server {
         } else {
             String[] user = line.split(" ");
             String commandResult =
-                commandExecutor.execute(CommandCreator.newCommand(line), getUser(user[USER]));
+                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), users, groups);
             clientOutput(buffer, sc, commandResult);
         }
-    }
-
-    private User getUser(String username) {
-        return users.stream()
-            .filter(p -> p.getUsername().trim().equals(username.trim()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Mistake in files for user"));
     }
 
     private void clientOutput(ByteBuffer buffer, SocketChannel sc, String line) throws IOException {
@@ -124,16 +131,16 @@ public class Server {
 
     private void creatingUser(String line, ByteBuffer buffer, SocketChannel sc) throws IOException {
         try {
-            String[] lineSplit = line.split(" ");
-            boolean inFile = Helpers.checkInFileNoException(lineSplit[USER].trim(), friends);
-            User userSession = User.of(line, friends);
-            this.users.add(userSession);
+            String[] lineSplit = line.split("\\|");
+            boolean inFile = Helpers.checkInFileNoException(lineSplit[USER], friends);
+            this.users.addUser(
+                Login.loginInSystem(lineSplit[USER], lineSplit[PASSWORD], friends, users));
             if (!inFile) {
-                clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[USER].trim()));
+                clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[USER]));
             } else {
                 clientOutput(buffer, sc,
-                    String.format("Welcome %s!\n%s", lineSplit[USER].trim(),
-                        HelpersNotifications.getNotifications(lineSplit[USER].trim(), tempNotifications, exception)));
+                    String.format("Welcome %s!\n%s", lineSplit[USER],
+                        HelpersNotifications.getNotifications(lineSplit[USER], tempNotifications, exception)));
             }
         } catch (PasswordNotCorrectException e) {
             String messageWrongPassword = "Entered wrong password";

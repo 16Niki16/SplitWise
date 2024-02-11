@@ -28,15 +28,15 @@ public class Group implements GroupAPI {
         this.members = members;
     }
 
-    public static Group of(String creator, String... participants) {
+    public static Group of(Command command) {
         Map<String, Double> participant = new LinkedHashMap<>();
-        participant.put(creator, STARTER);
+        participant.put(command.line().strip(), STARTER);
 
-        for (int i = FRIEND_LIST; i < participants.length; i++) {
-            participant.put(participants[i], 0.00);
+        for (int i = FRIEND_LIST; i < command.args().length; i++) {
+            participant.put(command.args()[i], 0.00);
         }
 
-        return new Group(participants[GROUP_NAME].trim(), participant);
+        return new Group(command.args()[GROUP_NAME].trim(), participant);
     }
 
     public static Group ofSplit(String line) {
@@ -48,6 +48,11 @@ public class Group implements GroupAPI {
             participant.put(getData[USER].trim(), Double.parseDouble(getData[AMOUNT]));
         }
         return new Group(splitGroup[GROUP_INDEX].trim(), participant);
+    }
+
+    @Override
+    public String getGroupName() {
+        return this.group;
     }
 
     @Override

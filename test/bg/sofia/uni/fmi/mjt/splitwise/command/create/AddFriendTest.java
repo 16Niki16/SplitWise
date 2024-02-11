@@ -1,11 +1,12 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
+import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -18,9 +19,11 @@ public class AddFriendTest {
     private ReaderWriterCreator creator;
     private ReaderWriterCreator exc;
     private User user;
+    private ClientContainer container;
     private AddFriendAPI addFriend;
     private String data;
     private String except;
+    private Command command;
 
     @BeforeEach
     void setUp() {
@@ -32,15 +35,16 @@ public class AddFriendTest {
         except = "";
         creator = mock();
         exc = mock();
+        command = CommandCreator.newCommand("niki add-friend pepi");
         user = User.of("niki | niki123 | pepi 10.00");
-        addFriend = new AddFriend(creator, user, exc);
+        addFriend = new AddFriend(creator, user, exc, container);
     }
 
     @Test
     void testAddFriendValid() {
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(addFriend.addingFriend("niki", "add-friend", "kolio"), "Friend kolio is added.",
+        assertEquals(addFriend.addingFriend(command), "Friend kolio is added.",
             "mistake in adding");
     }
 
@@ -50,7 +54,7 @@ public class AddFriendTest {
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(addFriend.addingFriend("niki", "add-friend", "pepi"), "They are friends already",
+        assertEquals(addFriend.addingFriend(command), "They are friends already",
             "mistake in adding");
     }
 
@@ -60,7 +64,7 @@ public class AddFriendTest {
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(addFriend.addingFriend("niki", "add-friend", "unknown"), "This person is not registered yet.",
+        assertEquals(addFriend.addingFriend(command), "This person is not registered yet.",
             "mistake in adding");
     }
 }

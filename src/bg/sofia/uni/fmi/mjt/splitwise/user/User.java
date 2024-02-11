@@ -3,11 +3,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.user;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
-import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,39 +25,13 @@ public class User implements UserAPI {
         this.friendList = friendList;
     }
 
-    public static User of(String line, ReaderWriterCreator path) throws PasswordNotCorrectException {
-        String[] splitedUser = line.split("\\|");
-        try (BufferedWriter wr = new BufferedWriter(path.getAppend());
-             BufferedReader re = new BufferedReader(path.getRead())) {
-            String lineR;
-            while ((lineR = re.readLine()) != null) {
-                String[] lineRe = lineR.split("\\|");
-                if (lineRe[USER].trim().equals(splitedUser[USER].trim())) {
-                    if (!lineRe[PASSWORD].trim().equals(splitedUser[PASSWORD].trim())) {
-                        throw new PasswordNotCorrectException("Entered password not correct");
-                    } else if (lineRe.length == THREE) {
-                        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(),
-                                extractFriends(lineRe[FRIEND_LIST]));
-                    } else {
-                        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new HashMap<>());
-                    }
-                }
-            }
-            wr.write(line);
-            wr.newLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new User(splitedUser[USER].trim(), splitedUser[PASSWORD].trim(), new HashMap<>());
-    }
-
     public static User of(String line) {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == THREE) {
-            return new User(splitLine[USER].strip(), splitLine[PASSWORD].trim(),
-                    extractFriends(splitLine[FRIEND_LIST]));
+            return new User(splitLine[USER].strip(), splitLine[PASSWORD].strip(),
+                extractFriends(splitLine[FRIEND_LIST]));
         }
-        return new User(splitLine[USER].trim(), splitLine[PASSWORD].trim(), new HashMap<>());
+        return new User(splitLine[USER].strip(), splitLine[PASSWORD].strip(), new HashMap<>());
     }
 
     private static Map<String, Double> extractFriends(String friends) {
@@ -70,7 +39,7 @@ public class User implements UserAPI {
         Map<String, Double> friendsOwes = new HashMap<>();
         for (String spl : splitedFriends) {
             String[] mapItem = spl.trim().split(" ");
-            friendsOwes.put(mapItem[USER], Double.valueOf(mapItem[AMOUNT]));
+            friendsOwes.put(mapItem[USER].strip(), Double.valueOf(mapItem[AMOUNT]));
         }
         return friendsOwes;
     }
@@ -106,6 +75,13 @@ public class User implements UserAPI {
             return toString();
         }
         throw new PersonNotFriendException("You are not still friends");
+    }
+
+    @Override
+    public void checkUserPasswordValid(String username, String password) throws PasswordNotCorrectException {
+        if (!username.equals(this.username) || !this.password.equals(password)) {
+            throw new PasswordNotCorrectException("Password is not correct!");
+        }
     }
 
     @Override

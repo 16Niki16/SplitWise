@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -54,6 +55,20 @@ public class Helpers {
         }
     }
 
+    public static User checkInFileExtract(String username, ReaderWriterCreator creator)
+        throws FriendNotRegisteredException, IOException {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
+            String user;
+            while ((user = r.readLine()) != null) {
+                String[] splitU = user.split("\\|");
+                if (splitU[USER].strip().equals(username)) {
+                    return User.of(user);
+                }
+            }
+            throw new FriendNotRegisteredException("This person is not registered yet.");
+        }
+    }
+
     public static String getReason(Command command) {
         StringBuilder build = new StringBuilder();
         for (int i = REASON; i < command.args().length; i++) {
@@ -72,6 +87,14 @@ public class Helpers {
                 }
             }
             return false;
+        }
+    }
+
+    public static void appendToFile(String information, ReaderWriterCreator directory) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(directory.getAppend())) {
+            writer.write(information);
+            writer.newLine();
+            writer.flush();
         }
     }
 }

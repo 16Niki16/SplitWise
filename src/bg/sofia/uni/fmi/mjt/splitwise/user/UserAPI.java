@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.user;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 
 public interface UserAPI {
@@ -16,6 +17,7 @@ public interface UserAPI {
 
     /**
      * check if users are already friends
+     *
      * @param friend the friend we want to add
      * @throws AlreadyFriendsException if they have each other in friends already
      */
@@ -23,6 +25,7 @@ public interface UserAPI {
 
     /**
      * appends money to the file
+     *
      * @param friend the friend that we want to add debt
      * @param amount the amount that we want to add
      * @throws PersonNotFriendException if they are not still friends
@@ -33,4 +36,9 @@ public interface UserAPI {
      * paid money
      **/
     String paidMoney(String friend, double amount) throws PersonNotFriendException;
+
+    /**
+     * check username and password valid
+     * */
+    void checkUserPasswordValid(String name, String password) throws PasswordNotCorrectException;
 }

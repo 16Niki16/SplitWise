@@ -1,5 +1,0 @@
-firstGroup | niki -25.16, koki 25.34, ili 44.84
-testGroup | niki 0.00, ili 0.00, kolio 0.00
-thirdGroup | niki 0.00, kolio 0.00, ili 0.00
-ExamGroup | user3 -10.83, ili 1.67, niki 9.17
-testNew | niki 0.00, kolio 0.00, ili 0.00

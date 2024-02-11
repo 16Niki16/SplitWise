@@ -1,5 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
+import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ public class CreateGroupTest {
     private String friend;
     private String groups;
     private String except;
+    private Command command;
 
     @BeforeEach
     void setUp() {
@@ -34,6 +37,7 @@ public class CreateGroupTest {
         exc = mock();
         friends = mock();
         group = mock();
+        command = CommandCreator.newCommand("niki create-group thirdGroup kolio pepi");
         create = new CreateGroup(friends, group, exc);
     }
 
@@ -46,7 +50,7 @@ public class CreateGroupTest {
         when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
-        assertTrue(create.createGroup("niki", "create-group", "thirdGroup", "kolio", "pepi")
+        assertTrue(create.createGroup(command)
             .contains("thirdGroup | niki 0.00, kolio 0.00, pepi 0.00"));
     }
 
@@ -61,11 +65,11 @@ public class CreateGroupTest {
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(create.createGroup("niki", "create-group", "thirdGroup", "kolio"),
+        assertEquals(create.createGroup(command),
             "Groups participants are not enough.", "Wrong testing participants not enough!");
-        assertEquals(create.createGroup("niki", "create-group", "firstGroup", "kolio", "pepi"),
+        assertEquals(create.createGroup(command),
             "Group with this name already exist.", "Wrong testing in group exist!");
-        assertEquals(create.createGroup("niki", "create-group", "thirdGroup", "kolio"),
+        assertEquals(create.createGroup(command),
             "Groups participants are not enough.", "Wrong testing participants not enough!");
     }
 }

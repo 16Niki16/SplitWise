@@ -90,7 +90,7 @@ public class Client {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        return usernameCommand + " | " + password;
+        return usernameCommand + "|" + password;
     }
 
     private String command(Scanner scanner) {

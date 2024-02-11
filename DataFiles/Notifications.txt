@@ -44,9 +44,19 @@ Groups:
 No information!
 name: niki
 Friends:
+You owes misho 10.00 LV[party ]
 user3 approved your payment 10 LV.
 user3 approved your payment 5 LV.
 You owes user3 10.00 LV[party yesterday ]
 You owes test 10.00[taka ].
 Groups:
+*testMisho - You owes misho 6.666666666666667 LV[taka ]
 *ExamGroup - You owes user3 6.666666666666667 LV[party ]
+name: kiro
+Groups:
+*testMisho - You owes misho 6.666666666666667 LV[taka ]
+name: misho
+Friends:
+You owes niki 10.00[taka ].
+Groups:
+No information!

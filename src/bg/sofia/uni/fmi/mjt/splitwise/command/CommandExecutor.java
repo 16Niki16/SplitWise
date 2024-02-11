@@ -15,6 +15,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.split.Split;
 import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.StatusAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.GroupContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughArgumentsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotNumberException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
@@ -43,16 +45,18 @@ public class CommandExecutor {
         this.tempNotif = new ReaderWriterCreator(tempNotif);
     }
 
-    public String execute(Command command, User user) {
+    public String execute(Command command, User user, ClientContainer container, GroupContainer containerGroup) {
         try {
             return switch (ExceptionHandler.getCommand(
-                    CommandType.of(command.args()[COMMAND_NAME].strip()), command.args())) {
+                CommandType.of(command.args()[COMMAND_NAME].strip()), command.args())) {
 
-                case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP -> executeCreate(command, user);
+                case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP ->
+                    executeCreate(command, user, container, containerGroup);
 
-                case CommandType.SPLIT, CommandType.SPLIT_GROUP -> executeSplit(command, user);
+                case CommandType.SPLIT, CommandType.SPLIT_GROUP ->
+                    executeSplit(command, user, container, containerGroup);
 
-                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user);
+                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, container, containerGroup);
 
                 case CommandType.GET_STATUS -> {
                     StatusAPI status = new Status(directory, groupsDirectory, exceptionsDirectory);
@@ -63,53 +67,69 @@ public class CommandExecutor {
             };
         } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException e) {
             ExceptionFormater.exceptionAdd(
-                    command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);
+                command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);
             return e.getLocalizedMessage();
         }
     }
 
-    private String executePaid(Command command, User user) throws UnknownCommandException, NotNumberException {
-        ExceptionHandler.checkNumber(command.args()[AMOUNT]);
+    private String executeCreate(Command command, User user, ClientContainer container, GroupContainer containerGroup)
+        throws UnknownCommandException {
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
+
+            case CommandType.ADD_FRIEND -> {
+                AddFriendAPI friend = new AddFriend(directory, user, exceptionsDirectory, container);
+                yield friend.addingFriend(command);
+            }
+
+            case CommandType.CREATE_GROUP -> {
+                CreateGroupAPI group = new CreateGroup(directory, groupsDirectory, exceptionsDirectory);
+                yield group.createGroup(command);
+            }
+
+            default -> "Unknown command";
+        };
+    }
+
+    private String executePaid(Command command, User user, ClientContainer container, GroupContainer containerGroup)
+        throws UnknownCommandException, NotNumberException {
+
+        ExceptionHandler.checkNumber(command.args()[AMOUNT]);
+
+        return switch (CommandType.of(command.args()[COMMAND_NAME])) {
+
             case CommandType.PAID -> {
                 PaidAPI paid = new Paid(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield paid.personPay(command);
             }
+
             case CommandType.GROUP_PAID -> {
                 PaidGroupAPI payment =
-                        new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
+                    new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield payment.personPaidToGroup(command);
             }
+
             default -> "Unknown command";
         };
     }
 
-    private String executeCreate(Command command, User user) throws UnknownCommandException {
-        return switch (CommandType.of(command.args()[COMMAND_NAME])) {
-            case CommandType.ADD_FRIEND -> {
-                AddFriendAPI friend = new AddFriend(directory, user, exceptionsDirectory);
-                yield friend.addingFriend(command.line(), command.args());
-            }
-            case CommandType.CREATE_GROUP -> {
-                CreateGroupAPI group = new CreateGroup(directory, groupsDirectory, exceptionsDirectory);
-                yield group.createGroup(command.line(), command.args());
-            }
-            default -> "Unknown command";
-        };
-    }
+    private String executeSplit(Command command, User user, ClientContainer container, GroupContainer containerGroup)
+        throws UnknownCommandException, NotNumberException {
 
-    private String executeSplit(Command command, User user) throws UnknownCommandException, NotNumberException {
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
+
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
+
             case CommandType.SPLIT -> {
                 SplitAPI split = new Split(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield split.moneyOwe(command);
             }
+
             case CommandType.SPLIT_GROUP -> {
                 GroupSplitAPI splitG =
-                        new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
+                    new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield splitG.groupsOwe(command);
             }
+
             default -> "Unknown command";
         };
     }

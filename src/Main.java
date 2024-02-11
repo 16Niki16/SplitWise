@@ -11,7 +11,7 @@ public class Main {
         CommandExecutor ex =
             new CommandExecutor(directory, groupsDirectory, notificationsDirectory, exceptionsDirectory,
                 temporaryNotifications);
-        Server server = new Server(ex, directory, temporaryNotifications, exceptionsDirectory);
+        Server server = new Server(ex, directory, temporaryNotifications, exceptionsDirectory, groupsDirectory);
         server.serverStart();
     }
 }

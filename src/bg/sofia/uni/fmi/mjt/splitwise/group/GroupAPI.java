@@ -13,8 +13,13 @@ public interface GroupAPI {
 
     /**
      * make payment in a group
-     * */
+     */
     String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
         throws NegativeAmountException;
+
+    /**
+     * get group name
+     */
+    String getGroupName();
 
 }

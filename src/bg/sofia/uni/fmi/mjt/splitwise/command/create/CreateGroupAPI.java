@@ -1,8 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
+import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+
 public interface CreateGroupAPI {
     /**
      * create group method
      * */
-    String createGroup(String username, String... participants);
+    String createGroup(Command command);
 }
