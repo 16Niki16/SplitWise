@@ -3,7 +3,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.GroupContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
@@ -29,22 +28,17 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Server {
     private ClientContainer users;
-    private GroupContainer groups;
     private CommandExecutor commandExecutor;
     private ReaderWriterCreator friends;
     private ReaderWriterCreator tempNotifications;
     private ReaderWriterCreator exception;
-    private ReaderWriterCreator groupDirectory;
 
-    public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception,
-                  String groupsDirectory) {
+    public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;
         this.friends = new ReaderWriterCreator(friends);
         this.tempNotifications = new ReaderWriterCreator(tempNotifications);
         this.exception = new ReaderWriterCreator(exception);
-        this.groupDirectory = new ReaderWriterCreator(groupsDirectory);
         this.users = new ClientContainer(this.friends);
-        this.groups = new GroupContainer(this.groupDirectory);
     }
 
     public void serverStart() {
@@ -56,7 +50,6 @@ public class Server {
             ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 
             users.connectUserAtStart(friends);
-            groups.connectGroupsAtStart(groupDirectory);
 
             while (true) {
                 int readyChannels = selector.select();
@@ -101,7 +94,7 @@ public class Server {
         } else {
             String[] user = line.split(" ");
             String commandResult =
-                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), users, groups);
+                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), users);
             clientOutput(buffer, sc, commandResult);
         }
     }

@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
@@ -46,7 +45,7 @@ public class GroupSplit implements GroupSplitAPI {
                 }
             }
             Helpers.addInformation(info, groupsDirectory);
-        } catch (GroupDoesNotExistException | NegativeAmountException e) {
+        } catch (GroupDoesNotExistException e) {
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return e.getLocalizedMessage();
         } catch (IOException e) {

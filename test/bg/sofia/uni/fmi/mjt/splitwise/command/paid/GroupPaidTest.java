@@ -22,6 +22,7 @@ public class GroupPaidTest {
     private ReaderWriterCreator group;
     private ReaderWriterCreator exc;
     private ReaderWriterCreator tempNotif;
+    private ReaderWriterCreator friends;
     private String groups;
     private String notif;
     private String except;
@@ -46,7 +47,8 @@ public class GroupPaidTest {
         group = mock();
         exc = mock();
         tempNotif = mock();
-        paid = new PaidGroup(group, notifications, exc, tempNotif);
+        friends = mock();
+        paid = new PaidGroup(group, notifications, exc, tempNotif, friends);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.PayGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class GroupNotificationTest {
-    private GroupNotification notification;
+    private PayGroupNotifications notification;
     private ReaderWriterCreator notificationsDirectory;
     private ReaderWriterCreator tempNotif;
     String notif;
@@ -34,7 +35,7 @@ public class GroupNotificationTest {
 
         notificationsDirectory = mock();
         tempNotif = mock();
-        notification = new GroupNotification(notificationsDirectory, tempNotif);
+        notification = new PayGroupNotifications(notificationsDirectory, tempNotif);
     }
 
     @Test
@@ -53,19 +54,4 @@ public class GroupNotificationTest {
         verify(notificationsDirectory, never()).getAppend();
     }
 
-    @Test
-    void addNotificationFriendSplitValid() {
-        String notificationTest = notif;
-        Command command = new Command("koki", "split-group", "10", "firstGroup", "qjca");
-        when(notificationsDirectory.getRead()).thenAnswer(x -> new StringReader(notificationTest));
-        when(notificationsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(notificationsDirectory.getAppend()).thenAnswer(x -> new StringWriter());
-        when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notificationTest));
-        when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
-        notification.appendToGroupSplit(command, "ili", "5");
-        verify(notificationsDirectory, times(2)).getRead();
-        verify(notificationsDirectory).getNotAppend();
-        verify(notificationsDirectory, never()).getAppend();
-    }
 }

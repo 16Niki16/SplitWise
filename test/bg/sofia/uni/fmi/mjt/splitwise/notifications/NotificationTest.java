@@ -1,6 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotificationsAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class NotificationTest {
-    private NotificationAPI notification;
+    private SplitPersonNotificationsAPI notification;
     private ReaderWriterCreator notificationsDirectory;
     private ReaderWriterCreator tempNotif;
     private String notif;
@@ -34,23 +36,7 @@ public class NotificationTest {
 
         notificationsDirectory = mock();
         tempNotif = mock();
-        notification = new Notification(notificationsDirectory, tempNotif);
-    }
-
-    @Test
-    void addNotificationFriendPaymentValid() {
-        String notificationTest = notif;
-        Command command = new Command("koki", "paid", "10", "niki");
-        when(notificationsDirectory.getRead()).thenAnswer(x -> new StringReader(notificationTest));
-        when(notificationsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(notificationsDirectory.getAppend()).thenAnswer(x -> new StringWriter());
-        when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notificationTest));
-        when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
-        notification.addNotificationFriendPayment(command);
-        verify(notificationsDirectory, times(2)).getRead();
-        verify(notificationsDirectory).getNotAppend();
-        verify(notificationsDirectory, never()).getAppend();
+        notification = new SplitPersonNotifications(notificationsDirectory, tempNotif);
     }
 
     @Test

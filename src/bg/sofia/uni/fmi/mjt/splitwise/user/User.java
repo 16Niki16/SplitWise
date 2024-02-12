@@ -14,7 +14,6 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class User implements UserAPI {
     private static final double START = 0.00;
-    private static final int ZERO = 0;
     private String username;
     private String password;
     private Map<String, Double> friendList;

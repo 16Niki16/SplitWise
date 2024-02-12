@@ -4,8 +4,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.NotificationAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotificationsAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
@@ -43,7 +43,7 @@ public class Split implements SplitAPI {
             while ((readline = r.readLine()) != null) {
                 String[] splited = readline.split("\\|");
                 if (command.line().equals(splited[USER])) {
-                    NotificationAPI noti = new Notification(notifications, tempNotif);
+                    SplitPersonNotificationsAPI noti = new SplitPersonNotifications(notifications, tempNotif);
                     noti.addNotificationFriendSplit(command);
                     newLines.add(user.appendMoney(command.args()[USERNAME_OWE],
                         -1 * Double.parseDouble(command.args()[AMOUNT])));

@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
@@ -22,13 +21,15 @@ public class PaidGroup implements PaidGroupAPI {
     private ReaderWriterCreator notifications;
     private ReaderWriterCreator exceptions;
     private ReaderWriterCreator tempNotif;
+    private ReaderWriterCreator friends;
 
     public PaidGroup(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
-                     ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif) {
+                     ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ReaderWriterCreator friends) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
         this.exceptions = exceptions;
         this.tempNotif = tempNotif;
+        this.friends = friends;
     }
 
     @Override
@@ -41,14 +42,14 @@ public class PaidGroup implements PaidGroupAPI {
                 String[] getData = line.split("\\|");
                 if (getData[GROUP_NAME].equals(command.args()[GROUP_INDEX])) {
                     GroupAPI updateGroup = Group.ofSplit(line);
-                    lines.add(updateGroup.payInGroup(command, notifications, tempNotif));
+                    lines.add(updateGroup.payInGroup(command, notifications, tempNotif, friends));
                 } else {
                     lines.add(line);
                 }
             }
             Helpers.addInformation(lines, groupsDirectory);
             return "Successful payment in a group!";
-        } catch (GroupDoesNotExistException | NegativeAmountException | NoMembersToPayException e) {
+        } catch (GroupDoesNotExistException | NoMembersToPayException e) {
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return e.getLocalizedMessage();
         } catch (IOException e) {

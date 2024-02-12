@@ -35,10 +35,30 @@ public class AddFriend implements AddFriendAPI {
 
     @Override
     public String addingFriend(Command command) {
-        try (BufferedReader r = new BufferedReader(creator.getRead())) {
+        try {
+
             ExceptionHandler.checkAddYourself(command.line(), command.args()[FRIEND_NAME]);
             this.user.checkAlreadyFriends(command.args()[FRIEND_NAME]);
             Helpers.checkInFile(command.args()[FRIEND_NAME], creator);
+            Helpers.addInformation(updatedInformation(command), creator);
+
+        } catch (FriendNotRegisteredException | AlreadyFriendsException |
+                 AddYourselfException ee) {
+            ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(),
+                exceptionDirectory);
+            return ee.getLocalizedMessage();
+
+        } catch (IOException e) {
+            ExceptionFormater.exceptionAdd(command.line(), "Add friend directory mistake", e.getStackTrace(),
+                exceptionDirectory);
+            throw new RuntimeException("Could not add the friend successfully", e);
+        }
+
+        return String.format("Friend %s is added.", command.args()[FRIEND_NAME]);
+    }
+
+    private List<String> updatedInformation(Command command) throws IOException {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String lineRead;
             List<String> lines = new ArrayList<>();
             while ((lineRead = r.readLine()) != null) {
@@ -52,17 +72,8 @@ public class AddFriend implements AddFriendAPI {
                     lines.add(lineRead);
                 }
             }
-            Helpers.addInformation(lines, creator);
-        } catch (FriendNotRegisteredException | AlreadyFriendsException |
-                 AddYourselfException ee) {
-            ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(),
-                exceptionDirectory);
-            return ee.getLocalizedMessage();
-        } catch (IOException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "Add friend directory mistake", e.getStackTrace(),
-                exceptionDirectory);
-            throw new RuntimeException("Could not add the friend successfully", e);
+            return lines;
         }
-        return String.format("Friend %s is added.", command.args()[FRIEND_NAME]);
     }
 }
+

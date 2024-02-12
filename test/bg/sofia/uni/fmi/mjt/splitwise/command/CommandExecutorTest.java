@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.GroupContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,7 +19,6 @@ public class CommandExecutorTest {
     private static final int COMMAND = 0;
     private static final String RANDOM = "random";
     private ClientContainer container;
-    private GroupContainer groupContainer;
     @Mock
     private User user;
     @Mock
@@ -41,7 +37,7 @@ public class CommandExecutorTest {
 
         assertNotNull(command.args());
         assertTrue(
-            executor.execute(command, user, container, groupContainer).contains("create-group <group_name> <username> <username> ... <username>"));
+            executor.execute(command, user, container).contains("create-group <group_name> <username> <username> ... <username>"));
     }
 
     @Test
@@ -49,7 +45,7 @@ public class CommandExecutorTest {
         when(command.args()).thenReturn(new String[] {"unknown"});
 
         assertNotNull(command.args());
-        assertEquals(executor.execute(command, user, container, groupContainer), "Unknown command");
+        assertEquals(executor.execute(command, user, container), "Unknown command");
     }
 
 }

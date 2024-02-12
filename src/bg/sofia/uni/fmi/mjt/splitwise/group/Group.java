@@ -1,9 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.GroupNotification;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.PayGroupNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.SplitGroupNotificationAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.SplitGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.util.LinkedHashMap;
@@ -34,7 +35,7 @@ public class Group implements GroupAPI {
         participant.put(command.line(), STARTER);
 
         for (int i = FRIEND_LIST; i < command.args().length; i++) {
-            participant.put(command.args()[i], 0.00);
+            participant.put(command.args()[i], STARTER);
         }
 
         return new Group(command.args()[GROUP_NAME], participant);
@@ -57,18 +58,16 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
-        throws NegativeAmountException {
+    public String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif) {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT_INDEX]);
         double sumToPay = totalAmount / this.members.size();
-        System.out.println(sumToPay);
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getKey().equals(command.line())) {
                 double balance = map.getValue() - totalAmount + sumToPay;
                 this.members.put(map.getKey(), balance);
             } else {
-                GroupNotification group = new GroupNotification(notifications, tempNotif);
+                SplitGroupNotificationAPI group = new SplitGroupNotifications(notifications, tempNotif);
                 group.appendToGroupSplit(command, map.getKey(), Double.toString(sumToPay));
                 double balance = map.getValue() + sumToPay;
                 this.members.put(map.getKey(), balance);
@@ -78,10 +77,31 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
+    public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
+                             ReaderWriterCreator friends)
         throws NoMembersToPayException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
-        int membersPay = 0;
+        double sumToAdd = getSumToAdd(command, totalAmount, friends);
+
+        for (Map.Entry<String, Double> map : this.members.entrySet()) {
+
+            if (map.getKey().equals(command.args()[PAYER])) {
+                PayGroupNotifications group = new PayGroupNotifications(notifications, tempNotif);
+                group.appendToGroupPayment(command, map.getKey());
+                double balance = map.getValue() - totalAmount;
+                this.members.put(map.getKey(), balance);
+
+            } else if (map.getValue() < 0) {
+                double balance = map.getValue() + sumToAdd;
+                this.members.put(map.getKey(), balance);
+            }
+        }
+        return toString();
+    }
+
+    private double getSumToAdd(Command command, double totalAmount, ReaderWriterCreator friends)
+        throws NoMembersToPayException {
+        int membersPay = ZERO;
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getValue() < 0 && !map.getKey().equals(command.args()[PAYER])) {
                 ++membersPay;
@@ -93,19 +113,7 @@ public class Group implements GroupAPI {
             throw new NoMembersToPayException("There is not a member in the group that you can pay to!");
         }
         double sumToAdd = totalAmount / membersPay;
-
-        for (Map.Entry<String, Double> map : this.members.entrySet()) {
-            if (map.getKey().equals(command.args()[PAYER])) {
-                GroupNotification group = new GroupNotification(notifications, tempNotif);
-                group.appendToGroupPayment(command, map.getKey());
-                double balance = map.getValue() - totalAmount;
-                this.members.put(map.getKey(), balance);
-            } else if (map.getValue() < 0) {
-                double balance = map.getValue() + sumToAdd;
-                this.members.put(map.getKey(), balance);
-            }
-        }
-        return toString();
+        return sumToAdd;
     }
 
     @Override

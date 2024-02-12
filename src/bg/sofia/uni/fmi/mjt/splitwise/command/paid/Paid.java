@@ -4,8 +4,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.NotificationAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotificationsAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
@@ -36,32 +36,42 @@ public class Paid implements PaidAPI {
     }
 
     public String personPay(Command command) {
+        try {
+
+            Helpers.addInformation(updatedInformation(command), directory);
+            return "Successfully paid!";
+
+        } catch (IOException e) {
+
+            ExceptionFormater.exceptionAdd(command.line(), "paid IO exception", e.getStackTrace(), exceptions);
+            throw new RuntimeException("could not pay, server problem!", e);
+
+        } catch (PersonNotFriendException ee) {
+            ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(), exceptions);
+            return ee.getLocalizedMessage();
+        }
+    }
+
+    private List<String> updatedInformation(Command command) throws IOException, PersonNotFriendException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String readline;
             List<String> newLines = new ArrayList<>();
             while ((readline = r.readLine()) != null) {
                 String[] splited = readline.split("\\|");
                 if (command.line().equals(splited[USER])) {
-                    NotificationAPI notif = new Notification(notificationDirectory, tempNotif);
+                    PersonPayNotificationsAPI notif = new PersonPayNotifications(notificationDirectory, tempNotif);
                     notif.addNotificationFriendPayment(command);
                     newLines.add(user.paidMoney(command.args()[USERNAME_OWE],
-                            -1 * Double.parseDouble(command.args()[AMOUNT])));
+                        -1 * Double.parseDouble(command.args()[AMOUNT])));
                 } else if (splited[USER].equals(command.args()[USERNAME_OWE])) {
                     UserAPI friend = User.of(readline);
                     newLines.add(friend.paidMoney(command.line(),
-                            Double.parseDouble(command.args()[AMOUNT])));
+                        Double.parseDouble(command.args()[AMOUNT])));
                 } else {
                     newLines.add(readline);
                 }
             }
-            Helpers.addInformation(newLines, directory);
-            return "Successfully paid!";
-        } catch (IOException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "paid IO exception", e.getStackTrace(), exceptions);
-            throw new RuntimeException("could not pay, server problem!", e);
-        } catch (PersonNotFriendException ee) {
-            return ee.getLocalizedMessage();
+            return newLines;
         }
     }
-
 }

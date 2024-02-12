@@ -103,15 +103,19 @@ public class Status implements StatusAPI {
     private String appendToBuilder(String[] splitMoney, boolean isInGroup) {
         if (!isInGroup) {
             if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
-                return String.format("*You owe %s to %s LV.\n", splitMoney[AMOUNT], splitMoney[USER]);
+                return String.format("*You owe %.2f to %s LV.\n", Double.parseDouble(splitMoney[AMOUNT]),
+                    splitMoney[USER]);
             } else {
-                return String.format("*%s owes you %s LV.\n", splitMoney[USER], splitMoney[AMOUNT].substring(1));
+                return String.format("*%s owes you %.2f LV.\n", splitMoney[USER],
+                    Double.parseDouble(splitMoney[AMOUNT].substring(1)));
             }
         } else {
             if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
-                return String.format("*%s owes to the group %s LV.\n", splitMoney[USER], splitMoney[AMOUNT]);
+                return String.format("*%s owes to the group %.2f LV.\n", splitMoney[USER],
+                    Double.parseDouble(splitMoney[AMOUNT]));
             } else {
-                return String.format("*Group owe %s to %s LV.\n", splitMoney[AMOUNT].substring(1), splitMoney[USER]);
+                return String.format("*Group owe %.2f to %s LV.\n", Double.parseDouble(splitMoney[AMOUNT].substring(1)),
+                    splitMoney[USER]);
             }
         }
     }

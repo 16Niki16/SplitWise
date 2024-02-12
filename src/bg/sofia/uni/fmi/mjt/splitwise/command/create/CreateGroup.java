@@ -38,9 +38,11 @@ public class CreateGroup implements CreateGroupAPI {
             Group newGroup = Group.of(command);
             Helpers.appendToFile(newGroup.toString(), group);
             return "Group is successfully created!";
+
         } catch (FriendNotRegisteredException | GroupAlreadyExistException | AddYourselfException e) {
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exception);
             return e.getLocalizedMessage();
+
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd(command.line(), "mistake in file creating group.", e.getStackTrace(),
                 exception);

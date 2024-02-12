@@ -16,7 +16,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.StatusAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.GroupContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughArgumentsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotNumberException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
@@ -45,18 +44,16 @@ public class CommandExecutor {
         this.tempNotif = new ReaderWriterCreator(tempNotif);
     }
 
-    public String execute(Command command, User user, ClientContainer container, GroupContainer containerGroup) {
+    public String execute(Command command, User user, ClientContainer container) {
         try {
-            return switch (ExceptionHandler.getCommand(
-                CommandType.of(command.args()[COMMAND_NAME].strip()), command.args())) {
+            return switch (ExceptionHandler.checkCommandLength(CommandType.of(command.args()[COMMAND_NAME].strip()),
+                command.args())) {
 
-                case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP ->
-                    executeCreate(command, user, container, containerGroup);
+                case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP -> executeCreate(command, user, container);
 
-                case CommandType.SPLIT, CommandType.SPLIT_GROUP ->
-                    executeSplit(command, user, container, containerGroup);
+                case CommandType.SPLIT, CommandType.SPLIT_GROUP -> executeSplit(command, user, container);
 
-                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, container, containerGroup);
+                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, container);
 
                 case CommandType.GET_STATUS -> {
                     StatusAPI status = new Status(directory, groupsDirectory, exceptionsDirectory);
@@ -64,7 +61,8 @@ public class CommandExecutor {
                 }
 
                 case CommandType.HELP -> Help.getHelp();
-            };
+            }
+                ;
         } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException e) {
             ExceptionFormater.exceptionAdd(
                 command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);
@@ -72,7 +70,7 @@ public class CommandExecutor {
         }
     }
 
-    private String executeCreate(Command command, User user, ClientContainer container, GroupContainer containerGroup)
+    private String executeCreate(Command command, User user, ClientContainer container)
         throws UnknownCommandException {
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
 
@@ -90,7 +88,7 @@ public class CommandExecutor {
         };
     }
 
-    private String executePaid(Command command, User user, ClientContainer container, GroupContainer containerGroup)
+    private String executePaid(Command command, User user, ClientContainer container)
         throws UnknownCommandException, NotNumberException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
@@ -104,7 +102,7 @@ public class CommandExecutor {
 
             case CommandType.GROUP_PAID -> {
                 PaidGroupAPI payment =
-                    new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
+                    new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif, directory);
                 yield payment.personPaidToGroup(command);
             }
 
@@ -112,7 +110,7 @@ public class CommandExecutor {
         };
     }
 
-    private String executeSplit(Command command, User user, ClientContainer container, GroupContainer containerGroup)
+    private String executeSplit(Command command, User user, ClientContainer container)
         throws UnknownCommandException, NotNumberException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
