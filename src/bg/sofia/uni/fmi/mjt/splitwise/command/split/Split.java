@@ -42,15 +42,14 @@ public class Split implements SplitAPI {
             List<String> newLines = new ArrayList<>();
             while ((readline = r.readLine()) != null) {
                 String[] splited = readline.split("\\|");
-                if (command.line().equals(splited[USER].trim())) {
+                if (command.line().equals(splited[USER])) {
                     NotificationAPI noti = new Notification(notifications, tempNotif);
                     noti.addNotificationFriendSplit(command);
-                    newLines.add(user.appendMoney(command.args()[USERNAME_OWE].trim(),
+                    newLines.add(user.appendMoney(command.args()[USERNAME_OWE],
                         -1 * Double.parseDouble(command.args()[AMOUNT])));
-                } else if (splited[USER].trim().equals(command.args()[USERNAME_OWE].trim())) {
+                } else if (splited[USER].equals(command.args()[USERNAME_OWE])) {
                     UserAPI friend = User.of(readline);
-                    newLines.add(friend.appendMoney(command.line().trim(),
-                        Double.parseDouble(command.args()[AMOUNT])));
+                    newLines.add(friend.appendMoney(command.line(), Double.parseDouble(command.args()[AMOUNT])));
                 } else {
                     newLines.add(readline);
                 }

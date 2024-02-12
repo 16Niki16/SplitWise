@@ -10,7 +10,6 @@ public class Help {
              - split-group <amount> <group_name> <reason_for_payment>
              - get-status
              - paid <amount> <username>
-             - paid-group <amount> <user> <group_name>
-             """;
+             - paid-group <amount> <user> <group_name>""";
     }
 }

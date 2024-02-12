@@ -28,11 +28,11 @@ public class StatusTest {
     @BeforeEach
     void setUp() {
         direc = """
-            niki | niki123 | koki -5.00, kolio -10.00, test -10.00
-            ili  | ili123
-            kolio | kolio123 | niki 10.00
-            koki | koki123 | niki 5.00
-            test | test | niki 10.00""";
+            niki|niki123|koki -5.00,kolio -10.00,test -10.00
+            ili|ili123
+            kolio|kolio123|niki 10.00
+            koki|koki123|niki 5.00
+            test|test|niki 10.00""";
         direcGroup = """
             firstGroup | niki -0.17, koki 5.33
             testGroup | niki 0.00, kolio 0.00""";

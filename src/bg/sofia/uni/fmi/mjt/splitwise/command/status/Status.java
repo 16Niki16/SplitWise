@@ -38,13 +38,13 @@ public class Status implements StatusAPI {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] splitedLine = line.split("\\|");
-                if (splitedLine[USER].trim().equals(command.line())) {
+                if (splitedLine[USER].equals(command.line())) {
                     if (splitedLine.length == TWO) {
-                        return "You do not have any friends\n";
+                        return "You do not have debts with friends\n";
                     }
                     String[] splitfr = splitedLine[FRIEND_LIST].split(",");
                     for (String fr : splitfr) {
-                        String[] splitMoney = fr.trim().split(" ");
+                        String[] splitMoney = fr.split(" ");
                         if (Double.parseDouble(splitMoney[AMOUNT]) != 0) {
                             build.append(appendToBuilder(splitMoney, false));
                         }
@@ -69,7 +69,7 @@ public class Status implements StatusAPI {
                     String[] getPeople = splitLine[FRIEND_NAME].split(",");
                     boolean isFirst = true;
                     for (String people : getPeople) {
-                        String[] spl = people.trim().split(" ");
+                        String[] spl = people.split(" ");
                         if (Double.parseDouble(spl[AMOUNT]) != 0) {
                             if (isFirst) {
                                 build.append(splitLine[GROUP]).append("\n").append(appendToBuilder(spl, true));
@@ -81,7 +81,7 @@ public class Status implements StatusAPI {
                     }
                 }
             }
-            return (build.toString().equals("Groups:\n")) ? "You do not participate in any groups" : build.toString();
+            return (build.toString().equals("Groups:\n")) ? "You do not have debts in the groups!" : build.toString();
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd(command.line(), "Could not extract in status groups", e.getStackTrace(),
                 exceptions);
@@ -90,9 +90,9 @@ public class Status implements StatusAPI {
     }
 
     private boolean checkUserContains(String username, String group) {
-        String[] groupMem = group.trim().split(",");
+        String[] groupMem = group.split(",");
         for (String check : groupMem) {
-            String[] spl = check.trim().split(" ");
+            String[] spl = check.split(" ");
             if (spl[USER].equals(username)) {
                 return true;
             }

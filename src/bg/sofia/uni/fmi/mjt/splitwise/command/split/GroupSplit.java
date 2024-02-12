@@ -38,7 +38,7 @@ public class GroupSplit implements GroupSplitAPI {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] searchGr = line.split("\\|");
-                if (searchGr[GROUP_NAME].trim().equals(command.args()[GROUP_INDEX])) {
+                if (searchGr[GROUP_NAME].equals(command.args()[GROUP_INDEX])) {
                     GroupAPI updateGroup = Group.ofSplit(line);
                     info.add(updateGroup.addInformation(command, notifications, tempNotif));
                 } else {

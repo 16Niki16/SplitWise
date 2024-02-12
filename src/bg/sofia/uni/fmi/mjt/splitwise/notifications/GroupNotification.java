@@ -5,7 +5,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +27,13 @@ public class GroupNotification implements GroupNotificationAPI {
 
     public void appendToGroupSplit(Command command, String friend, String amount) {
         try {
-            if (!HelpersNotifications.checkSectionAlreadyExist(friend, notificationsDirectory)) {
+            if (HelpersNotifications.isSectionExistNotification(friend, notificationsDirectory)) {
                 appendAtEnd(command.line(), amount, friend, false, Helpers.getReason(command),
                     command.args()[GROUP_NAME], notificationsDirectory);
             } else {
                 appendAtPositionSplit(command, friend, amount, notificationsDirectory);
             }
-            if (!HelpersNotifications.checkSectionAlreadyExist(friend, tempNotif)) {
+            if (HelpersNotifications.isSectionExistNotification(friend, tempNotif)) {
                 appendAtEnd(command.line(), amount, friend, false, Helpers.getReason(command),
                     command.args()[GROUP_NAME], tempNotif);
             } else {
@@ -47,13 +46,13 @@ public class GroupNotification implements GroupNotificationAPI {
 
     public void appendToGroupPayment(Command command, String friend) {
         try {
-            if (!HelpersNotifications.checkSectionAlreadyExist(friend, notificationsDirectory)) {
+            if (HelpersNotifications.isSectionExistNotification(friend, notificationsDirectory)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], friend, true, null, command.args()[GROUP_PAYMENT],
                     notificationsDirectory);
             } else {
                 appendAtPositionPayment(command, friend, notificationsDirectory);
             }
-            if (!HelpersNotifications.checkSectionAlreadyExist(friend, tempNotif)) {
+            if (HelpersNotifications.isSectionExistNotification(friend, tempNotif)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], friend, true, null, command.args()[GROUP_PAYMENT],
                     tempNotif);
             } else {
@@ -96,12 +95,12 @@ public class GroupNotification implements GroupNotificationAPI {
     private void appendNewInfoSplit(List<String> lines, String line, Command command, String amount) {
         if (line.trim().equals("No information!")) {
             lines.add(
-                String.format("*%s - You owes %s %s LV[%s]", command.args()[TWO], command.line(), amount,
-                    Helpers.getReason(command)));
+                String.format("*%s - You owes %s %.2f LV[%s]", command.args()[TWO], command.line(),
+                    Double.parseDouble(amount), Helpers.getReason(command)));
         } else {
             lines.add(
-                String.format("*%s - You owes %s %s LV[%s]", command.args()[TWO], command.line(), amount,
-                    Helpers.getReason(command)));
+                String.format("*%s - You owes %s %2f LV[%s]", command.args()[TWO], command.line(),
+                    Double.parseDouble(amount), Helpers.getReason(command)));
             lines.add(line);
         }
     }
@@ -137,11 +136,11 @@ public class GroupNotification implements GroupNotificationAPI {
 
     private void appendNewInfoPayment(List<String> lines, String line, Command command) {
         if (line.trim().equals("No information!")) {
-            lines.add(String.format("*%s - %s approved your payment %s LV.", command.args()[GROUP_PAYMENT],
-                command.line(), command.args()[AMOUNT]));
+            lines.add(String.format("*%s - %s approved your payment %.2f LV.", command.args()[GROUP_PAYMENT],
+                command.line(), Double.parseDouble(command.args()[AMOUNT])));
         } else {
-            lines.add(String.format("*%s - %s approved your payment %s LV.", command.args()[GROUP_PAYMENT],
-                command.line(), command.args()[AMOUNT]));
+            lines.add(String.format("*%s - %s approved your payment %.2f LV.", command.args()[GROUP_PAYMENT],
+                command.line(), Double.parseDouble(command.args()[AMOUNT])));
             lines.add(line);
         }
     }
@@ -149,16 +148,14 @@ public class GroupNotification implements GroupNotificationAPI {
     private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason, String groupName,
                              ReaderWriterCreator creator)
         throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(creator.getAppend())) {
-            StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
-            if (paid) {
-                build.append(String.format("Groups:\n*%s - %s approved your payment %s LV.", groupName, name, amount));
-            } else {
-                build.append(String.format("Groups:\n*%s - You owes %s %s LV[%s]", groupName, name, amount, reason));
-            }
-            wr.write(String.valueOf(build));
-            wr.newLine();
-            wr.flush();
+        StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
+        if (paid) {
+            build.append(String.format("Groups:\n*%s - %s approved your payment %.2f LV.", groupName, name,
+                Double.parseDouble(amount)));
+        } else {
+            build.append(String.format("Groups:\n*%s - You owes %s %.2f LV[%s]", groupName, name,
+                Double.parseDouble(amount), reason.strip()));
         }
+        Helpers.appendToFile(String.valueOf(build), creator);
     }
 }

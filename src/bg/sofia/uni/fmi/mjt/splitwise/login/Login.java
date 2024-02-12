@@ -24,8 +24,8 @@ public class Login {
             container.addUser(user);
             return user;
         } catch (FriendNotRegisteredException e) {
-            Helpers.appendToFile(username + " | " + password, directory);
-            return User.of(username + " | " + password);
+            Helpers.appendToFile(username + "|" + password, directory);
+            return User.of(username + "|" + password);
         }
     }
 }

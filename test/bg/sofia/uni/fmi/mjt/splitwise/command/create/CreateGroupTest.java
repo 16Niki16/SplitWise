@@ -28,12 +28,12 @@ public class CreateGroupTest {
     void setUp() {
         except = "";
         friend = """
-            niki | niki123 | pepi 10.00, kolio 0.00, ili 0.00, koki 5.00
-            kolio | kolio123 | niki 0.00
-            pepi | pepi123 | niki -10.00""";
+            niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00
+            kolio|kolio123|niki 0.00
+            pepi|pepi123|niki -10.00""";
         groups = """
-            firstGroup | niki123 0.00, niki 0.00, kolio 0.00
-            secondGroup | niki123 0.00, niki 0.00, kolio 0.00""";
+            firstGroup|niki123 0.00,niki 0.00,kolio 0.00
+            secondGroup|niki123 0.00,niki 0.00,kolio 0.00""";
         exc = mock();
         friends = mock();
         group = mock();
@@ -51,7 +51,7 @@ public class CreateGroupTest {
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
         assertTrue(create.createGroup(command)
-            .contains("thirdGroup | niki 0.00, kolio 0.00, pepi 0.00"));
+            .contains("thirdGroup|niki 0.00,kolio 0.00,pepi 0.00"));
     }
 
     @Test

@@ -5,7 +5,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,6 @@ public class Notification implements NotificationAPI {
     private static final int NAME = 0;
     private static final int FRIEND_NAME = 1;
     private static final int FRIEND_PAY = 2;
-    private static final int REASON = 3;
     private final ReaderWriterCreator notificationsDirectory;
     private final ReaderWriterCreator tempNotif;
 
@@ -29,13 +27,13 @@ public class Notification implements NotificationAPI {
     @Override
     public void addNotificationFriendPayment(Command command) {
         try {
-            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], notificationsDirectory)) {
+            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], notificationsDirectory)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], true, " ",
                     notificationsDirectory);
             } else {
                 appendAtPositionPayment(command, notificationsDirectory);
             }
-            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], tempNotif)) {
+            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], tempNotif)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], true, " ",
                     tempNotif);
             } else {
@@ -50,13 +48,13 @@ public class Notification implements NotificationAPI {
     @Override
     public void addNotificationFriendSplit(Command command) {
         try {
-            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], notificationsDirectory)) {
+            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], notificationsDirectory)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], false,
                     Helpers.getReason(command), notificationsDirectory);
             } else {
                 appendAtPositionSplit(command, notificationsDirectory);
             }
-            if (!HelpersNotifications.checkSectionAlreadyExist(command.args()[FRIEND_PAY], tempNotif)) {
+            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], tempNotif)) {
                 appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY], false,
                     Helpers.getReason(command), tempNotif);
             } else {
@@ -115,14 +113,15 @@ public class Notification implements NotificationAPI {
     }
 
     private void appendInListPaid(List<String> lines, String line, Command command) {
-        if (line.trim().equals("Friends:")) {
+        if (line.strip().equals("Friends:")) {
             lines.add(line);
-            lines.add(
-                String.format("%s approved your payment %s LV.", command.line(), command.args()[AMOUNT]));
+            lines.add(String.format("%s approved your payment %.2f LV.", command.line(),
+                Double.parseDouble(command.args()[AMOUNT])));
         } else {
             lines.add("Friends:");
             lines.add(
-                String.format("%s approved your payment %s LV.", command.line(), command.args()[AMOUNT]));
+                String.format("%s approved your payment %.2f LV.", command.line(),
+                    Double.parseDouble(command.args()[AMOUNT])));
             lines.add(line);
         }
     }
@@ -133,32 +132,28 @@ public class Notification implements NotificationAPI {
             lines.add("Friends:");
             lines.add(
                 String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
-                    Helpers.getReason(command))));
+                    Helpers.getReason(command).strip())));
             lines.add(line);
         } else {
             lines.add(line);
             lines.add(
                 String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
-                    Helpers.getReason(command))));
+                    Helpers.getReason(command).strip())));
         }
     }
 
     private void appendAtEnd(String name, String amount, String friend, boolean paid, String reason,
                              ReaderWriterCreator creator)
         throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(creator.getAppend())) {
-            StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
-            if (paid) {
-                build.append(
-                    String.format("Friends:\n%s approved your payment %s LV.\nGroups:\nNo information!", name, amount));
-            } else {
-                double am = Double.parseDouble(amount) / TWO;
-                build.append(
-                    String.format("Friends:\nYou owes %s %.2f[%s].\nGroups:\nNo information!", name, am, reason));
-            }
-            wr.write(String.valueOf(build));
-            wr.newLine();
-            wr.flush();
+        StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
+        if (paid) {
+            build.append(
+                String.format("Friends:\n%s approved your payment %s LV.\nGroups:\nNo information!", name, amount));
+        } else {
+            double am = Double.parseDouble(amount) / TWO;
+            build.append(
+                String.format("Friends:\nYou owes %s %.2f[%s].\nGroups:\nNo information!", name, am, reason));
         }
+        Helpers.appendToFile(String.valueOf(build), creator);
     }
 }

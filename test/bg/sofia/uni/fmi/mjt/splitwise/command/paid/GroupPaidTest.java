@@ -39,8 +39,8 @@ public class GroupPaidTest {
             Groups:
             *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
         groups = """
-            firstGroup | niki123 0.00, niki 0.00, kolio 0.00
-            secondGroup | niki123 -20.00, niki 10.00, pepi 10.00""";
+            firstGroup|niki123 0.00,niki 0.00,kolio 0.00
+            secondGroup|niki123 -20.00,niki 10.00,pepi 10.00""";
 
         notifications = mock();
         group = mock();

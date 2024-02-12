@@ -30,6 +30,10 @@ public class ClientContainer {
     }
 
     public void addUser(User user) {
+        Optional<User> previousVersion = checkInSet(user.getUsername());
+        if (previousVersion.isPresent()) {
+            users.remove(user.getUsername());
+        }
         users.add(user);
     }
 

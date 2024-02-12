@@ -15,17 +15,17 @@ public class HelpersNotifications {
     private static final int NAME = 0;
     private static final int FRIEND_NAME = 1;
 
-    public static boolean checkSectionAlreadyExist(String friend, ReaderWriterCreator reader) throws IOException {
+    public static boolean isSectionExistNotification(String friend, ReaderWriterCreator reader) throws IOException {
         try (BufferedReader r = new BufferedReader(reader.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
                 if (checkName[NAME].trim().equals("name") && checkName[FRIEND_NAME].trim().equals(friend.trim())) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public static String getNotifications(String username, ReaderWriterCreator search, ReaderWriterCreator exception) {

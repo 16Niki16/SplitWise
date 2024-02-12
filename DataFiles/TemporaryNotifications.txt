@@ -1,19 +1,12 @@
-name: unknown
+
+name: kolio
 Friends:
-You owes niki 10.00[taka ].
+You owes niki 3.15 LV[taka]
+You owes niki 10.00[taka].
 Groups:
 No information!
-name: koki
-Groups:
-*firstGroup - You owes niki 6.666666666666667 LV[taka ]
-*firstGroup - You owes niki 6.666666666666667 LV[taka ]
-*firstGroup - niki approved your payment 10 LV.
-*firstGroup - You owes niki 6.666666666666667 LV[party at home ]
-name: kiro
-Groups:
-*testMisho - You owes misho 6.666666666666667 LV[taka ]
-name: misho
+name: ili
 Friends:
-You owes niki 10.00[taka ].
+You owes niki 3.15[taka].
 Groups:
 No information!

@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
@@ -38,7 +39,7 @@ public class PaidGroup implements PaidGroupAPI {
             List<String> lines = new ArrayList<>();
             while ((line = r.readLine()) != null) {
                 String[] getData = line.split("\\|");
-                if (getData[GROUP_NAME].trim().equals(command.args()[GROUP_INDEX])) {
+                if (getData[GROUP_NAME].equals(command.args()[GROUP_INDEX])) {
                     GroupAPI updateGroup = Group.ofSplit(line);
                     lines.add(updateGroup.payInGroup(command, notifications, tempNotif));
                 } else {
@@ -47,7 +48,7 @@ public class PaidGroup implements PaidGroupAPI {
             }
             Helpers.addInformation(lines, groupsDirectory);
             return "Successful payment in a group!";
-        } catch (GroupDoesNotExistException | NegativeAmountException e) {
+        } catch (GroupDoesNotExistException | NegativeAmountException | NoMembersToPayException e) {
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return e.getLocalizedMessage();
         } catch (IOException e) {

@@ -28,18 +28,17 @@ public class User implements UserAPI {
     public static User of(String line) {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == THREE) {
-            return new User(splitLine[USER].strip(), splitLine[PASSWORD].strip(),
-                extractFriends(splitLine[FRIEND_LIST]));
+            return new User(splitLine[USER], splitLine[PASSWORD], extractFriends(splitLine[FRIEND_LIST]));
         }
-        return new User(splitLine[USER].strip(), splitLine[PASSWORD].strip(), new HashMap<>());
+        return new User(splitLine[USER], splitLine[PASSWORD], new HashMap<>());
     }
 
     private static Map<String, Double> extractFriends(String friends) {
         String[] splitedFriends = friends.split(",");
         Map<String, Double> friendsOwes = new HashMap<>();
         for (String spl : splitedFriends) {
-            String[] mapItem = spl.trim().split(" ");
-            friendsOwes.put(mapItem[USER].strip(), Double.valueOf(mapItem[AMOUNT]));
+            String[] mapItem = spl.split(" ");
+            friendsOwes.put(mapItem[USER], Double.valueOf(mapItem[AMOUNT]));
         }
         return friendsOwes;
     }
@@ -60,18 +59,18 @@ public class User implements UserAPI {
     }
 
     public String appendMoney(String friend, double amount) throws PersonNotFriendException {
-        if (this.friendList.containsKey(friend.trim())) {
-            double newAmount = this.friendList.get(friend.trim()) + amount / 2;
-            this.friendList.put(friend.trim(), newAmount);
+        if (this.friendList.containsKey(friend)) {
+            double newAmount = this.friendList.get(friend) + amount / 2;
+            this.friendList.put(friend, newAmount);
             return toString();
         }
         throw new PersonNotFriendException("You are not still friends");
     }
 
     public String paidMoney(String friend, double amount) throws PersonNotFriendException {
-        if (this.friendList.containsKey(friend.trim())) {
-            double newAmount = this.friendList.get(friend.trim()) - amount;
-            this.friendList.put(friend.trim(), newAmount);
+        if (this.friendList.containsKey(friend)) {
+            double newAmount = this.friendList.get(friend) - amount;
+            this.friendList.put(friend, newAmount);
             return toString();
         }
         throw new PersonNotFriendException("You are not still friends");
@@ -87,14 +86,14 @@ public class User implements UserAPI {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("%s | %s | ", username, password));
+        result.append(String.format("%s|%s|", username, password));
 
         for (Map.Entry<String, Double> entry : friendList.entrySet()) {
-            result.append(String.format("%s %.2f, ", entry.getKey(), entry.getValue()));
+            result.append(String.format("%s %.2f,", entry.getKey(), entry.getValue()));
         }
 
         if (!result.isEmpty()) {
-            result.setLength(result.length() - 2);
+            result.setLength(result.length() - 1);
         }
 
         return result.toString();

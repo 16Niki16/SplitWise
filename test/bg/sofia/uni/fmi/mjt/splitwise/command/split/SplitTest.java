@@ -38,10 +38,10 @@ public class SplitTest {
             Groups:
             *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
         friend = """
-            niki | niki123 | pepi 10.00, ili 0.00, koki 5.00
-            kolio | kolio123 | pepi 0.00
-            pepi | pepi123 | niki -10.00""";
-        user = User.of("niki | niki123 | pepi 10.00, kolio 0.00, ili 0.00, koki 5.00");
+            niki|niki123|pepi 10.00,ili 0.00,koki 5.00
+            kolio|kolio123|pepi 0.00
+            pepi|pepi123|niki -10.00""";
+        user = User.of("niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00");
         friends = mock();
         notifications = mock();
         exc = mock();

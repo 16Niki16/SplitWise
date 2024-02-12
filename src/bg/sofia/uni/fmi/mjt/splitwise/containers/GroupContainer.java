@@ -25,7 +25,7 @@ public class GroupContainer {
         return this.groups;
     }
 
-    public Group getUser(String name) {
+    public Group getGroup(String name) {
         return groups.stream()
             .filter(p -> p.getGroupName().equals(name.strip()))
             .findAny()
@@ -33,6 +33,7 @@ public class GroupContainer {
     }
 
     public void addGroup(Group group) {
+
         groups.add(group);
     }
 

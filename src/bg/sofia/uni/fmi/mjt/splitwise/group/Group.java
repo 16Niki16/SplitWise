@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NegativeAmountException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.GroupNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
@@ -30,24 +31,24 @@ public class Group implements GroupAPI {
 
     public static Group of(Command command) {
         Map<String, Double> participant = new LinkedHashMap<>();
-        participant.put(command.line().strip(), STARTER);
+        participant.put(command.line(), STARTER);
 
         for (int i = FRIEND_LIST; i < command.args().length; i++) {
             participant.put(command.args()[i], 0.00);
         }
 
-        return new Group(command.args()[GROUP_NAME].trim(), participant);
+        return new Group(command.args()[GROUP_NAME], participant);
     }
 
     public static Group ofSplit(String line) {
-        String[] splitGroup = line.trim().split("\\|");
+        String[] splitGroup = line.split("\\|");
         Map<String, Double> participant = new LinkedHashMap<>();
-        String[] splitPeople = splitGroup[PEOPLE_INDEX].trim().split(",");
+        String[] splitPeople = splitGroup[PEOPLE_INDEX].split(",");
         for (String person : splitPeople) {
-            String[] getData = person.trim().split(" ");
-            participant.put(getData[USER].trim(), Double.parseDouble(getData[AMOUNT]));
+            String[] getData = person.split(" ");
+            participant.put(getData[USER], Double.parseDouble(getData[AMOUNT]));
         }
-        return new Group(splitGroup[GROUP_INDEX].trim(), participant);
+        return new Group(splitGroup[GROUP_INDEX], participant);
     }
 
     @Override
@@ -59,10 +60,8 @@ public class Group implements GroupAPI {
     public String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
         throws NegativeAmountException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT_INDEX]);
-        if (totalAmount < ZERO) {
-            throw new NegativeAmountException("Can not split negative amount");
-        }
-        double sumToPay = totalAmount / members.size();
+        double sumToPay = totalAmount / this.members.size();
+        System.out.println(sumToPay);
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getKey().equals(command.line())) {
@@ -80,12 +79,20 @@ public class Group implements GroupAPI {
 
     @Override
     public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif)
-        throws NegativeAmountException {
+        throws NoMembersToPayException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
-        if (totalAmount < ZERO) {
-            throw new NegativeAmountException("Can not pay negative amount");
+        int membersPay = 0;
+        for (Map.Entry<String, Double> map : this.members.entrySet()) {
+            if (map.getValue() < 0 && !map.getKey().equals(command.args()[PAYER])) {
+                ++membersPay;
+            } else if (map.getKey().equals(command.args()[PAYER]) && map.getValue() < totalAmount) {
+
+            }
         }
-        double sumToAdd = totalAmount / (members.size() - 1);
+        if (membersPay == 0) {
+            throw new NoMembersToPayException("There is not a member in the group that you can pay to!");
+        }
+        double sumToAdd = totalAmount / membersPay;
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getKey().equals(command.args()[PAYER])) {
@@ -93,7 +100,7 @@ public class Group implements GroupAPI {
                 group.appendToGroupPayment(command, map.getKey());
                 double balance = map.getValue() - totalAmount;
                 this.members.put(map.getKey(), balance);
-            } else {
+            } else if (map.getValue() < 0) {
                 double balance = map.getValue() + sumToAdd;
                 this.members.put(map.getKey(), balance);
             }
@@ -104,14 +111,14 @@ public class Group implements GroupAPI {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("%s | ", group));
+        result.append(String.format("%s|", group));
 
         for (Map.Entry<String, Double> entry : members.entrySet()) {
-            result.append(String.format("%s %.2f, ", entry.getKey(), entry.getValue()));
+            result.append(String.format("%s %.2f,", entry.getKey(), entry.getValue()));
         }
 
         if (!result.isEmpty()) {
-            result.setLength(result.length() - 2);
+            result.setLength(result.length() - 1);
         }
 
         return result.toString();

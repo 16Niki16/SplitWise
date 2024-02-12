@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,33 +24,34 @@ public class AddFriendTest {
     private AddFriendAPI addFriend;
     private String data;
     private String except;
-    private Command command;
 
     @BeforeEach
     void setUp() {
         data = """
-            niki | niki123 | pepi 10.00
-            kolio | kolio123
-            pepi | pepi123 | niki -10.00
-                    """;
+            niki|niki123|pepi 10.00
+            kolio|kolio123
+            pepi|pepi123|niki -10.00""";
         except = "";
         creator = mock();
         exc = mock();
-        command = CommandCreator.newCommand("niki add-friend pepi");
-        user = User.of("niki | niki123 | pepi 10.00");
+        container = mock();
+        user = User.of("niki|niki123|pepi 10.00");
         addFriend = new AddFriend(creator, user, exc, container);
     }
 
     @Test
     void testAddFriendValid() {
+        Command command = CommandCreator.newCommand("niki add-friend kolio");
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(container.getUser(any())).thenAnswer(x -> null);
         assertEquals(addFriend.addingFriend(command), "Friend kolio is added.",
             "mistake in adding");
     }
 
     @Test
     void testAddFriendAlreadyFriends() {
+        Command command = CommandCreator.newCommand("niki add-friend pepi");
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
@@ -60,10 +62,12 @@ public class AddFriendTest {
 
     @Test
     void testAddFriendNotRegistered() {
+        Command command = CommandCreator.newCommand("niki add-friend unknown");
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
+        when(container.getUser(any())).thenAnswer(x -> null);
         assertEquals(addFriend.addingFriend(command), "This person is not registered yet.",
             "mistake in adding");
     }

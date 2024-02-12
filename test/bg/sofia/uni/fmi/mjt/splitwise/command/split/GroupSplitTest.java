@@ -36,8 +36,8 @@ public class GroupSplitTest {
             Groups:
             *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
         groups = """
-            firstGroup | niki123 0.00, niki 0.00, kolio 0.00
-            secondGroup | niki123 0.00, niki 0.00, kolio 0.00""";
+            firstGroup|niki123 0.00,niki 0.00,kolio 0.00
+            secondGroup|niki123 0.00,niki 0.00,kolio 0.00""";
         groupsDirectory = mock();
         notifications = mock();
         exc = mock();

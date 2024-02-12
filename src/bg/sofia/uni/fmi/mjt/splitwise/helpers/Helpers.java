@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.REASON;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
@@ -33,7 +34,7 @@ public class Helpers {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] searchGr = line.split("\\|");
-                if (searchGr[GROUP_NAME].trim().equals(name)) {
+                if (searchGr[GROUP_NAME].equals(name)) {
                     return;
                 }
             }
@@ -47,12 +48,35 @@ public class Helpers {
             String user;
             while ((user = r.readLine()) != null) {
                 String[] splitU = user.split("\\|");
-                if (splitU[USER].trim().equals(username)) {
+                if (splitU[USER].equals(username)) {
                     return;
                 }
             }
             throw new FriendNotRegisteredException("This person is not registered yet.");
         }
+    }
+
+    public static void checkInFileGroup(Set<String> users, ReaderWriterCreator creator)
+        throws FriendNotRegisteredException, IOException {
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                if (users.isEmpty()) {
+                    return;
+                }
+                String[] user = line.split("\\|");
+                users.remove(user[USER]);
+            }
+            throw new FriendNotRegisteredException(extractNotRegistered(users));
+        }
+    }
+
+    public static String extractNotRegistered(Set<String> users) {
+        StringBuilder build = new StringBuilder("These people are still not registered: ");
+        for (String user : users) {
+            build.append(user).append(", ");
+        }
+        return build.substring(build.length() - 2);
     }
 
     public static User checkInFileExtract(String username, ReaderWriterCreator creator)
@@ -61,7 +85,7 @@ public class Helpers {
             String user;
             while ((user = r.readLine()) != null) {
                 String[] splitU = user.split("\\|");
-                if (splitU[USER].strip().equals(username)) {
+                if (splitU[USER].equals(username)) {
                     return User.of(user);
                 }
             }
@@ -74,7 +98,7 @@ public class Helpers {
         for (int i = REASON; i < command.args().length; i++) {
             build.append(command.args()[i]).append(" ");
         }
-        return build.toString();
+        return build.toString().strip();
     }
 
     public static boolean checkInFileNoException(String username, ReaderWriterCreator creator) throws IOException {
@@ -82,7 +106,7 @@ public class Helpers {
             String user;
             while ((user = r.readLine()) != null) {
                 String[] splitU = user.split("\\|");
-                if (splitU[USER].trim().equals(username)) {
+                if (splitU[USER].equals(username)) {
                     return true;
                 }
             }

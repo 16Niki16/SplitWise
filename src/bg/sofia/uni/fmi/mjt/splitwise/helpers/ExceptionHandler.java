@@ -26,12 +26,12 @@ public class ExceptionHandler {
     }
 
     public static CommandType getCommand(CommandType type, String... commandArguments)
-            throws NotEnoughArgumentsException {
+        throws NotEnoughArgumentsException {
         return switch (type) {
             case CommandType.ADD_FRIEND -> {
                 if (commandArguments.length != TWO) {
                     throw new NotEnoughArgumentsException(
-                            "Add-friend does not have enough arguments or have too many arguments!");
+                        "Add-friend does not have enough arguments or have too many arguments!");
                 }
                 yield type;
             }
