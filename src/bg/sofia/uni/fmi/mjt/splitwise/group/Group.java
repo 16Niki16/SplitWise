@@ -1,12 +1,17 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.PayGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.SplitGroupNotificationAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.SplitGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -78,11 +83,11 @@ public class Group implements GroupAPI {
 
     @Override
     public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
-                             ReaderWriterCreator friends)
-        throws NoMembersToPayException {
+                             ReaderWriterCreator friends, User user)
+        throws NoMembersToPayException, PersonNotFriendException, IOException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
-        double sumToAdd = getSumToAdd(command, totalAmount, friends);
-
+        double sumToAdd = getSumToAdd(command, totalAmount, friends, notifications, tempNotif, user);
+        totalAmount = getTotalAmount(command, totalAmount);
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
 
             if (map.getKey().equals(command.args()[PAYER])) {
@@ -99,21 +104,40 @@ public class Group implements GroupAPI {
         return toString();
     }
 
-    private double getSumToAdd(Command command, double totalAmount, ReaderWriterCreator friends)
-        throws NoMembersToPayException {
+    private double getSumToAdd(Command command, double totalAmount, ReaderWriterCreator friends,
+                               ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, User user)
+        throws NoMembersToPayException, PersonNotFriendException, IOException {
         int membersPay = ZERO;
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
-            if (map.getValue() < 0 && !map.getKey().equals(command.args()[PAYER])) {
+
+            if (map.getValue() < ZERO && !map.getKey().equals(command.args()[PAYER])) {
                 ++membersPay;
+
             } else if (map.getKey().equals(command.args()[PAYER]) && map.getValue() < totalAmount) {
 
+                double amountPersonalPay = totalAmount - map.getValue();
+                totalAmount = map.getValue();
+                Command commandPay = CommandCreator.newCommand(
+                    command.line() + " paid " + amountPersonalPay + " " + command.args()[PAYER]);
+                Helpers.addInformation(Helpers.updatedInformation(commandPay, friends, user, notifications, tempNotif),
+                    friends);
             }
         }
         if (membersPay == 0) {
             throw new NoMembersToPayException("There is not a member in the group that you can pay to!");
         }
-        double sumToAdd = totalAmount / membersPay;
-        return sumToAdd;
+        return totalAmount / membersPay;
+    }
+
+    private double getTotalAmount(Command command, double totalAmount) {
+        for (Map.Entry<String, Double> map : this.members.entrySet()) {
+            if (map.getKey().equals(command.args()[PAYER]) && map.getValue() < totalAmount) {
+                return map.getValue();
+            } else if (map.getKey().equals(command.args()[PAYER]) && map.getValue() >= totalAmount) {
+                return totalAmount;
+            }
+        }
+        return totalAmount;
     }
 
     @Override

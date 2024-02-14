@@ -17,8 +17,8 @@ public enum CommandType {
     HELP("help"),
 
     PAID("paid"),
-
-    GROUP_PAID("paid-group");
+    GROUP_PAID("paid-group"),
+    SWITCH_CURRENCY("switch-currency");
     private String type;
 
     CommandType(String type) {
@@ -26,6 +26,7 @@ public enum CommandType {
     }
 
     public static CommandType of(String type) throws UnknownCommandException {
+
         for (CommandType value : values()) {
             if (value.type.equals(type)) {
                 return value;

@@ -61,6 +61,7 @@ public class CommandExecutor {
                 }
 
                 case CommandType.HELP -> Help.getHelp();
+                case SWITCH_CURRENCY -> null;
             }
                 ;
         } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException e) {
@@ -101,8 +102,8 @@ public class CommandExecutor {
             }
 
             case CommandType.GROUP_PAID -> {
-                PaidGroupAPI payment =
-                    new PaidGroup(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif, directory);
+                PaidGroupAPI payment = new PaidGroup(
+                    groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif, directory, user);
                 yield payment.personPaidToGroup(command);
             }
 

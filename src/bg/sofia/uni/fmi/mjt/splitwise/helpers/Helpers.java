@@ -3,17 +3,24 @@ package bg.sofia.uni.fmi.mjt.splitwise.helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotificationsAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.REASON;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Helpers {
     private static final int GROUP_NAME = 0;
@@ -67,6 +74,9 @@ public class Helpers {
                 String[] user = line.split("\\|");
                 users.remove(user[USER]);
             }
+            if (users.isEmpty()) {
+                return;
+            }
             throw new FriendNotRegisteredException(extractNotRegistered(users));
         }
     }
@@ -76,7 +86,7 @@ public class Helpers {
         for (String user : users) {
             build.append(user).append(", ");
         }
-        return build.substring(build.length() - 2);
+        return build.substring(0, build.length() - 2);
     }
 
     public static User checkInFileExtract(String username, ReaderWriterCreator creator)
@@ -119,6 +129,32 @@ public class Helpers {
             writer.write(information);
             writer.newLine();
             writer.flush();
+        }
+    }
+
+    public static List<String> updatedInformation(Command command, ReaderWriterCreator directory, User user,
+                                                  ReaderWriterCreator notificationDirectory,
+                                                  ReaderWriterCreator tempNotif)
+        throws IOException, PersonNotFriendException {
+        try (BufferedReader r = new BufferedReader(directory.getRead())) {
+            String readline;
+            List<String> newLines = new ArrayList<>();
+            while ((readline = r.readLine()) != null) {
+                String[] splited = readline.split("\\|");
+                if (command.line().equals(splited[USER])) {
+                    PersonPayNotificationsAPI notif = new PersonPayNotifications(notificationDirectory, tempNotif);
+                    notif.addNotificationFriendPayment(command);
+                    newLines.add(user.paidMoney(command.args()[USERNAME_OWE],
+                        -1 * Double.parseDouble(command.args()[AMOUNT])));
+                } else if (splited[USER].equals(command.args()[USERNAME_OWE])) {
+                    UserAPI friend = User.of(readline);
+                    newLines.add(friend.paidMoney(command.line(),
+                        Double.parseDouble(command.args()[AMOUNT])));
+                } else {
+                    newLines.add(readline);
+                }
+            }
+            return newLines;
         }
     }
 }

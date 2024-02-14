@@ -13,6 +13,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
@@ -63,11 +64,12 @@ public class CreateGroup implements CreateGroupAPI {
     }
 
     private void checkAllExist(Command command) throws FriendNotRegisteredException, IOException, AddYourselfException {
-        Set<String> users = Set.of(Arrays.copyOfRange(command.args(), FRIEND_LIST, command.args().length));
+        Set<String> users =
+            new HashSet<>(Arrays.asList(Arrays.copyOfRange(command.args(), FRIEND_LIST, command.args().length)));
         if (users.contains(command.line())) {
             throw new AddYourselfException("You are trying to add yourself second time in a group!");
         }
-        Helpers.checkInFileGroup(users, group);
+        Helpers.checkInFileGroup(users, friends);
     }
 
 }

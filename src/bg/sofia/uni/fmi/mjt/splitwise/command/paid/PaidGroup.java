@@ -3,11 +3,13 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,14 +24,17 @@ public class PaidGroup implements PaidGroupAPI {
     private ReaderWriterCreator exceptions;
     private ReaderWriterCreator tempNotif;
     private ReaderWriterCreator friends;
+    private User user;
 
     public PaidGroup(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
-                     ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ReaderWriterCreator friends) {
+                     ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ReaderWriterCreator friends,
+                     User user) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
         this.exceptions = exceptions;
         this.tempNotif = tempNotif;
         this.friends = friends;
+        this.user = user;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class PaidGroup implements PaidGroupAPI {
                 String[] getData = line.split("\\|");
                 if (getData[GROUP_NAME].equals(command.args()[GROUP_INDEX])) {
                     GroupAPI updateGroup = Group.ofSplit(line);
-                    lines.add(updateGroup.payInGroup(command, notifications, tempNotif, friends));
+                    lines.add(updateGroup.payInGroup(command, notifications, tempNotif, friends, user));
                 } else {
                     lines.add(line);
                 }
@@ -57,6 +62,10 @@ public class PaidGroup implements PaidGroupAPI {
             throw new RuntimeException("Server problem pay in group", e);
         } catch (ArrayIndexOutOfBoundsException e) {
             return "Not enough arguments";
+        } catch (PersonNotFriendException e) {
+            ExceptionFormater.exceptionAdd(command.line(), "The person has given you too much money", e.getStackTrace(),
+                exceptions);
+            return "The person has given you too much money and not still friends!";
         }
     }
 

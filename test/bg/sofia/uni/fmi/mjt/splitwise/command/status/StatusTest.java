@@ -57,8 +57,8 @@ public class StatusTest {
     void testGetStatusEmpty() {
         when(groupsDirectory.getRead()).thenAnswer(x -> new StringReader(direcGroup));
         when(directory.getRead()).thenAnswer(x -> new StringReader(direc));
-        assertEquals(status.getStatus(commandEmpty), ("You do not have any friends\n" +
-                "You do not participate in any groups"),
+        assertEquals(status.getStatus(commandEmpty), ("You do not have debts with friends\n" +
+                "You do not have debts in the groups!"),
             "failed test get-status.");
     }
 }

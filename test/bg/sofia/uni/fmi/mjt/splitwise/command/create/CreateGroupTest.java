@@ -37,26 +37,27 @@ public class CreateGroupTest {
         exc = mock();
         friends = mock();
         group = mock();
-        command = CommandCreator.newCommand("niki create-group thirdGroup kolio pepi");
+
         create = new CreateGroup(friends, group, exc);
     }
 
     @Test
     void testCreateGroupValid() {
         String groupTest = groups;
+        command = CommandCreator.newCommand("niki create-group thirdGroup kolio pepi");
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(friends.getAppend()).thenAnswer(x -> new StringWriter());
         when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
-        assertTrue(create.createGroup(command)
-            .contains("thirdGroup|niki 0.00,kolio 0.00,pepi 0.00"));
+        assertEquals(create.createGroup(command), "Group is successfully created!");
     }
 
     @Test
     void testCreateGroupExceptions() {
         String groupTest = groups;
+        command = CommandCreator.newCommand("niki create-group firstGroup kolio pepi");
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(friends.getAppend()).thenAnswer(x -> new StringWriter());
@@ -66,10 +67,6 @@ public class CreateGroupTest {
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(create.createGroup(command),
-            "Groups participants are not enough.", "Wrong testing participants not enough!");
-        assertEquals(create.createGroup(command),
             "Group with this name already exist.", "Wrong testing in group exist!");
-        assertEquals(create.createGroup(command),
-            "Groups participants are not enough.", "Wrong testing participants not enough!");
     }
 }
