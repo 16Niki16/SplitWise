@@ -1,8 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.currency.client;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CurrencyMapException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
@@ -29,17 +29,18 @@ public class TransformCurrency {
         this.client = client;
     }
 
-    public String changeCurrency(Command command) {
+    public String changeCurrency(Command command) throws UnknownCurrencyException, NotCorrectQueryException {
         try {
             Helpers.addInformation(updatedInformation(command), directory);
             return "Currency successfully changed!";
-        } catch (URISyntaxException | NotCorrectQueryException | CurrencyMapException | IOException e) {
+        } catch (URISyntaxException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private List<String> updatedInformation(Command command)
-        throws IOException, CurrencyMapException, NotCorrectQueryException, URISyntaxException {
+        throws IOException, NotCorrectQueryException, URISyntaxException,
+        UnknownCurrencyException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String lineRead;
             List<String> lines = new ArrayList<>();

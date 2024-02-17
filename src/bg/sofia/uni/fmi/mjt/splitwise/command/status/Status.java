@@ -3,60 +3,41 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_NAME;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Status implements StatusAPI {
 
     private static final int GROUP = 0;
-    private ReaderWriterCreator directory;
     private ReaderWriterCreator groupsDirectory;
     private ReaderWriterCreator exceptions;
+    private User user;
 
-    public Status(ReaderWriterCreator directory, ReaderWriterCreator groupsDirectory,
-                  ReaderWriterCreator exceptionsDirectory) {
-        this.directory = directory;
+    public Status(ReaderWriterCreator groupsDirectory,
+                  ReaderWriterCreator exceptionsDirectory, User user) {
         this.groupsDirectory = groupsDirectory;
         this.exceptions = exceptionsDirectory;
+        this.user = user;
     }
 
     public String getStatus(Command command) {
-        return peopleOwes(command) +
+        return peopleOwes() +
             groupAppend(command);
     }
 
-    private String peopleOwes(Command command) {
+    private String peopleOwes() {
         StringBuilder build = new StringBuilder("Friend list:\n");
-        try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                String[] splitedLine = line.split("\\|");
-                if (splitedLine[USER].equals(command.line())) {
-                    if (splitedLine.length == TWO) {
-                        return "You do not have debts with friends\n";
-                    }
-                    String[] splitfr = splitedLine[FRIEND_LIST].split(",");
-                    for (String fr : splitfr) {
-                        String[] splitMoney = fr.split(" ");
-                        if (Double.parseDouble(splitMoney[AMOUNT]) != 0) {
-                            build.append(appendToBuilder(splitMoney, false));
-                        }
-                    }
-                }
-            }
-            return build.toString();
-        } catch (IOException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "Could not extract in status friends", e.getStackTrace(),
-                exceptions);
-            throw new RuntimeException("Could not extract friends. IO", e);
+        String status = user.getStatus();
+        if (status.isEmpty()) {
+            return "You do not have debts with friends";
         }
+        return build.append(status).toString();
     }
 
     private String groupAppend(Command command) {
@@ -72,10 +53,10 @@ public class Status implements StatusAPI {
                         String[] spl = people.split(" ");
                         if (Double.parseDouble(spl[AMOUNT]) != 0) {
                             if (isFirst) {
-                                build.append(splitLine[GROUP]).append("\n").append(appendToBuilder(spl, true));
+                                build.append(splitLine[GROUP]).append("\n").append(appendToBuilder(spl));
                                 isFirst = false;
                             } else {
-                                build.append(appendToBuilder(spl, true));
+                                build.append(appendToBuilder(spl));
                             }
                         }
                     }
@@ -100,23 +81,13 @@ public class Status implements StatusAPI {
         return false;
     }
 
-    private String appendToBuilder(String[] splitMoney, boolean isInGroup) {
-        if (!isInGroup) {
-            if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
-                return String.format("*You owe %.2f to %s LV.\n", Double.parseDouble(splitMoney[AMOUNT]),
-                    splitMoney[USER]);
-            } else {
-                return String.format("*%s owes you %.2f LV.\n", splitMoney[USER],
-                    Double.parseDouble(splitMoney[AMOUNT].substring(1)));
-            }
+    private String appendToBuilder(String[] splitMoney) {
+        if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
+            return String.format("*%s owes to the group %.2f LV.\n", splitMoney[USER],
+                Double.parseDouble(splitMoney[AMOUNT]));
         } else {
-            if (Double.parseDouble(splitMoney[AMOUNT]) > 0) {
-                return String.format("*%s owes to the group %.2f LV.\n", splitMoney[USER],
-                    Double.parseDouble(splitMoney[AMOUNT]));
-            } else {
-                return String.format("*Group owe %.2f to %s LV.\n", Double.parseDouble(splitMoney[AMOUNT].substring(1)),
-                    splitMoney[USER]);
-            }
+            return String.format("*Group owe %.2f to %s LV.\n", Double.parseDouble(splitMoney[AMOUNT].substring(1)),
+                splitMoney[USER]);
         }
     }
 }

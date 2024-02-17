@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
@@ -12,24 +13,22 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Split implements SplitAPI {
-    private ReaderWriterCreator friends;
+    private ReaderWriterCreator directory;
     private ReaderWriterCreator notifications;
     private User user;
     private ReaderWriterCreator exception;
     private ReaderWriterCreator tempNotif;
 
-    public Split(ReaderWriterCreator friends, User user, ReaderWriterCreator notifications,
+    public Split(ReaderWriterCreator directory, User user, ReaderWriterCreator notifications,
                  ReaderWriterCreator exception, ReaderWriterCreator tempNotif) {
         this.user = user;
-        this.friends = friends;
+        this.directory = directory;
         this.notifications = notifications;
         this.exception = exception;
         this.tempNotif = tempNotif;
@@ -37,33 +36,44 @@ public class Split implements SplitAPI {
 
     @Override
     public String moneyOwe(Command command) {
-        try (BufferedReader r = new BufferedReader(friends.getRead())) {
-            String readline;
-            List<String> newLines = new ArrayList<>();
-            while ((readline = r.readLine()) != null) {
-                String[] splited = readline.split("\\|");
-                if (command.line().equals(splited[USER])) {
-                    SplitPersonNotificationsAPI noti = new SplitPersonNotifications(notifications, tempNotif);
-                    noti.addNotificationFriendSplit(command);
-                    newLines.add(user.appendMoney(command.args()[USERNAME_OWE],
-                        -1 * Double.parseDouble(command.args()[AMOUNT])));
-                } else if (splited[USER].equals(command.args()[USERNAME_OWE])) {
-                    UserAPI friend = User.of(readline);
-                    newLines.add(friend.appendMoney(command.line(), Double.parseDouble(command.args()[AMOUNT])));
-                } else {
-                    newLines.add(readline);
-                }
-            }
-            Helpers.addInformation(newLines, friends);
+        try {
+
+            String appendUser = user.appendMoney(command.args()[USERNAME_OWE],
+                -1 * Double.parseDouble(command.args()[AMOUNT]));
+
+            UserAPI friend = User.of(friendLine(command));
+            String appendReceiver = friend.appendMoney(command.line(), Double.parseDouble(command.args()[AMOUNT]));
+
+            Helpers.addInformation(
+                Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,
+                    directory), directory);
+
+            SplitPersonNotificationsAPI notification = new SplitPersonNotifications(notifications, tempNotif);
+            notification.addNotificationFriendSplit(command);
+
             return "Successfully split the money!";
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd(command.line(), "Could not split the money IO.", e.getStackTrace(),
                 exception);
             throw new RuntimeException("Could not split the money IO.", e);
-        } catch (PersonNotFriendException ee) {
+        } catch (PersonNotFriendException | FriendNotRegisteredException ee) {
             ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(), exception);
             return ee.getLocalizedMessage();
         }
+    }
+
+    private String friendLine(Command command)
+        throws IOException, FriendNotRegisteredException {
+        try (BufferedReader r = new BufferedReader(directory.getRead())) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                String[] splited = line.split("\\|");
+                if (splited[USER].equals(command.args()[USERNAME_OWE])) {
+                    return line;
+                }
+            }
+        }
+        throw new FriendNotRegisteredException("This person is still not registered!");
     }
 
 }

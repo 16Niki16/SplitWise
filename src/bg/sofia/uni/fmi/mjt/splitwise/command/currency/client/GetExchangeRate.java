@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.currency.client;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.exchange.ExchangeRateResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import com.google.gson.Gson;
 
 import java.net.URI;
@@ -16,24 +17,30 @@ public class GetExchangeRate {
     private static final String SITE = "api.currencyfreaks.com";
     private static final String ENDPOINT = "/v2.0/rates/latest";
 
+    private static final int TWO = 2;
     private static final int DEFAULT_STATUS = 0;
     private int statusNow = 0;
     private static final int CORRECT = 200;
     private static final int END_CORRECT = 300;
-    private HttpClient client;
+    private final HttpClient client;
 
     public GetExchangeRate(HttpClient client) {
         this.client = client;
     }
 
     public Map<String, String> exchange(String wantedCurrency, String momentCurrency)
-        throws URISyntaxException, NotCorrectQueryException {
+        throws URISyntaxException, NotCorrectQueryException, UnknownCurrencyException {
         URI uri = new URI("https", SITE, ENDPOINT, APIKEY + "&symbols=" + wantedCurrency + "," + momentCurrency, null);
         String data = takeData(uri);
         checkRequestStatus();
         Gson gson = new Gson();
         ExchangeRateResponse exchangeRateResponse = gson.fromJson(data, ExchangeRateResponse.class);
-        return exchangeRateResponse.getRates();
+        Map<String, String> rates = exchangeRateResponse.getRates();
+        if (rates.size() == TWO) {
+            return rates;
+        } else {
+            throw new UnknownCurrencyException("Unknown currency!");
+        }
     }
 
     private String takeData(URI uri) {
@@ -54,7 +61,7 @@ public class GetExchangeRate {
 
     private void checkRequestStatus() throws NotCorrectQueryException {
         if (DEFAULT_STATUS == statusNow) {
-            throw new NotCorrectQueryException("Unsuccessful request");
+            throw new NotCorrectQueryException("Unsuccessful request!");
         }
         statusNow = DEFAULT_STATUS;
     }

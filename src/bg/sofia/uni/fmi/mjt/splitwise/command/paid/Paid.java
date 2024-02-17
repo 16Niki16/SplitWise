@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
@@ -12,8 +13,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
@@ -35,10 +34,22 @@ public class Paid implements PaidAPI {
         this.tempNotif = tempNotif;
     }
 
-    public String personPay(Command command) {
+    public String personPay(Command command) throws PersonNotFriendException, FriendNotRegisteredException {
         try {
 
-            Helpers.addInformation(updatedInformation(command), directory);
+            String appendUser = user.paidMoney(command.args()[USERNAME_OWE],
+                -1 * Double.parseDouble(command.args()[AMOUNT]));
+
+            UserAPI friend = User.of(friendLine(command));
+            String appendReceiver = friend.paidMoney(command.line(),
+                Double.parseDouble(command.args()[AMOUNT]));
+
+            Helpers.addInformation(
+                Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,
+                    directory), directory);
+
+            PersonPayNotificationsAPI notification = new PersonPayNotifications(notificationDirectory, tempNotif);
+            notification.addNotificationFriendPayment(command);
             return "Successfully paid!";
 
         } catch (IOException e) {
@@ -46,32 +57,20 @@ public class Paid implements PaidAPI {
             ExceptionFormater.exceptionAdd(command.line(), "paid IO exception", e.getStackTrace(), exceptions);
             throw new RuntimeException("could not pay, server problem!", e);
 
-        } catch (PersonNotFriendException ee) {
-            ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(), exceptions);
-            return ee.getLocalizedMessage();
         }
     }
 
-    private List<String> updatedInformation(Command command) throws IOException, PersonNotFriendException {
+    private String friendLine(Command command)
+        throws IOException, FriendNotRegisteredException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            String readline;
-            List<String> newLines = new ArrayList<>();
-            while ((readline = r.readLine()) != null) {
-                String[] splited = readline.split("\\|");
-                if (command.line().equals(splited[USER])) {
-                    PersonPayNotificationsAPI notif = new PersonPayNotifications(notificationDirectory, tempNotif);
-                    notif.addNotificationFriendPayment(command);
-                    newLines.add(user.paidMoney(command.args()[USERNAME_OWE],
-                        -1 * Double.parseDouble(command.args()[AMOUNT])));
-                } else if (splited[USER].equals(command.args()[USERNAME_OWE])) {
-                    UserAPI friend = User.of(readline);
-                    newLines.add(friend.paidMoney(command.line(),
-                        Double.parseDouble(command.args()[AMOUNT])));
-                } else {
-                    newLines.add(readline);
+            String line;
+            while ((line = r.readLine()) != null) {
+                String[] splited = line.split("\\|");
+                if (splited[USER].equals(command.args()[USERNAME_OWE])) {
+                    return line;
                 }
             }
-            return newLines;
         }
+        throw new FriendNotRegisteredException("This person is still not registered!");
     }
 }

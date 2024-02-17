@@ -49,20 +49,6 @@ public class Helpers {
         }
     }
 
-    public static void checkInFile(String username, ReaderWriterCreator creator)
-        throws FriendNotRegisteredException, IOException {
-        try (BufferedReader r = new BufferedReader(creator.getRead())) {
-            String user;
-            while ((user = r.readLine()) != null) {
-                String[] splitU = user.split("\\|");
-                if (splitU[USER].equals(username)) {
-                    return;
-                }
-            }
-            throw new FriendNotRegisteredException("This person is not registered yet.");
-        }
-    }
-
     public static void checkInFileGroup(Set<String> users, ReaderWriterCreator creator)
         throws FriendNotRegisteredException, IOException {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
@@ -129,6 +115,26 @@ public class Helpers {
             writer.write(information);
             writer.newLine();
             writer.flush();
+        }
+    }
+
+    public static List<String> updatedInfo(String user, String receiver, String appendUser, String appendReceiver,
+                                     ReaderWriterCreator directory)
+        throws IOException {
+        try (BufferedReader r = new BufferedReader(directory.getRead())) {
+            String readline;
+            List<String> newLines = new ArrayList<>();
+            while ((readline = r.readLine()) != null) {
+                String[] splited = readline.split("\\|");
+                if (user.equals(splited[USER])) {
+                    newLines.add(appendUser);
+                } else if (splited[USER].equals(receiver)) {
+                    newLines.add(appendReceiver);
+                } else {
+                    newLines.add(readline);
+                }
+            }
+            return newLines;
         }
     }
 

@@ -17,9 +17,13 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.StatusAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughArgumentsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotNumberException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionHandler;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -59,7 +63,7 @@ public class CommandExecutor {
                 case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, container);
 
                 case CommandType.GET_STATUS -> {
-                    StatusAPI status = new Status(directory, groupsDirectory, exceptionsDirectory);
+                    StatusAPI status = new Status(groupsDirectory, exceptionsDirectory, user);
                     yield status.getStatus(command);
                 }
 
@@ -69,7 +73,9 @@ public class CommandExecutor {
                     yield transform.changeCurrency(command);
                 }
             };
-        } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException e) {
+        } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException |
+                 UnknownCurrencyException | NotCorrectQueryException | PersonNotFriendException |
+            FriendNotRegisteredException e) {
             ExceptionFormater.exceptionAdd(
                 command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);
             return e.getLocalizedMessage();
@@ -95,7 +101,7 @@ public class CommandExecutor {
     }
 
     private String executePaid(Command command, User user, ClientContainer container)
-        throws UnknownCommandException, NotNumberException {
+        throws UnknownCommandException, NotNumberException, PersonNotFriendException, FriendNotRegisteredException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
 

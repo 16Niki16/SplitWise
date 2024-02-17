@@ -13,21 +13,19 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class AddFriend implements AddFriendAPI {
-    private ReaderWriterCreator creator;
+    private ReaderWriterCreator directory;
     private User user;
     private ReaderWriterCreator exceptionDirectory;
     private ClientContainer container;
 
-    public AddFriend(ReaderWriterCreator creator, User user, ReaderWriterCreator exceptionDirectory,
+    public AddFriend(ReaderWriterCreator directory, User user, ReaderWriterCreator exceptionDirectory,
                      ClientContainer container) {
-        this.creator = creator;
+        this.directory = directory;
         this.user = user;
         this.exceptionDirectory = exceptionDirectory;
         this.container = container;
@@ -38,9 +36,14 @@ public class AddFriend implements AddFriendAPI {
         try {
 
             ExceptionHandler.checkAddYourself(command.line(), command.args()[FRIEND_NAME]);
+            User userFriend = User.of(friendLine(command));
+            String appendReceiver = userFriend.addFriend(command.line());
+
             this.user.checkAlreadyFriends(command.args()[FRIEND_NAME]);
-            Helpers.checkInFile(command.args()[FRIEND_NAME], creator);
-            Helpers.addInformation(updatedInformation(command), creator);
+            String appendUser = user.addFriend(command.args()[FRIEND_NAME]);
+
+            Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[FRIEND_NAME],
+                    appendUser, appendReceiver, directory), directory);
 
         } catch (FriendNotRegisteredException | AlreadyFriendsException |
                  AddYourselfException ee) {
@@ -57,23 +60,18 @@ public class AddFriend implements AddFriendAPI {
         return String.format("Friend %s is added.", command.args()[FRIEND_NAME]);
     }
 
-    private List<String> updatedInformation(Command command) throws IOException {
-        try (BufferedReader r = new BufferedReader(creator.getRead())) {
-            String lineRead;
-            List<String> lines = new ArrayList<>();
-            while ((lineRead = r.readLine()) != null) {
-                String[] splitedUser = lineRead.split("\\|");
-                if (splitedUser[USER].equals(command.line())) {
-                    lines.add(user.addFriend(command.args()[FRIEND_NAME]));
-                } else if (splitedUser[USER].equals(command.args()[FRIEND_NAME])) {
-                    User userFriend = User.of(lineRead);
-                    lines.add(userFriend.addFriend(command.line()));
-                } else {
-                    lines.add(lineRead);
+    private String friendLine(Command command)
+        throws IOException, FriendNotRegisteredException {
+        try (BufferedReader r = new BufferedReader(directory.getRead())) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                String[] splited = line.split("\\|");
+                if (splited[USER].equals(command.args()[FRIEND_NAME])) {
+                    return line;
                 }
             }
-            return lines;
         }
+        throw new FriendNotRegisteredException("This person is still not registered!");
     }
 }
 

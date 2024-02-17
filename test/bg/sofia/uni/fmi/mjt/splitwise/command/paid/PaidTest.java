@@ -3,6 +3,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.split.Split;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +63,7 @@ public class PaidTest {
     }
 
     @Test
-    void testMoneyOweValid() {
+    void testMoneyOweValid() throws PersonNotFriendException, FriendNotRegisteredException {
         String testFriends = friends;
         Command command = CommandCreator.newCommand("niki paid 10 pepi");
         when(friend.getRead()).thenAnswer(x -> new StringReader(testFriends));

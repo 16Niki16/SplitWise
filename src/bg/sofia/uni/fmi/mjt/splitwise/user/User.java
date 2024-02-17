@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.user;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CurrencyMapException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 
@@ -18,6 +17,7 @@ public class User implements UserAPI {
     private static final int FOUR = 4;
     private static final int CURRENCY_FRIENDS_EXIST = 3;
     private static final int CURRENCY_FRIENDS_NOT_EXIST = 2;
+    private static final int ZERO = 0;
     private String username;
     private String password;
     private Map<String, Double> friendList;
@@ -57,12 +57,12 @@ public class User implements UserAPI {
         return currency;
     }
 
-    public String changeCurrency(Map<String, String> mapWithCurrency) throws CurrencyMapException {
+    public String changeCurrency(Map<String, String> mapWithCurrency) {
         changeCurrencyNumbers(mapWithCurrency);
         return toString();
     }
 
-    private void changeCurrencyNumbers(Map<String, String> mapWithCurrency) throws CurrencyMapException {
+    private void changeCurrencyNumbers(Map<String, String> mapWithCurrency) {
         double exchangeRate = 0;
         double wantedCurrency = 0;
         String wantedCurr = "";
@@ -75,9 +75,6 @@ public class User implements UserAPI {
             }
         }
         this.currency = wantedCurr;
-        if (exchangeRate == 0 || wantedCurrency == 0) {
-            throw new CurrencyMapException("There is a problem with extracting the currency");
-        }
         for (Map.Entry<String, Double> map : friendList.entrySet()) {
             this.friendList.put(map.getKey(), (map.getValue() / exchangeRate) * wantedCurrency);
         }
@@ -101,6 +98,18 @@ public class User implements UserAPI {
             return toString();
         }
         throw new PersonNotFriendException("You are not still friends");
+    }
+
+    public String getStatus() {
+        StringBuilder build = new StringBuilder();
+        for (Map.Entry<String, Double> map : this.friendList.entrySet()) {
+            if (map.getValue() > ZERO) {
+                build.append(String.format("%s owes you %.2f%s.\n", map.getKey(), map.getValue(), currency));
+            } else if (map.getValue() < ZERO) {
+                build.append(String.format("You owe %s %.2f%s.\n", map.getKey(), map.getValue(), currency));
+            }
+        }
+        return build.toString();
     }
 
     public String paidMoney(String friend, double amount) throws PersonNotFriendException {
