@@ -21,13 +21,13 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.BUFFER_SIZE;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.PASSWORD;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_HOST;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.SERVER_PORT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class Server {
+    private static final int SERVER_PORT = 7777;
+    private static final String SERVER_HOST = "localhost";
+    private static final int BUFFER_SIZE = 1024;
     private ClientContainer users;
     private CommandExecutor commandExecutor;
     private ReaderWriterCreator friends;

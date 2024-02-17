@@ -1,11 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.constants;
 
 public class Constants {
-    //server constants
-    public static final int SERVER_PORT = 7777;
-    public static final String SERVER_HOST = "localhost";
-    public static final int BUFFER_SIZE = 1024;
-
     //commands constants
     public static final int USER = 0;
     public static final int PASSWORD = 1;
@@ -16,6 +11,7 @@ public class Constants {
     public static final int THREE = 3;
     public static final int FOUR = 4;
     public static final int USERNAME_OWE = 2;
+
     public static final int AMOUNT = 1;
     public static final int REASON = 3;
     public static final int TWO = 2;
