@@ -11,11 +11,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Paid implements PaidAPI {
@@ -40,7 +38,7 @@ public class Paid implements PaidAPI {
             String appendUser = user.paidMoney(command.args()[USERNAME_OWE],
                 -1 * Double.parseDouble(command.args()[AMOUNT]));
 
-            UserAPI friend = User.of(friendLine(command));
+            UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
             String appendReceiver = friend.paidMoney(command.line(),
                 Double.parseDouble(command.args()[AMOUNT]));
 
@@ -58,19 +56,5 @@ public class Paid implements PaidAPI {
             throw new RuntimeException("could not pay, server problem!", e);
 
         }
-    }
-
-    private String friendLine(Command command)
-        throws IOException, FriendNotRegisteredException {
-        try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                String[] splited = line.split("\\|");
-                if (splited[USER].equals(command.args()[USERNAME_OWE])) {
-                    return line;
-                }
-            }
-        }
-        throw new FriendNotRegisteredException("This person is still not registered!");
     }
 }

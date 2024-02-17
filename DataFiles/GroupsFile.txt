@@ -1,4 +1,4 @@
-firstGroup|ili -14.00,niki 0.00,kolio 0.00
+firstGroup|ili -14.01,niki 0.00,kolio 0.00
 secondGroup|niki -16.36,ili 1.82,kolio -3.18
 thirdGroup|niki -3.33,ili -7.50,kolio -12.49
 funny|niki 0.00,ili 0.00,kolio 0.00

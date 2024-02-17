@@ -8,13 +8,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GroupSplit implements GroupSplitAPI {
-    private static final int GROUP_NAME = 0;
     private static final int GROUP_INDEX = 2;
     private ReaderWriterCreator groupsDirectory;
     private ReaderWriterCreator notifications;
@@ -31,20 +27,15 @@ public class GroupSplit implements GroupSplitAPI {
 
     @Override
     public String groupsOwe(Command command) {
-        try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
-            Helpers.checkGroupExist(command.args()[GROUP_INDEX], groupsDirectory);
-            List<String> info = new ArrayList<>();
-            String line;
-            while ((line = r.readLine()) != null) {
-                String[] searchGr = line.split("\\|");
-                if (searchGr[GROUP_NAME].equals(command.args()[GROUP_INDEX])) {
-                    GroupAPI updateGroup = Group.ofSplit(line);
-                    info.add(updateGroup.addInformation(command, notifications, tempNotif));
-                } else {
-                    info.add(line);
-                }
-            }
-            Helpers.addInformation(info, groupsDirectory);
+
+        try {
+
+            GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
+            String payment = updateGroup.addInformation(command, notifications, tempNotif);
+
+            Helpers.addInformation(Helpers.updatedGroup(command, groupsDirectory, payment, GROUP_INDEX),
+                groupsDirectory);
+
         } catch (GroupDoesNotExistException e) {
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return e.getLocalizedMessage();

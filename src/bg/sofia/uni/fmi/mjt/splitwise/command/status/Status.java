@@ -35,7 +35,7 @@ public class Status implements StatusAPI {
         StringBuilder build = new StringBuilder("Friend list:\n");
         String status = user.getStatus();
         if (status.isEmpty()) {
-            return "You do not have debts with friends";
+            return "You do not have debts with friends!";
         }
         return build.append(status).toString();
     }

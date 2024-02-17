@@ -4,10 +4,4 @@ niki approved your payment 3.00 LV.
 You owes niki 10.00 LV[taka]
 You owes niki 3.15[taka].
 Groups:
-No information!
-name: kolio
-Friends:
-You owes niki 10.00 LV[taka]
-You owes niki 10.00[taka].
-Groups:
-No information!
+*firstGroup - You owes niki 3.33 LV[taka]

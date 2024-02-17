@@ -41,7 +41,7 @@ public class Split implements SplitAPI {
             String appendUser = user.appendMoney(command.args()[USERNAME_OWE],
                 -1 * Double.parseDouble(command.args()[AMOUNT]));
 
-            UserAPI friend = User.of(friendLine(command));
+            UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
             String appendReceiver = friend.appendMoney(command.line(), Double.parseDouble(command.args()[AMOUNT]));
 
             Helpers.addInformation(
@@ -60,20 +60,6 @@ public class Split implements SplitAPI {
             ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(), exception);
             return ee.getLocalizedMessage();
         }
-    }
-
-    private String friendLine(Command command)
-        throws IOException, FriendNotRegisteredException {
-        try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                String[] splited = line.split("\\|");
-                if (splited[USER].equals(command.args()[USERNAME_OWE])) {
-                    return line;
-                }
-            }
-        }
-        throw new FriendNotRegisteredException("This person is still not registered!");
     }
 
 }

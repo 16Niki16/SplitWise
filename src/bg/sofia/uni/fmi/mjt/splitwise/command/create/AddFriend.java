@@ -11,11 +11,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_NAME;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class AddFriend implements AddFriendAPI {
     private ReaderWriterCreator directory;
@@ -36,15 +34,16 @@ public class AddFriend implements AddFriendAPI {
         try {
 
             ExceptionHandler.checkAddYourself(command.line(), command.args()[FRIEND_NAME]);
-            User userFriend = User.of(friendLine(command));
+            User userFriend = User.of(Helpers.findFriendLine(command, FRIEND_NAME, directory));
             String appendReceiver = userFriend.addFriend(command.line());
 
             this.user.checkAlreadyFriends(command.args()[FRIEND_NAME]);
             String appendUser = user.addFriend(command.args()[FRIEND_NAME]);
 
             Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[FRIEND_NAME],
-                    appendUser, appendReceiver, directory), directory);
+                appendUser, appendReceiver, directory), directory);
 
+            return String.format("Friend %s is added.", command.args()[FRIEND_NAME]);
         } catch (FriendNotRegisteredException | AlreadyFriendsException |
                  AddYourselfException ee) {
             ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(),
@@ -56,22 +55,7 @@ public class AddFriend implements AddFriendAPI {
                 exceptionDirectory);
             throw new RuntimeException("Could not add the friend successfully", e);
         }
-
-        return String.format("Friend %s is added.", command.args()[FRIEND_NAME]);
     }
 
-    private String friendLine(Command command)
-        throws IOException, FriendNotRegisteredException {
-        try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                String[] splited = line.split("\\|");
-                if (splited[USER].equals(command.args()[FRIEND_NAME])) {
-                    return line;
-                }
-            }
-        }
-        throw new FriendNotRegisteredException("This person is still not registered!");
-    }
 }
 
