@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.create.AddFriend;
 import bg.sofia.uni.fmi.mjt.splitwise.command.create.AddFriendAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.create.CreateGroup;
 import bg.sofia.uni.fmi.mjt.splitwise.command.create.CreateGroupAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.TransformCurrency;
 import bg.sofia.uni.fmi.mjt.splitwise.command.help.Help;
 import bg.sofia.uni.fmi.mjt.splitwise.command.paid.Paid;
 import bg.sofia.uni.fmi.mjt.splitwise.command.paid.PaidAPI;
@@ -23,6 +24,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionHandler;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+
+import java.net.http.HttpClient;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.COMMAND_NAME;
@@ -44,7 +47,7 @@ public class CommandExecutor {
         this.tempNotif = new ReaderWriterCreator(tempNotif);
     }
 
-    public String execute(Command command, User user, ClientContainer container) {
+    public String execute(Command command, User user, ClientContainer container, HttpClient client) {
         try {
             return switch (ExceptionHandler.checkCommandLength(CommandType.of(command.args()[COMMAND_NAME].strip()),
                 command.args())) {
@@ -61,9 +64,11 @@ public class CommandExecutor {
                 }
 
                 case CommandType.HELP -> Help.getHelp();
-                case SWITCH_CURRENCY -> null;
-            }
-                ;
+                case SWITCH_CURRENCY -> {
+                    TransformCurrency transform = new TransformCurrency(directory, user, client);
+                    yield transform.changeCurrency(command);
+                }
+            };
         } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException e) {
             ExceptionFormater.exceptionAdd(
                 command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);

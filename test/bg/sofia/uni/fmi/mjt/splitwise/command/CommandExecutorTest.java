@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.http.HttpClient;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,9 +18,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CommandExecutorTest {
-    private static final int COMMAND = 0;
     private static final String RANDOM = "random";
     private ClientContainer container;
+    @Mock
+    private HttpClient client;
     @Mock
     private User user;
     @Mock
@@ -37,7 +40,8 @@ public class CommandExecutorTest {
 
         assertNotNull(command.args());
         assertTrue(
-            executor.execute(command, user, container).contains("create-group <group_name> <username> <username> ... <username>"));
+            executor.execute(command, user, container, client)
+                .contains("create-group <group_name> <username> <username> ... <username>"));
     }
 
     @Test
@@ -45,7 +49,7 @@ public class CommandExecutorTest {
         when(command.args()).thenReturn(new String[] {"unknown"});
 
         assertNotNull(command.args());
-        assertEquals(executor.execute(command, user, container), "Unknown command");
+        assertEquals(executor.execute(command, user, container, client), "Unknown command");
     }
 
 }

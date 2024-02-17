@@ -24,8 +24,12 @@ public class Login {
             container.addUser(user);
             return user;
         } catch (FriendNotRegisteredException e) {
-            Helpers.appendToFile(username + "|" + password, directory);
-            return User.of(username + "|" + password);
+            if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,}$")) {
+                throw new PasswordNotCorrectException(
+                    "Password must contain at least 6 symbols(1 small letter, 1 capital letter and 1 number)");
+            }
+            Helpers.appendToFile(username + "|" + password + "|BGN", directory);
+            return User.of(username + "|" + password + "|BGN");
         }
     }
 }

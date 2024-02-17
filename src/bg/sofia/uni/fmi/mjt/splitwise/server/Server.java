@@ -12,6 +12,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.http.HttpClient;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -32,6 +33,7 @@ public class Server {
     private ReaderWriterCreator friends;
     private ReaderWriterCreator tempNotifications;
     private ReaderWriterCreator exception;
+    private HttpClient httpClient;
 
     public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;
@@ -39,6 +41,7 @@ public class Server {
         this.tempNotifications = new ReaderWriterCreator(tempNotifications);
         this.exception = new ReaderWriterCreator(exception);
         this.users = new ClientContainer(this.friends);
+        this.httpClient = HttpClient.newBuilder().build();
     }
 
     public void serverStart() {
@@ -89,12 +92,12 @@ public class Server {
     private void readable(SocketChannel sc, ByteBuffer buffer) throws IOException {
         String line = clientInput(buffer, sc);
         if (line == null) {
-        } else if (line.contains("|")) {
+        } else if (line.matches("\\w+\\|\\w+")) {
             creatingUser(line, buffer, sc);
         } else {
             String[] user = line.split(" ");
             String commandResult =
-                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), users);
+                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), users, httpClient);
             clientOutput(buffer, sc, commandResult);
         }
     }
@@ -136,8 +139,7 @@ public class Server {
                         HelpersNotifications.getNotifications(lineSplit[USER], tempNotifications, exception)));
             }
         } catch (PasswordNotCorrectException e) {
-            String messageWrongPassword = "Entered wrong password";
-            clientOutput(buffer, sc, messageWrongPassword);
+            clientOutput(buffer, sc, e.getLocalizedMessage());
         }
     }
 

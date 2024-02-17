@@ -28,7 +28,7 @@ public class ExceptionHandler {
     public static CommandType checkCommandLength(CommandType type, String... commandArguments)
         throws NotEnoughArgumentsException {
         switch (type) {
-            case CommandType.ADD_FRIEND -> {
+            case CommandType.ADD_FRIEND, CommandType.SWITCH_CURRENCY -> {
                 if (commandArguments.length != TWO) {
                     throw new NotEnoughArgumentsException(
                         "Add-friend does not have enough arguments or have too many arguments!");

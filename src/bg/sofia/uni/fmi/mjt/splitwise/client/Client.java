@@ -39,7 +39,7 @@ public class Client {
                 }
                 clientInput(buffer, socketChannel, message);
                 String reply = serverOutput(buffer, socketChannel);
-                if (!isLogged && !reply.equals("Entered wrong password")) {
+                if (!isLogged && reply.contains("Welcome")) {
                     isLogged = true;
                     usernameTrack = usernameExtract(reply);
                 }
@@ -84,11 +84,20 @@ public class Client {
     private String isNotLogged(Scanner scanner) {
         System.out.print("Enter username: ");
         String usernameCommand = scanner.nextLine();
+        while (usernameCommand.isEmpty()) {
+            System.out.print("Username can not be empty!\nEnter username: ");
+            usernameCommand = scanner.nextLine();
+        }
         if (disconnect(usernameCommand)) {
             return usernameCommand;
         }
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
+        while (password.isEmpty()) {
+            System.out.print("Password must contain at least 6 symbols" +
+                "(1 small letter, 1 capital letter and 1 number)\nEnter password: ");
+            password = scanner.nextLine();
+        }
 
         return usernameCommand + "|" + password;
     }

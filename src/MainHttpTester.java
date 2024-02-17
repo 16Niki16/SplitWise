@@ -1,4 +1,5 @@
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ClientHttp;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.GetExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -6,10 +7,10 @@ import java.net.http.HttpClient;
 public class MainHttpTester {
     public static void main(String[] args) {
         HttpClient client = HttpClient.newBuilder().build();
-        ClientHttp hhtp = new ClientHttp(client);
+        GetExchangeRate hhtp = new GetExchangeRate(client);
         try {
-            System.out.println(hhtp.exchange("usd"));
-        } catch (URISyntaxException e) {
+            System.out.println(hhtp.exchange("eur", "bgn"));
+        } catch (URISyntaxException | NotCorrectQueryException e) {
             throw new RuntimeException(e);
         }
     }
