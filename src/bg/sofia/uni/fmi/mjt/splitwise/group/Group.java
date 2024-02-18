@@ -1,15 +1,18 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.PayGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.SplitGroupNotificationAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.SplitGroupNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotificationsAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -19,6 +22,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GROUP_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Group implements GroupAPI {
     private static final int ZERO = 0;
@@ -84,7 +88,7 @@ public class Group implements GroupAPI {
     @Override
     public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
                              ReaderWriterCreator friends, User user)
-        throws NoMembersToPayException, PersonNotFriendException, IOException {
+        throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
         double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
         double sumToAdd = getSumToAdd(command, totalAmount, friends, notifications, tempNotif, user);
         totalAmount = getTotalAmount(command, totalAmount);
@@ -106,7 +110,7 @@ public class Group implements GroupAPI {
 
     private double getSumToAdd(Command command, double totalAmount, ReaderWriterCreator friends,
                                ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, User user)
-        throws NoMembersToPayException, PersonNotFriendException, IOException {
+        throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
         int membersPay = ZERO;
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
 
@@ -117,10 +121,17 @@ public class Group implements GroupAPI {
 
                 double amountPersonalPay = totalAmount - map.getValue();
                 totalAmount = map.getValue();
-                Command commandPay = CommandCreator.newCommand(
-                    command.line() + " paid " + amountPersonalPay + " " + command.args()[PAYER]);
-                Helpers.addInformation(Helpers.updatedInformation(commandPay, friends, user, notifications, tempNotif),
-                    friends);
+
+                String userAppend = user.paidMoney(command.args()[USERNAME_OWE], amountPersonalPay);
+
+                UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, friends));
+                String receiverAppend = friend.paidMoney(command.line(), amountPersonalPay);
+
+                Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE],
+                    userAppend, receiverAppend, friends), friends);
+
+                PersonPayNotificationsAPI notif = new PersonPayNotifications(notifications, tempNotif);
+                notif.addNotificationFriendPayment(command);
             }
         }
         if (membersPay == 0) {

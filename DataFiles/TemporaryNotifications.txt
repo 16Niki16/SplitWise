@@ -1,7 +1,6 @@
-name: ili
+name: niki
 Friends:
-niki approved your payment 3.00 LV.
-You owes niki 10.00 LV[taka]
-You owes niki 3.15[taka].
+ili approved your payment 3.00 LV.
+ili approved your payment 10 LV.
 Groups:
-*firstGroup - You owes niki 3.33 LV[taka]
+No information!

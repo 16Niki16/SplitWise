@@ -17,13 +17,27 @@ Groups:
 *secondGroup - niki approved your payment 5.00 LV.
 name: ili
 Friends:
+niki approved your payment 10.00 LV.
+niki approved your payment 2.00 LV.
+niki approved your payment 3.00 LV.
+You owes niki 5.00 LV[taka]
+niki approved your payment 10.00 LV.
+niki approved your payment 10.00 LV.
+niki approved your payment 30.00 LV.
+You owes niki 15.00 LV[taka]
+niki approved your payment 10.00 LV.
+niki approved your payment 10.00 LV.
 niki approved your payment 3.00 LV.
 You owes niki 10.00 LV[taka]
 You owes niki 3.15[taka].
 Groups:
+*secondGroup - niki approved your payment 10.00 LV.
+*thirdGroup - niki approved your payment 10.00 LV.
 *firstGroup - You owes niki 3.33 LV[taka]
 name: niki
 Friends:
+ili approved your payment 3.00 LV.
+ili approved your payment 10.00 LV.
 kolio approved your payment 10.00 LV.
 kolio approved your payment 15.01 LV.
 kolio approved your payment 3.00 LV.

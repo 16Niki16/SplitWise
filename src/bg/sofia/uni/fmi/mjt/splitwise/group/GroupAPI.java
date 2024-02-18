@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -19,7 +20,7 @@ public interface GroupAPI {
      */
     String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
                       ReaderWriterCreator friends, User user)
-        throws NoMembersToPayException, PersonNotFriendException, IOException;
+        throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException;
 
     /**
      * get group name

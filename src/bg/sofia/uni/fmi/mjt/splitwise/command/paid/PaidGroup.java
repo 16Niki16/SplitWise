@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
@@ -44,7 +45,8 @@ public class PaidGroup implements PaidGroupAPI {
                 groupsDirectory);
             return "Successful payment in a group!";
 
-        } catch (GroupDoesNotExistException | NoMembersToPayException | PersonNotFriendException e) {
+        } catch (GroupDoesNotExistException | NoMembersToPayException | PersonNotFriendException |
+                 FriendNotRegisteredException e) {
 
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return e.getLocalizedMessage();
