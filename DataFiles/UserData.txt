@@ -1,4 +1,2 @@
-niki|niki123|ili 14.32,kolio -27.63|BGN
-kolio|kolio123|niki 27.95|USD
-ili|ili123|niki -4.32|BGN
-unnn|Un1111|BGN
+niki|Niki123|BGN
+ili|Ili123|BGN

@@ -138,32 +138,6 @@ public class Helpers {
         throw new FriendNotRegisteredException("This person is still not registered!");
     }
 
-    public static List<String> updatedInformation(Command command, ReaderWriterCreator directory, User user,
-                                                  ReaderWriterCreator notificationDirectory,
-                                                  ReaderWriterCreator tempNotif)
-        throws IOException, PersonNotFriendException {
-        try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            String readline;
-            List<String> newLines = new ArrayList<>();
-            while ((readline = r.readLine()) != null) {
-                String[] splited = readline.split("\\|");
-                if (command.line().equals(splited[USER])) {
-                    PersonPayNotificationsAPI notif = new PersonPayNotifications(notificationDirectory, tempNotif);
-                    notif.addNotificationFriendPayment(command);
-                    newLines.add(user.paidMoney(command.args()[USERNAME_OWE],
-                        -1 * Double.parseDouble(command.args()[AMOUNT])));
-                } else if (splited[USER].equals(command.args()[USERNAME_OWE])) {
-                    UserAPI friend = User.of(readline);
-                    newLines.add(friend.paidMoney(command.line(),
-                        Double.parseDouble(command.args()[AMOUNT])));
-                } else {
-                    newLines.add(readline);
-                }
-            }
-            return newLines;
-        }
-    }
-
     public static List<String> updatedGroup(Command command, ReaderWriterCreator groupsDirectory, String payment,
                                             int index) throws IOException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
