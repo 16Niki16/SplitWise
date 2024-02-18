@@ -65,16 +65,14 @@ public class User implements UserAPI {
     private void changeCurrencyNumbers(Map<String, String> mapWithCurrency) {
         double exchangeRate = 0;
         double wantedCurrency = 0;
-        String wantedCurr = "";
         for (Map.Entry<String, String> map : mapWithCurrency.entrySet()) {
             if (map.getKey().equalsIgnoreCase(this.currency)) {
                 exchangeRate = Double.parseDouble(map.getValue());
             } else {
                 wantedCurrency = Double.parseDouble(map.getValue());
-                wantedCurr = map.getKey();
+                this.currency = map.getKey();
             }
         }
-        this.currency = wantedCurr;
         for (Map.Entry<String, Double> map : friendList.entrySet()) {
             this.friendList.put(map.getKey(), (map.getValue() / exchangeRate) * wantedCurrency);
         }

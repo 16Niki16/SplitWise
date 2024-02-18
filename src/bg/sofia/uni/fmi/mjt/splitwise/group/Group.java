@@ -23,6 +23,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GROUP_NAME;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
+import static java.lang.Math.abs;
 
 public class Group implements GroupAPI {
     private static final int ZERO = 0;
@@ -59,6 +60,23 @@ public class Group implements GroupAPI {
             participant.put(getData[USER], Double.parseDouble(getData[AMOUNT]));
         }
         return new Group(splitGroup[GROUP_INDEX], participant);
+    }
+
+    public boolean checkPersonContains(String user) {
+        return this.members.containsKey(user);
+    }
+
+    public String addOwes() {
+        StringBuilder build = new StringBuilder(this.group + '\n');
+        for (Map.Entry<String, Double> map : this.members.entrySet()) {
+            if (map.getValue() > 0) {
+                build.append(String.format("*%s owes to the group %.2f LV.\n", map.getKey(),
+                    map.getValue()));
+            } else if (map.getValue() < 0) {
+                build.append(String.format("*Group owes %.2f to %s LV.\n", abs(map.getValue()), map.getKey()));
+            }
+        }
+        return (build.toString().equals(this.group + '\n')) ? "" : build.toString();
     }
 
     @Override
@@ -122,7 +140,7 @@ public class Group implements GroupAPI {
                 double amountPersonalPay = totalAmount - map.getValue();
                 totalAmount = map.getValue();
 
-                String userAppend = user.paidMoney(command.args()[USERNAME_OWE], amountPersonalPay);
+                String userAppend = user.paidMoney(command.args()[USERNAME_OWE], -1 * amountPersonalPay);
 
                 UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, friends));
                 String receiverAppend = friend.paidMoney(command.line(), amountPersonalPay);

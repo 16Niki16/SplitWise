@@ -11,11 +11,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
 public class Split implements SplitAPI {
@@ -37,12 +35,11 @@ public class Split implements SplitAPI {
     @Override
     public String moneyOwe(Command command) {
         try {
-
-            String appendUser = user.appendMoney(command.args()[USERNAME_OWE],
-                -1 * Double.parseDouble(command.args()[AMOUNT]));
+            double amount = Double.parseDouble(command.args()[AMOUNT]);
+            String appendUser = user.appendMoney(command.args()[USERNAME_OWE], -1 * amount);
 
             UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
-            String appendReceiver = friend.appendMoney(command.line(), Double.parseDouble(command.args()[AMOUNT]));
+            String appendReceiver = friend.appendMoney(command.line(), amount);
 
             Helpers.addInformation(
                 Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,

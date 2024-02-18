@@ -1,2 +1,3 @@
-niki|Niki123|BGN
-ili|Ili123|BGN
+niki|Niki123|kiro -1.67|BGN
+ili|Ili123|kiro -1.67|BGN
+kiro|Kiro123|ili 1.67,niki 1.67|BGN
