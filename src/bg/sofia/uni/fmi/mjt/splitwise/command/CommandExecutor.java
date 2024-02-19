@@ -130,7 +130,8 @@ public class CommandExecutor {
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
 
             case CommandType.SPLIT -> {
-                SplitAPI split = new Split(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
+                SplitAPI split = new Split(directory, user, notificationsDirectory, exceptionsDirectory,
+                        tempNotif, client);
                 yield split.moneyOwe(command);
             }
 

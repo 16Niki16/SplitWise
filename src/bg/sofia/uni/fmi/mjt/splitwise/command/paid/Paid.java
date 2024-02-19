@@ -49,8 +49,8 @@ public class Paid implements PaidAPI {
                 GetExchangeRate rate = new GetExchangeRate(httpClient);
                 amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount);
             }
-            String appendReceiver = friend.paidMoney(command.line(), amount);
 
+            String appendReceiver = friend.paidMoney(command.line(), amount);
             Helpers.addInformation(
                     Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,
                             directory), directory);

@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class TransformCurrency {
     private static final int CURRENCY = 1;
-    private ReaderWriterCreator directory;
-    private User user;
-    private HttpClient client;
+    private final ReaderWriterCreator directory;
+    private final User user;
+    private final HttpClient client;
 
     public TransformCurrency(ReaderWriterCreator directory, User user, HttpClient client) {
         this.directory = directory;

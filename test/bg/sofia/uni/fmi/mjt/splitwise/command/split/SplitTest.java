@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -20,6 +21,7 @@ public class SplitTest {
     private ReaderWriterCreator notifications;
     private ReaderWriterCreator exc;
     private ReaderWriterCreator tempNotif;
+    private HttpClient client;
     private User user;
     private String friend;
     private String notif;
@@ -46,7 +48,8 @@ public class SplitTest {
         notifications = mock();
         exc = mock();
         tempNotif = mock();
-        split = new Split(friends, user, notifications, exc, tempNotif);
+        client = mock();
+        split = new Split(friends, user, notifications, exc, tempNotif, client);
     }
 
     @Test

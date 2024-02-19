@@ -11,8 +11,8 @@ import java.util.Set;
 public class ClientContainer {
     private static final int STARTING_CAPACITY = 0;
     private static final int MAX_CAPACITY = 50;
-    private Set<User> users;
-    private ReaderWriterCreator usersDirectory;
+    private final Set<User> users;
+    private final ReaderWriterCreator usersDirectory;
 
     public ClientContainer(ReaderWriterCreator usersDirectory) {
         this.usersDirectory = usersDirectory;

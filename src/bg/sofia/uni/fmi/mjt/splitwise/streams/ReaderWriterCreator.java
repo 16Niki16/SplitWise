@@ -8,7 +8,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 public class ReaderWriterCreator {
-    private String directory;
+    private final String directory;
 
     public ReaderWriterCreator(String directory) {
         this.directory = directory;

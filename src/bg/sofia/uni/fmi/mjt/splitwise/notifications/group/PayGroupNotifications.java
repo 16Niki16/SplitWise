@@ -16,8 +16,8 @@ public class PayGroupNotifications implements PayGroupNotificationsAPI {
     private static final int NAME = 0;
     private static final int FRIEND_NAME = 1;
     private static final int GROUP_PAYMENT = 3;
-    private ReaderWriterCreator notificationsDirectory;
-    private ReaderWriterCreator tempNotif;
+    private final ReaderWriterCreator notificationsDirectory;
+    private final ReaderWriterCreator tempNotif;
 
     public PayGroupNotifications(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
         this.notificationsDirectory = notificationsDirectory;

@@ -32,8 +32,8 @@ public class Group implements GroupAPI {
     private static final int GROUP_INDEX = 0;
     private static final int PEOPLE_INDEX = 1;
     private static final double STARTER = 0.00;
-    private String group;
-    private Map<String, Double> members;
+    private final String group;
+    private final Map<String, Double> members;
 
     private Group(String group, Map<String, Double> members) {
         this.group = group;

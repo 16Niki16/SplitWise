@@ -26,12 +26,12 @@ public class Server {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 1024;
-    private ClientContainer users;
-    private CommandExecutor commandExecutor;
-    private ReaderWriterCreator friends;
-    private ReaderWriterCreator tempNotifications;
-    private ReaderWriterCreator exception;
-    private HttpClient httpClient;
+    private final ClientContainer users;
+    private final CommandExecutor commandExecutor;
+    private final ReaderWriterCreator friends;
+    private final ReaderWriterCreator tempNotifications;
+    private final ReaderWriterCreator exception;
+    private final HttpClient httpClient;
 
     public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;

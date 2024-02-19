@@ -12,10 +12,10 @@ import java.io.IOException;
 
 public class GroupSplit implements GroupSplitAPI {
     private static final int GROUP_INDEX = 2;
-    private ReaderWriterCreator groupsDirectory;
-    private ReaderWriterCreator notifications;
-    private ReaderWriterCreator exceptions;
-    private ReaderWriterCreator tempNotif;
+    private final ReaderWriterCreator groupsDirectory;
+    private final ReaderWriterCreator notifications;
+    private final ReaderWriterCreator exceptions;
+    private final ReaderWriterCreator tempNotif;
 
     public GroupSplit(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
                       ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif) {

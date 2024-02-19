@@ -16,12 +16,12 @@ import java.io.IOException;
 
 public class PaidGroup implements PaidGroupAPI {
     private static final int GROUP_INDEX = 3;
-    private ReaderWriterCreator groupsDirectory;
-    private ReaderWriterCreator notifications;
-    private ReaderWriterCreator exceptions;
-    private ReaderWriterCreator tempNotif;
-    private ReaderWriterCreator friends;
-    private User user;
+    private final ReaderWriterCreator groupsDirectory;
+    private final ReaderWriterCreator notifications;
+    private final ReaderWriterCreator exceptions;
+    private final ReaderWriterCreator tempNotif;
+    private final ReaderWriterCreator friends;
+    private final User user;
 
     public PaidGroup(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
                      ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ReaderWriterCreator friends,

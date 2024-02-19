@@ -17,6 +17,8 @@ Groups:
 *secondGroup - niki approved your payment 5.00 LV.
 name:ili
 Friends:
+You owe niki 3.00 LV[party]
+kiro approved your payment 2.00 LV.
 niki approved your payment 4.00 LV.
 niki approved your payment 1.00 LV.
 kiro approved your payment 5.00 LV.

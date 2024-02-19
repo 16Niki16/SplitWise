@@ -10,9 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class Status implements StatusAPI {
-    private ReaderWriterCreator groupsDirectory;
-    private ReaderWriterCreator exceptions;
-    private User user;
+    private final ReaderWriterCreator groupsDirectory;
+    private final ReaderWriterCreator exceptions;
+    private final User user;
 
     public Status(ReaderWriterCreator groupsDirectory,
                   ReaderWriterCreator exceptionsDirectory, User user) {

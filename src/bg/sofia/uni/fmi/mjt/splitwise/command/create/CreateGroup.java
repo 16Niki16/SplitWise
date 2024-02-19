@@ -19,9 +19,9 @@ import java.util.Set;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 
 public class CreateGroup implements CreateGroupAPI {
-    private ReaderWriterCreator friends;
-    private ReaderWriterCreator group;
-    private ReaderWriterCreator exception;
+    private final ReaderWriterCreator friends;
+    private final ReaderWriterCreator group;
+    private final ReaderWriterCreator exception;
     private static final int GROUP_NAME = 0;
 
     public CreateGroup(ReaderWriterCreator friends, ReaderWriterCreator groupsDirectory,
