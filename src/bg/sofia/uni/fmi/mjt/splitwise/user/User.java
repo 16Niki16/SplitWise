@@ -34,7 +34,7 @@ public class User implements UserAPI {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == FOUR) {
             return new User(splitLine[USER], splitLine[PASSWORD], extractFriends(splitLine[FRIEND_LIST]),
-                splitLine[CURRENCY_FRIENDS_EXIST]);
+                    splitLine[CURRENCY_FRIENDS_EXIST]);
         }
         return new User(splitLine[USER], splitLine[PASSWORD], new HashMap<>(), splitLine[CURRENCY_FRIENDS_NOT_EXIST]);
     }
@@ -49,14 +49,17 @@ public class User implements UserAPI {
         return friendsOwes;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public String getCurrency() {
         return currency;
     }
 
+    @Override
     public String changeCurrency(Map<String, String> mapWithCurrency) {
         changeCurrencyNumbers(mapWithCurrency);
         return toString();
@@ -78,17 +81,20 @@ public class User implements UserAPI {
         }
     }
 
+    @Override
     public String addFriend(String friend) {
         friendList.put(friend, START);
         return toString();
     }
 
+    @Override
     public void checkAlreadyFriends(String friend) throws AlreadyFriendsException {
         if (friendList.containsKey(friend)) {
             throw new AlreadyFriendsException("They are friends already");
         }
     }
 
+    @Override
     public String appendMoney(String friend, double amount) throws PersonNotFriendException {
         if (this.friendList.containsKey(friend)) {
             double newAmount = this.friendList.get(friend) + amount / 2;
@@ -98,6 +104,7 @@ public class User implements UserAPI {
         throw new PersonNotFriendException("You are not still friends");
     }
 
+    @Override
     public String getStatus() {
         StringBuilder build = new StringBuilder();
         for (Map.Entry<String, Double> map : this.friendList.entrySet()) {
@@ -110,6 +117,7 @@ public class User implements UserAPI {
         return build.toString();
     }
 
+    @Override
     public String paidMoney(String friend, double amount) throws PersonNotFriendException {
         if (this.friendList.containsKey(friend)) {
             double newAmount = this.friendList.get(friend) - amount;

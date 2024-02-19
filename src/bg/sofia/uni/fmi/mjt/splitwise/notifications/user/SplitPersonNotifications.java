@@ -72,13 +72,13 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
         if (!line.trim().equals("Friends:")) {
             lines.add("Friends:");
             lines.add(
-                String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
+                String.format(String.format("You owe %s %.2f LV[%s]", command.line(), am,
                     Helpers.getReason(command).strip())));
             lines.add(line);
         } else {
             lines.add(line);
             lines.add(
-                String.format(String.format("You owes %s %.2f LV[%s]", command.line(), am,
+                String.format(String.format("You owe %s %.2f LV[%s]", command.line(), am,
                     Helpers.getReason(command).strip())));
         }
     }

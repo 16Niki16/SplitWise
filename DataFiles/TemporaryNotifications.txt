@@ -1,6 +1,0 @@
-name: ili
-Friends:
-kiro approved your payment 5.00 LV.
-Groups:
-*firstGroup - kiro approved your payment 5.00 LV.
-*firstGroup - You owes kiro 3.33 LV[party]

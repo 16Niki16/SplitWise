@@ -20,7 +20,7 @@ public class HelpersNotifications {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[NAME].trim().equals("name") && checkName[FRIEND_NAME].trim().equals(friend.trim())) {
+                if (checkName[NAME].strip().equals("name") && checkName[FRIEND_NAME].strip().equals(friend)) {
                     return false;
                 }
             }
@@ -36,11 +36,11 @@ public class HelpersNotifications {
             boolean isName = false;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[USER].trim().equals("name") && checkName[FRIEND_NAME].trim().equals(username)) {
+                if (checkName[USER].strip().equals("name") && checkName[FRIEND_NAME].strip().equals(username)) {
                     isName = true;
                     build.append("*** Notifications ***\n");
                 } else if (isName) {
-                    if (checkName[USER].trim().equals("name")) {
+                    if (checkName[USER].strip().equals("name")) {
                         updatedList.add(line);
                         isName = false;
                     } else {

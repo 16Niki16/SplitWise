@@ -4,11 +4,23 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 
+import java.util.Map;
+
 public interface UserAPI {
     /**
      * get the username of the user
      */
     String getUsername();
+
+    /**
+     * get the current currency
+     * */
+    String getCurrency();
+
+    /**
+     * change the current currency
+     * */
+    String changeCurrency(Map<String, String> mapWithCurrency);
 
     /**
      * add friend method
@@ -31,6 +43,11 @@ public interface UserAPI {
      * @throws PersonNotFriendException if they are not still friends
      */
     String appendMoney(String friend, double amount) throws PersonNotFriendException;
+
+    /**
+     * get current user status
+     * */
+    String getStatus();
 
     /**
      * paid money
