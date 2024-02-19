@@ -16,7 +16,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.split.Split;
 import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.StatusAPI;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughArgumentsException;
@@ -51,16 +50,16 @@ public class CommandExecutor {
         this.tempNotif = new ReaderWriterCreator(tempNotif);
     }
 
-    public String execute(Command command, User user, ClientContainer container, HttpClient client) {
+    public String execute(Command command, User user, HttpClient client) {
         try {
             return switch (ExceptionHandler.checkCommandLength(CommandType.of(command.args()[COMMAND_NAME].strip()),
                 command.args())) {
 
-                case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP -> executeCreate(command, user, container);
+                case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP -> executeCreate(command, user);
 
-                case CommandType.SPLIT, CommandType.SPLIT_GROUP -> executeSplit(command, user, container);
+                case CommandType.SPLIT, CommandType.SPLIT_GROUP -> executeSplit(command, user);
 
-                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, container);
+                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user);
 
                 case CommandType.GET_STATUS -> {
                     StatusAPI status = new Status(groupsDirectory, exceptionsDirectory, user);
@@ -82,12 +81,12 @@ public class CommandExecutor {
         }
     }
 
-    private String executeCreate(Command command, User user, ClientContainer container)
+    private String executeCreate(Command command, User user)
         throws UnknownCommandException {
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
 
             case CommandType.ADD_FRIEND -> {
-                AddFriendAPI friend = new AddFriend(directory, user, exceptionsDirectory, container);
+                AddFriendAPI friend = new AddFriend(directory, user, exceptionsDirectory);
                 yield friend.addingFriend(command);
             }
 
@@ -100,7 +99,7 @@ public class CommandExecutor {
         };
     }
 
-    private String executePaid(Command command, User user, ClientContainer container)
+    private String executePaid(Command command, User user)
         throws UnknownCommandException, NotNumberException, PersonNotFriendException, FriendNotRegisteredException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
@@ -122,7 +121,7 @@ public class CommandExecutor {
         };
     }
 
-    private String executeSplit(Command command, User user, ClientContainer container)
+    private String executeSplit(Command command, User user)
         throws UnknownCommandException, NotNumberException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);

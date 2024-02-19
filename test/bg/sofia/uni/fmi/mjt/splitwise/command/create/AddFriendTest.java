@@ -20,7 +20,6 @@ public class AddFriendTest {
     private ReaderWriterCreator creator;
     private ReaderWriterCreator exc;
     private User user;
-    private ClientContainer container;
     private AddFriendAPI addFriend;
     private String data;
     private String except;
@@ -34,9 +33,8 @@ public class AddFriendTest {
         except = "";
         creator = mock();
         exc = mock();
-        container = mock();
         user = User.of("niki|niki123|pepi 10.00");
-        addFriend = new AddFriend(creator, user, exc, container);
+        addFriend = new AddFriend(creator, user, exc);
     }
 
     @Test
@@ -44,7 +42,6 @@ public class AddFriendTest {
         Command command = CommandCreator.newCommand("niki add-friend kolio");
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(container.getUser(any())).thenAnswer(x -> null);
         assertEquals(addFriend.addingFriend(command), "Friend kolio is added.",
             "mistake in adding");
     }
@@ -67,7 +64,6 @@ public class AddFriendTest {
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(exc.getRead()).thenAnswer(x -> new StringReader(except));
         when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        when(container.getUser(any())).thenAnswer(x -> null);
         assertEquals(addFriend.addingFriend(command), "This person is not registered yet.",
             "mistake in adding");
     }

@@ -97,7 +97,7 @@ public class Server {
         } else {
             String[] user = line.split(" ");
             String commandResult =
-                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), users, httpClient);
+                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), httpClient);
             clientOutput(buffer, sc, commandResult);
         }
     }

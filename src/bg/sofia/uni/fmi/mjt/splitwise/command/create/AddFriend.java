@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AddYourselfException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
@@ -19,14 +18,11 @@ public class AddFriend implements AddFriendAPI {
     private ReaderWriterCreator directory;
     private User user;
     private ReaderWriterCreator exceptionDirectory;
-    private ClientContainer container;
 
-    public AddFriend(ReaderWriterCreator directory, User user, ReaderWriterCreator exceptionDirectory,
-                     ClientContainer container) {
+    public AddFriend(ReaderWriterCreator directory, User user, ReaderWriterCreator exceptionDirectory) {
         this.directory = directory;
         this.user = user;
         this.exceptionDirectory = exceptionDirectory;
-        this.container = container;
     }
 
     @Override
@@ -41,18 +37,18 @@ public class AddFriend implements AddFriendAPI {
             String appendUser = user.addFriend(command.args()[FRIEND_NAME]);
 
             Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[FRIEND_NAME],
-                appendUser, appendReceiver, directory), directory);
+                    appendUser, appendReceiver, directory), directory);
 
             return String.format("Friend %s is added.", command.args()[FRIEND_NAME]);
         } catch (FriendNotRegisteredException | AlreadyFriendsException |
                  AddYourselfException ee) {
             ExceptionFormater.exceptionAdd(command.line(), ee.getLocalizedMessage(), ee.getStackTrace(),
-                exceptionDirectory);
+                    exceptionDirectory);
             return ee.getLocalizedMessage();
 
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd(command.line(), "Add friend directory mistake", e.getStackTrace(),
-                exceptionDirectory);
+                    exceptionDirectory);
             throw new RuntimeException("Could not add the friend successfully", e);
         }
     }

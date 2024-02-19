@@ -62,10 +62,12 @@ public class Group implements GroupAPI {
         return new Group(splitGroup[GROUP_INDEX], participant);
     }
 
+    @Override
     public boolean checkPersonContains(String user) {
         return this.members.containsKey(user);
     }
 
+    @Override
     public String addOwes() {
         StringBuilder build = new StringBuilder(this.group + '\n');
         for (Map.Entry<String, Double> map : this.members.entrySet()) {

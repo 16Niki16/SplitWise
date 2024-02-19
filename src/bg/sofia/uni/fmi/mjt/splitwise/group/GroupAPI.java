@@ -11,6 +11,16 @@ import java.io.IOException;
 
 public interface GroupAPI {
     /**
+     * check group contains person
+     * */
+    boolean checkPersonContains(String user);
+
+    /**
+     * add owes to group
+     * */
+    String addOwes();
+
+    /**
      * add new balance to group people
      */
     String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif);
