@@ -33,6 +33,7 @@ niki approved your payment 3.00 LV.
 You owes niki 10.00 LV[taka]
 You owes niki 3.15[taka].
 Groups:
+*firstGroup - You owes niki 3.333333 LV[taka]
 *firstGroup - kiro approved your payment 5.00 LV.
 *firstGroup - You owes kiro 3.333333 LV[party]
 *secondGroup - niki approved your payment 10.00 LV.
@@ -56,3 +57,6 @@ Groups:
 *firstGroup - kolio approved your payment 10.00 LV.
 *firstGroup - kolio approved your payment 5.00 LV.
 *thirdGroup - kolio approved your payment 15.00 LV.
+name: kiro
+Groups:
+*firstGroup - You owes niki 3.33 LV[taka]

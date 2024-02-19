@@ -5,9 +5,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.login.Login;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.IOException;
@@ -52,7 +50,7 @@ public class Server {
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 
-            users.connectUserAtStart(friends);
+            users.connectUserAtStart();
 
             while (true) {
                 int readyChannels = selector.select();
@@ -73,7 +71,7 @@ public class Server {
                             readable(sc, buffer);
                         } catch (IOException e) {
                             ExceptionFormater.exceptionAdd("server connection", "connection closed from client",
-                                e.getStackTrace(), exception);
+                                    e.getStackTrace(), exception);
                             continue;
                         }
                     } else if (key.isAcceptable()) {
@@ -84,7 +82,7 @@ public class Server {
             }
         } catch (IOException e) {
             ExceptionFormater.exceptionAdd("server", "There is a problem with the server socket", e.getStackTrace(),
-                exception);
+                    exception);
             throw new RuntimeException("There is a problem with the server socket", e);
         }
     }
@@ -96,9 +94,7 @@ public class Server {
             creatingUser(line, buffer, sc);
         } else {
             String[] user = line.split(" ");
-            String commandResult =
-                commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), httpClient);
-            clientOutput(buffer, sc, commandResult);
+            clientOutput(buffer, sc, commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), httpClient));
         }
     }
 
@@ -128,16 +124,8 @@ public class Server {
     private void creatingUser(String line, ByteBuffer buffer, SocketChannel sc) throws IOException {
         try {
             String[] lineSplit = line.split("\\|");
-            boolean inFile = Helpers.checkInFileNoException(lineSplit[USER], friends);
-            this.users.addUser(
-                Login.loginInSystem(lineSplit[USER], lineSplit[PASSWORD], friends, users));
-            if (!inFile) {
-                clientOutput(buffer, sc, String.format("Welcome %s!", lineSplit[USER]));
-            } else {
-                clientOutput(buffer, sc,
-                    String.format("Welcome %s!\n%s", lineSplit[USER],
-                        HelpersNotifications.getNotifications(lineSplit[USER], tempNotifications, exception)));
-            }
+            clientOutput(buffer, sc, Login.loginInSystem(
+                    lineSplit[USER], lineSplit[PASSWORD], friends, users, tempNotifications, exception));
         } catch (PasswordNotCorrectException e) {
             clientOutput(buffer, sc, e.getLocalizedMessage());
         }

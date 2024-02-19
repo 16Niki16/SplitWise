@@ -1,1 +1,1 @@
-firstGroup|kiro -0.01,niki 0.00,ili 0.00
+firstGroup|kiro 3.32,niki -6.67,ili 3.33

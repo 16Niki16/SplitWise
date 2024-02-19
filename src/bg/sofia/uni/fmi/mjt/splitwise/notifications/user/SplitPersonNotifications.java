@@ -53,7 +53,7 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
                 if (checkName[NAME].trim().equals("name") &&
-                    checkName[FRIEND_NAME].trim().equals(command.args()[FRIEND_PAY])) {
+                    checkName[FRIEND_NAME].equals(command.args()[FRIEND_PAY])) {
                     lines.add(line);
                     reachedSection = true;
                 } else if (reachedSection) {
@@ -73,23 +73,23 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
             lines.add("Friends:");
             lines.add(
                 String.format(String.format("You owe %s %.2f LV[%s]", command.line(), am,
-                    Helpers.getReason(command).strip())));
+                    Helpers.getReason(command))));
             lines.add(line);
         } else {
             lines.add(line);
             lines.add(
                 String.format(String.format("You owe %s %.2f LV[%s]", command.line(), am,
-                    Helpers.getReason(command).strip())));
+                    Helpers.getReason(command))));
         }
     }
 
     private void appendAtEnd(String name, String amount, String friend, String reason,
                              ReaderWriterCreator creator)
         throws IOException {
-        StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
+        StringBuilder build = new StringBuilder(String.format("name:%s\n", friend));
         double am = Double.parseDouble(amount) / TWO;
         build.append(
-            String.format("Friends:\nYou owes %s %.2f[%s].\nGroups:\nNo information!", name, am, reason));
+            String.format("Friends:\nYou owe %s %.2f[%s].\nGroups:\nNo information!", name, am, reason));
         Helpers.appendToFile(String.valueOf(build), creator);
     }
 }

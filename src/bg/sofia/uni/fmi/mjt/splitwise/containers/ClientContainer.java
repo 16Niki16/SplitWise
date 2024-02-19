@@ -5,10 +5,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class ClientContainer {
@@ -24,20 +21,16 @@ public class ClientContainer {
 
     public User getUser(String name) {
         return users.stream()
-            .filter(p -> p.getUsername().equals(name.strip()))
-            .findAny()
-            .orElse(null);
+                .filter(p -> p.getUsername().equals(name.strip()))
+                .findAny()
+                .orElse(null);
     }
 
     public void addUser(User user) {
-        Optional<User> previousVersion = checkInSet(user.getUsername());
-        if (previousVersion.isPresent()) {
-            users.remove(user.getUsername());
-        }
         users.add(user);
     }
 
-    public void connectUserAtStart(ReaderWriterCreator usersDirectory) throws IOException {
+    public void connectUserAtStart() throws IOException {
         int capacity = STARTING_CAPACITY;
         try (BufferedReader reader = new BufferedReader(usersDirectory.getRead())) {
             String line;
@@ -46,21 +39,5 @@ public class ClientContainer {
                 ++capacity;
             }
         }
-    }
-
-    public Optional<User> checkInSet(String name) {
-        return users.stream()
-            .findAny();
-    }
-
-    public void saveChanges(ReaderWriterCreator directory, String... changedNames) throws IOException {
-        List<String> lines = new ArrayList<>();
-        String line;
-        try (BufferedReader r = new BufferedReader(directory.getRead())) {
-            while ((line = r.readLine()) != null) {
-
-            }
-        }
-
     }
 }
