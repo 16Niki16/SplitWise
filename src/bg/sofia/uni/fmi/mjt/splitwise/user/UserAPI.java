@@ -23,6 +23,11 @@ public interface UserAPI {
     String changeCurrency(Map<String, Double> mapWithCurrency);
 
     /**
+     * get transformed sum
+     * */
+    double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency);
+
+    /**
      * add friend method
      */
     String addFriend(String friend);

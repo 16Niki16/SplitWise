@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -23,6 +24,7 @@ public class PaidTest {
     private ReaderWriterCreator friend;
     private ReaderWriterCreator exceptions;
     private ReaderWriterCreator temp;
+    private HttpClient client;
     private User user;
     private String friends;
     private String notif;
@@ -59,7 +61,8 @@ public class PaidTest {
         notifications = mock();
         exceptions = mock();
         temp = mock();
-        paid = new Paid(friend, user, notifications, exceptions, temp);
+        client = mock();
+        paid = new Paid(friend, user, notifications, exceptions, temp, client);
     }
 
     @Test

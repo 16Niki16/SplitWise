@@ -18,9 +18,9 @@ public class User implements UserAPI {
     private static final int CURRENCY_FRIENDS_EXIST = 3;
     private static final int CURRENCY_FRIENDS_NOT_EXIST = 2;
     private static final int ZERO = 0;
-    private String username;
-    private String password;
-    private Map<String, Double> friendList;
+    private final String username;
+    private final String password;
+    private final Map<String, Double> friendList;
     private String currency;
 
     private User(String username, String password, Map<String, Double> friendList, String currency) {
@@ -61,24 +61,40 @@ public class User implements UserAPI {
 
     @Override
     public String changeCurrency(Map<String, Double> mapWithCurrency) {
-        changeCurrencyNumbers(mapWithCurrency);
+        double exchangeRate = 0;
+        double wantedCurrency = 0;
+        String temporaryCurrency = "";
+
+        for (Map.Entry<String, Double> map : mapWithCurrency.entrySet()) {
+
+            if (map.getKey().equalsIgnoreCase(this.currency)) {
+                exchangeRate = map.getValue();
+
+            } else {
+                wantedCurrency = map.getValue();
+                temporaryCurrency = map.getKey();
+            }
+        }
+        this.currency = temporaryCurrency;
+
+        for (Map.Entry<String, Double> map : friendList.entrySet()) {
+            this.friendList.put(map.getKey(), (map.getValue() / exchangeRate) * wantedCurrency);
+        }
         return toString();
     }
 
-    private void changeCurrencyNumbers(Map<String, Double> mapWithCurrency) {
+    @Override
+    public double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency) {
         double exchangeRate = 0;
         double wantedCurrency = 0;
         for (Map.Entry<String, Double> map : mapWithCurrency.entrySet()) {
             if (map.getKey().equalsIgnoreCase(this.currency)) {
-                exchangeRate = map.getValue();
-            } else {
                 wantedCurrency = map.getValue();
-                this.currency = map.getKey();
+            } else {
+                exchangeRate = map.getValue();
             }
         }
-        for (Map.Entry<String, Double> map : friendList.entrySet()) {
-            this.friendList.put(map.getKey(), (map.getValue() / exchangeRate) * wantedCurrency);
-        }
+        return (amountPersonCurrency / exchangeRate) * wantedCurrency;
     }
 
     @Override

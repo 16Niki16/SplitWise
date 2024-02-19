@@ -15,9 +15,9 @@ import java.io.IOException;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_NAME;
 
 public class AddFriend implements AddFriendAPI {
-    private ReaderWriterCreator directory;
-    private User user;
-    private ReaderWriterCreator exceptionDirectory;
+    private final ReaderWriterCreator directory;
+    private final User user;
+    private final ReaderWriterCreator exceptionDirectory;
 
     public AddFriend(ReaderWriterCreator directory, User user, ReaderWriterCreator exceptionDirectory) {
         this.directory = directory;

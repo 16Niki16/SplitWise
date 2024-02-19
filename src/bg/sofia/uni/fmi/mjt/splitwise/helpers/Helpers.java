@@ -30,7 +30,7 @@ public class Helpers {
     }
 
     public static void checkInFileGroup(Set<String> users, ReaderWriterCreator creator)
-        throws FriendNotRegisteredException, IOException {
+            throws FriendNotRegisteredException, IOException {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
@@ -56,7 +56,7 @@ public class Helpers {
     }
 
     public static User checkInFileExtract(String username, ReaderWriterCreator creator)
-        throws FriendNotRegisteredException, IOException {
+            throws FriendNotRegisteredException, IOException {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String user;
             while ((user = r.readLine()) != null) {
@@ -87,7 +87,7 @@ public class Helpers {
 
     public static List<String> updatedInfo(String user, String receiver, String appendUser, String appendReceiver,
                                            ReaderWriterCreator directory)
-        throws IOException {
+            throws IOException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String readline;
             List<String> newLines = new ArrayList<>();
@@ -106,7 +106,7 @@ public class Helpers {
     }
 
     public static String findFriendLine(Command command, int index, ReaderWriterCreator directory)
-        throws IOException, FriendNotRegisteredException {
+            throws IOException, FriendNotRegisteredException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
@@ -119,14 +119,14 @@ public class Helpers {
         throw new FriendNotRegisteredException("This person is still not registered!");
     }
 
-    public static List<String> updatedGroup(Command command, ReaderWriterCreator groupsDirectory, String payment,
-                                            int index) throws IOException {
+    public static List<String> updatedGroup(String name, ReaderWriterCreator groupsDirectory, String payment)
+            throws IOException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
             String line;
             List<String> lines = new ArrayList<>();
             while ((line = r.readLine()) != null) {
                 String[] getData = line.split("\\|");
-                if (getData[GROUP_NAME].equals(command.args()[index])) {
+                if (getData[GROUP_NAME].equals(name)) {
                     lines.add(payment);
                 } else {
                     lines.add(line);
@@ -137,7 +137,7 @@ public class Helpers {
     }
 
     public static String findGroupLine(Command command, ReaderWriterCreator groupsDirectory, int index)
-        throws IOException, GroupDoesNotExistException {
+            throws IOException, GroupDoesNotExistException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {

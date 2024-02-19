@@ -12,8 +12,6 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.util.Map;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
-
 public class TransformCurrency {
     private static final int CURRENCY = 1;
     private ReaderWriterCreator directory;
@@ -31,8 +29,9 @@ public class TransformCurrency {
             GetExchangeRate exchange = new GetExchangeRate(client);
             Map<String, Double> currencies = exchange.exchange(command.args()[CURRENCY], user.getCurrency());
             String userAppend = user.changeCurrency(currencies);
+            System.out.println(userAppend);
 
-            Helpers.addInformation(Helpers.updatedGroup(command, directory, userAppend, USER), directory);
+            Helpers.addInformation(Helpers.updatedGroup(command.line(), directory, userAppend), directory);
             return "Currency successfully changed!";
         } catch (URISyntaxException | IOException e) {
             throw new RuntimeException(e);

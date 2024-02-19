@@ -53,13 +53,13 @@ public class CommandExecutor {
     public String execute(Command command, User user, HttpClient client) {
         try {
             return switch (ExceptionHandler.checkCommandLength(CommandType.of(command.args()[COMMAND_NAME].strip()),
-                command.args())) {
+                    command.args())) {
 
                 case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP -> executeCreate(command, user);
 
-                case CommandType.SPLIT, CommandType.SPLIT_GROUP -> executeSplit(command, user);
+                case CommandType.SPLIT, CommandType.SPLIT_GROUP -> executeSplit(command, user, client);
 
-                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user);
+                case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, client);
 
                 case CommandType.GET_STATUS -> {
                     StatusAPI status = new Status(groupsDirectory, exceptionsDirectory, user);
@@ -74,15 +74,15 @@ public class CommandExecutor {
             };
         } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException |
                  UnknownCurrencyException | NotCorrectQueryException | PersonNotFriendException |
-            FriendNotRegisteredException e) {
+                 FriendNotRegisteredException e) {
             ExceptionFormater.exceptionAdd(
-                command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);
+                    command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);
             return e.getLocalizedMessage();
         }
     }
 
     private String executeCreate(Command command, User user)
-        throws UnknownCommandException {
+            throws UnknownCommandException {
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
 
             case CommandType.ADD_FRIEND -> {
@@ -99,21 +99,22 @@ public class CommandExecutor {
         };
     }
 
-    private String executePaid(Command command, User user)
-        throws UnknownCommandException, NotNumberException, PersonNotFriendException, FriendNotRegisteredException {
+    private String executePaid(Command command, User user, HttpClient client)
+            throws UnknownCommandException, NotNumberException, PersonNotFriendException, FriendNotRegisteredException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
 
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
 
             case CommandType.PAID -> {
-                PaidAPI paid = new Paid(directory, user, notificationsDirectory, exceptionsDirectory, tempNotif);
+                PaidAPI paid = new Paid(directory, user, notificationsDirectory,
+                        exceptionsDirectory, tempNotif, client);
                 yield paid.personPay(command);
             }
 
             case CommandType.GROUP_PAID -> {
                 PaidGroupAPI payment = new PaidGroup(
-                    groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif, directory, user);
+                        groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif, directory, user);
                 yield payment.personPaidToGroup(command);
             }
 
@@ -121,8 +122,8 @@ public class CommandExecutor {
         };
     }
 
-    private String executeSplit(Command command, User user)
-        throws UnknownCommandException, NotNumberException {
+    private String executeSplit(Command command, User user, HttpClient client)
+            throws UnknownCommandException, NotNumberException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
 
@@ -135,7 +136,7 @@ public class CommandExecutor {
 
             case CommandType.SPLIT_GROUP -> {
                 GroupSplitAPI splitG =
-                    new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
+                        new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
                 yield splitG.groupsOwe(command);
             }
 

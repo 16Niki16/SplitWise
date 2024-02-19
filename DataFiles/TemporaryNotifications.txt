@@ -1,3 +1,13 @@
 name:kiro
 Groups:
 *firstGroup - You owes niki 3.33 LV[taka]
+name: ili
+Friends:
+niki approved your payment 1 LV.
+Groups:
+No information!
+name: ili
+Friends:
+niki approved your payment 4 LV.
+Groups:
+No information!

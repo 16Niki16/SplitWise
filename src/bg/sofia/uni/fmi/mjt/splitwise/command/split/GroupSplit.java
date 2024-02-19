@@ -33,7 +33,7 @@ public class GroupSplit implements GroupSplitAPI {
             GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
             String payment = updateGroup.addInformation(command, notifications, tempNotif);
 
-            Helpers.addInformation(Helpers.updatedGroup(command, groupsDirectory, payment, GROUP_INDEX),
+            Helpers.addInformation(Helpers.updatedGroup(command.args()[GROUP_INDEX], groupsDirectory, payment),
                 groupsDirectory);
 
         } catch (GroupDoesNotExistException e) {

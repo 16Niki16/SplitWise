@@ -41,7 +41,7 @@ public class PaidGroup implements PaidGroupAPI {
             GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
             String payment = updateGroup.payInGroup(command, notifications, tempNotif, friends, user);
 
-            Helpers.addInformation(Helpers.updatedGroup(command, groupsDirectory, payment, GROUP_INDEX),
+            Helpers.addInformation(Helpers.updatedGroup(command.args()[GROUP_INDEX], groupsDirectory, payment),
                 groupsDirectory);
             return "Successful payment in a group!";
 
