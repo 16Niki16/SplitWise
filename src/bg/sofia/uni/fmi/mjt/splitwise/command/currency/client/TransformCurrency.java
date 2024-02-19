@@ -29,7 +29,7 @@ public class TransformCurrency {
     public String changeCurrency(Command command) throws UnknownCurrencyException, NotCorrectQueryException {
         try {
             GetExchangeRate exchange = new GetExchangeRate(client);
-            Map<String, String> currencies = exchange.exchange(command.args()[CURRENCY], user.getCurrency());
+            Map<String, Double> currencies = exchange.exchange(command.args()[CURRENCY], user.getCurrency());
             String userAppend = user.changeCurrency(currencies);
 
             Helpers.addInformation(Helpers.updatedGroup(command, directory, userAppend, USER), directory);

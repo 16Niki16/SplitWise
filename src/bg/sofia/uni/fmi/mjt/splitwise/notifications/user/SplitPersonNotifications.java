@@ -52,7 +52,7 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
             boolean reachedSection = false;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[NAME].trim().equals("name") &&
+                if (checkName[NAME].equals("name") &&
                     checkName[FRIEND_NAME].equals(command.args()[FRIEND_PAY])) {
                     lines.add(line);
                     reachedSection = true;

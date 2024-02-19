@@ -44,6 +44,7 @@ public class Server {
 
     public void serverStart() {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
+
             serverSocketChannel.bind(new InetSocketAddress(SERVER_HOST, SERVER_PORT));
             serverSocketChannel.configureBlocking(false);
             Selector selector = Selector.open();
@@ -89,12 +90,13 @@ public class Server {
 
     private void readable(SocketChannel sc, ByteBuffer buffer) throws IOException {
         String line = clientInput(buffer, sc);
-        if (line == null) {
-        } else if (line.matches("\\w+\\|\\w+")) {
+        assert line != null;
+        if (line.matches("\\w+\\|\\w+")) {
             creatingUser(line, buffer, sc);
         } else {
             String[] user = line.split(" ");
-            clientOutput(buffer, sc, commandExecutor.execute(CommandCreator.newCommand(line), users.getUser(user[USER]), httpClient));
+            clientOutput(buffer, sc, commandExecutor.execute(
+                    CommandCreator.newCommand(line), users.getUser(user[USER]), httpClient));
         }
     }
 
@@ -109,7 +111,7 @@ public class Server {
         buffer.clear();
         int r = sc.read(buffer);
         if (r < 0) {
-            System.out.println("Client has closed the connection");
+            System.out.println("Client has closed the connection!");
             sc.close();
             return null;
         }

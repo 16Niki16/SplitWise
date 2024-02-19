@@ -35,9 +35,10 @@ public class Paid implements PaidAPI {
     public String personPay(Command command) throws PersonNotFriendException, FriendNotRegisteredException {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
+            UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
+
             String appendUser = user.paidMoney(command.args()[USERNAME_OWE], -1 * amount);
 
-            UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
             String appendReceiver = friend.paidMoney(command.line(), amount);
 
             Helpers.addInformation(

@@ -88,7 +88,7 @@ public class PayGroupNotifications implements PayGroupNotificationsAPI {
     private void appendAtEnd(String name, String amount, String friend, String groupName, ReaderWriterCreator creator)
         throws IOException {
 
-        StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
+        StringBuilder build = new StringBuilder(String.format("name:%s\n", friend));
         build.append(String.format("Groups:\n*%s - %s approved your payment %.2f LV.", groupName, name,
             Double.parseDouble(amount)));
         Helpers.appendToFile(String.valueOf(build), creator);

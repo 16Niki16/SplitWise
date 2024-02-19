@@ -20,7 +20,7 @@ public interface UserAPI {
     /**
      * change the current currency
      * */
-    String changeCurrency(Map<String, String> mapWithCurrency);
+    String changeCurrency(Map<String, Double> mapWithCurrency);
 
     /**
      * add friend method

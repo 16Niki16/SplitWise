@@ -20,7 +20,7 @@ public class HelpersNotifications {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[NAME].strip().equals("name") && checkName[FRIEND_NAME].strip().equals(friend)) {
+                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(friend)) {
                     return false;
                 }
             }
@@ -29,23 +29,20 @@ public class HelpersNotifications {
     }
 
     public static String getNotifications(String username, ReaderWriterCreator search, ReaderWriterCreator exception) {
-        StringBuilder build = new StringBuilder();
+        StringBuilder build = new StringBuilder("*** Notifications ***\n");
         List<String> updatedList = new ArrayList<>();
         try (BufferedReader r = new BufferedReader(search.getRead())) {
             String line;
             boolean isName = false;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[USER].strip().equals("name") && checkName[FRIEND_NAME].strip().equals(username)) {
+                if (checkName[USER].equals("name") && checkName[FRIEND_NAME].equals(username)) {
                     isName = true;
-                    build.append("*** Notifications ***\n");
+                } else if (checkName[USER].equals("name")) {
+                    updatedList.add(line);
+                    isName = false;
                 } else if (isName) {
-                    if (checkName[USER].strip().equals("name")) {
-                        updatedList.add(line);
-                        isName = false;
-                    } else {
-                        build.append(line).append('\n');
-                    }
+                    build.append(line).append('\n');
                 } else {
                     updatedList.add(line);
                 }
@@ -55,6 +52,6 @@ public class HelpersNotifications {
             ExceptionFormater.exceptionAdd(username, "Could not get the notification", e.getStackTrace(), exception);
             throw new RuntimeException("Unsuccessfully send notifications");
         }
-        return (build.isEmpty()) ? "No notifications!" : build.toString();
+        return (build.toString().equals("*** Notifications ***\n")) ? "No notifications!" : build.toString();
     }
 }

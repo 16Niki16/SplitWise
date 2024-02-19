@@ -28,14 +28,14 @@ public class GetExchangeRate {
         this.client = client;
     }
 
-    public Map<String, String> exchange(String wantedCurrency, String momentCurrency)
+    public Map<String, Double> exchange(String wantedCurrency, String momentCurrency)
         throws URISyntaxException, NotCorrectQueryException, UnknownCurrencyException {
         URI uri = new URI("https", SITE, ENDPOINT, APIKEY + "&symbols=" + wantedCurrency + "," + momentCurrency, null);
         String data = takeData(uri);
         checkRequestStatus();
         Gson gson = new Gson();
         ExchangeRateResponse exchangeRateResponse = gson.fromJson(data, ExchangeRateResponse.class);
-        Map<String, String> rates = exchangeRateResponse.getRates();
+        Map<String, Double> rates = exchangeRateResponse.getRates();
         if (rates.size() == TWO) {
             return rates;
         } else {

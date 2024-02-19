@@ -77,19 +77,6 @@ public class Helpers {
         return build.toString().strip();
     }
 
-    public static boolean checkInFileNoException(String username, ReaderWriterCreator creator) throws IOException {
-        try (BufferedReader r = new BufferedReader(creator.getRead())) {
-            String user;
-            while ((user = r.readLine()) != null) {
-                String[] splitU = user.split("\\|");
-                if (splitU[USER].equals(username)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     public static void appendToFile(String information, ReaderWriterCreator directory) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(directory.getAppend())) {
             writer.write(information);

@@ -11,9 +11,7 @@ public class Constants {
     public static final int THREE = 3;
     public static final int FOUR = 4;
     public static final int USERNAME_OWE = 2;
-
     public static final int AMOUNT = 1;
     public static final int REASON = 3;
     public static final int TWO = 2;
-
 }

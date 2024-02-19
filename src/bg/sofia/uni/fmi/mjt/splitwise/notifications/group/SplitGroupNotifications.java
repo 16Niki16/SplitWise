@@ -91,7 +91,7 @@ public class SplitGroupNotifications implements SplitGroupNotificationAPI {
     private void appendAtEnd(String name, String amount, String friend, String reason, String groupName,
                              ReaderWriterCreator creator)
         throws IOException {
-        StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
+        StringBuilder build = new StringBuilder(String.format("name:%s\n", friend));
         build.append(String.format("Groups:\n*%s - You owes %s %.2f LV[%s]", groupName, name,
             Double.parseDouble(amount), reason.strip()));
         Helpers.appendToFile(String.valueOf(build), creator);

@@ -1,4 +1,4 @@
-name: kolio
+name:kolio
 Friends:
 niki approved your payment 6.67 LV.
 niki approved your payment 10.00 LV.
@@ -15,7 +15,7 @@ Groups:
 *firstGroup - You owes niki 3.333333 LV[taka]
 *firstGroup - niki approved your payment 9.00 LV.
 *secondGroup - niki approved your payment 5.00 LV.
-name: ili
+name:ili
 Friends:
 kiro approved your payment 5.00 LV.
 niki approved your payment 10.00 LV.
@@ -39,7 +39,7 @@ Groups:
 *secondGroup - niki approved your payment 10.00 LV.
 *thirdGroup - niki approved your payment 10.00 LV.
 *firstGroup - You owes niki 3.33 LV[taka]
-name: niki
+name:niki
 Friends:
 kiro approved your payment 5.00 LV.
 ili approved your payment 10.00 LV.
@@ -57,6 +57,6 @@ Groups:
 *firstGroup - kolio approved your payment 10.00 LV.
 *firstGroup - kolio approved your payment 5.00 LV.
 *thirdGroup - kolio approved your payment 15.00 LV.
-name: kiro
+name:kiro
 Groups:
 *firstGroup - You owes niki 3.33 LV[taka]

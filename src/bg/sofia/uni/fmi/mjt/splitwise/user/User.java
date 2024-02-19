@@ -60,19 +60,19 @@ public class User implements UserAPI {
     }
 
     @Override
-    public String changeCurrency(Map<String, String> mapWithCurrency) {
+    public String changeCurrency(Map<String, Double> mapWithCurrency) {
         changeCurrencyNumbers(mapWithCurrency);
         return toString();
     }
 
-    private void changeCurrencyNumbers(Map<String, String> mapWithCurrency) {
+    private void changeCurrencyNumbers(Map<String, Double> mapWithCurrency) {
         double exchangeRate = 0;
         double wantedCurrency = 0;
-        for (Map.Entry<String, String> map : mapWithCurrency.entrySet()) {
+        for (Map.Entry<String, Double> map : mapWithCurrency.entrySet()) {
             if (map.getKey().equalsIgnoreCase(this.currency)) {
-                exchangeRate = Double.parseDouble(map.getValue());
+                exchangeRate = map.getValue();
             } else {
-                wantedCurrency = Double.parseDouble(map.getValue());
+                wantedCurrency = map.getValue();
                 this.currency = map.getKey();
             }
         }

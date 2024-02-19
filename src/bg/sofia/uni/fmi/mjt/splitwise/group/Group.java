@@ -150,8 +150,8 @@ public class Group implements GroupAPI {
                 Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE],
                     userAppend, receiverAppend, friends), friends);
 
-                PersonPayNotificationsAPI notif = new PersonPayNotifications(notifications, tempNotif);
-                notif.addNotificationFriendPayment(command);
+                PersonPayNotificationsAPI notification = new PersonPayNotifications(notifications, tempNotif);
+                notification.addNotificationFriendPayment(command);
             }
         }
         if (membersPay == 0) {

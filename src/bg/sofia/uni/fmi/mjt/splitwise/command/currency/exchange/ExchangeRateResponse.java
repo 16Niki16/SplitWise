@@ -11,9 +11,9 @@ public class ExchangeRateResponse {
     private String base;
 
     @SerializedName("rates")
-    private Map<String, String> rates;
+    private Map<String, Double> rates;
 
-    public Map<String, String> getRates() {
+    public Map<String, Double> getRates() {
         return rates;
     }
 }
