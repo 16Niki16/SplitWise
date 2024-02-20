@@ -12,25 +12,26 @@ import java.io.IOException;
 public interface GroupAPI {
     /**
      * check group contains person
-     * */
+     */
     boolean checkPersonContains(String user);
 
     /**
      * add owes to group
-     * */
+     */
     String addOwes();
 
     /**
      * add new balance to group people
      */
-    String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif);
+    String addInformation(
+            Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, double amount);
 
     /**
      * make payment in a group
      */
     String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
-                      ReaderWriterCreator friends, User user)
-        throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException;
+                      ReaderWriterCreator friends, User user, double amount)
+            throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException;
 
     /**
      * get group name

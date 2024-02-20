@@ -84,7 +84,8 @@ public class User implements UserAPI {
     }
 
     @Override
-    public double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency) {
+    public double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency,
+                              boolean transformCurrent) {
         double exchangeRate = 0;
         double wantedCurrency = 0;
         for (Map.Entry<String, Double> map : mapWithCurrency.entrySet()) {
@@ -94,7 +95,8 @@ public class User implements UserAPI {
                 exchangeRate = map.getValue();
             }
         }
-        return (amountPersonCurrency / exchangeRate) * wantedCurrency;
+        return (transformCurrent) ? (amountPersonCurrency / exchangeRate) * wantedCurrency :
+                (amountPersonCurrency / wantedCurrency) * exchangeRate;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class Split implements SplitAPI {
 
             if (!friend.getCurrency().equals(user.getCurrency())) {
                 GetExchangeRate rate = new GetExchangeRate(client);
-                amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount);
+                amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount, true);
             }
             String appendReceiver = friend.appendMoney(command.line(), amount);
 

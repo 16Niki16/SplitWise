@@ -113,8 +113,8 @@ public class CommandExecutor {
             }
 
             case CommandType.GROUP_PAID -> {
-                PaidGroupAPI payment = new PaidGroup(
-                        groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif, directory, user);
+                PaidGroupAPI payment = new PaidGroup(groupsDirectory, notificationsDirectory,
+                        exceptionsDirectory, tempNotif, directory, user, client);
                 yield payment.personPaidToGroup(command);
             }
 
@@ -137,7 +137,8 @@ public class CommandExecutor {
 
             case CommandType.SPLIT_GROUP -> {
                 GroupSplitAPI splitG =
-                        new GroupSplit(groupsDirectory, notificationsDirectory, exceptionsDirectory, tempNotif);
+                        new GroupSplit(groupsDirectory, notificationsDirectory,
+                                exceptionsDirectory, tempNotif, user, client);
                 yield splitG.groupsOwe(command);
             }
 

@@ -25,7 +25,8 @@ public interface UserAPI {
     /**
      * get transformed sum
      * */
-    double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency);
+    double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency,
+                       boolean transformCurrent);
 
     /**
      * add friend method

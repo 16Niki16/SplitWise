@@ -73,7 +73,7 @@ public class Group implements GroupAPI {
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getValue() > 0) {
                 build.append(String.format("*%s owes to the group %.2f LV.\n", map.getKey(),
-                    map.getValue()));
+                        map.getValue()));
             } else if (map.getValue() < 0) {
                 build.append(String.format("*Group owes %.2f to %s LV.\n", abs(map.getValue()), map.getKey()));
             }
@@ -87,8 +87,8 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String addInformation(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif) {
-        double totalAmount = Double.parseDouble(command.args()[AMOUNT_INDEX]);
+    public String addInformation(Command command, ReaderWriterCreator notifications,
+                                 ReaderWriterCreator tempNotif, double totalAmount) {
         double sumToPay = totalAmount / this.members.size();
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
@@ -107,9 +107,9 @@ public class Group implements GroupAPI {
 
     @Override
     public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
-                             ReaderWriterCreator friends, User user)
-        throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
-        double totalAmount = Double.parseDouble(command.args()[AMOUNT]);
+                             ReaderWriterCreator friends, User user, double totalAmount)
+            throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
+
         double sumToAdd = getSumToAdd(command, totalAmount, friends, notifications, tempNotif, user);
         totalAmount = getTotalAmount(command, totalAmount);
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
@@ -130,7 +130,7 @@ public class Group implements GroupAPI {
 
     private double getSumToAdd(Command command, double totalAmount, ReaderWriterCreator friends,
                                ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, User user)
-        throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
+            throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
         int membersPay = ZERO;
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
 
@@ -148,7 +148,7 @@ public class Group implements GroupAPI {
                 String receiverAppend = friend.paidMoney(command.line(), amountPersonalPay);
 
                 Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE],
-                    userAppend, receiverAppend, friends), friends);
+                        userAppend, receiverAppend, friends), friends);
 
                 PersonPayNotificationsAPI notification = new PersonPayNotifications(notifications, tempNotif);
                 notification.addNotificationFriendPayment(command);

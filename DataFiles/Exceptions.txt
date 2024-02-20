@@ -186,3 +186,12 @@ bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.execute(CommandExecutor.j
 bg.sofia.uni.fmi.mjt.splitwise.server.Server.readable(Server.java:98)
 bg.sofia.uni.fmi.mjt.splitwise.server.Server.serverStart(Server.java:72)
 Main.main(Main.java:15)
+deni | These people are still not registered: kolio | stackTrace:
+bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers.checkInFileGroup(Helpers.java:46)
+bg.sofia.uni.fmi.mjt.splitwise.command.create.CreateGroup.checkAllExist(CreateGroup.java:72)
+bg.sofia.uni.fmi.mjt.splitwise.command.create.CreateGroup.createGroup(CreateGroup.java:37)
+bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.executeCreate(CommandExecutor.java:95)
+bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.execute(CommandExecutor.java:58)
+bg.sofia.uni.fmi.mjt.splitwise.server.Server.readable(Server.java:98)
+bg.sofia.uni.fmi.mjt.splitwise.server.Server.serverStart(Server.java:72)
+Main.main(Main.java:15)

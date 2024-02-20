@@ -18,3 +18,11 @@ Friends:
 You owe niki 3.00[party].
 Groups:
 No information!
+name:niki
+Friends:
+You owe deni 10.00[party 2 mart].
+Groups:
+*deniGroup - You owes deni 6.52 LV[party]
+name:kiro
+Groups:
+*deniGroup - You owes deni 6.52 LV[party]

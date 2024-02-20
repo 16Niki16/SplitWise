@@ -5,11 +5,11 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -22,6 +22,7 @@ public class GroupPaidTest {
     private ReaderWriterCreator exc;
     private ReaderWriterCreator tempNotif;
     private ReaderWriterCreator friends;
+    private HttpClient client;
     private String groups;
     private String notif;
     private String except;
@@ -31,17 +32,17 @@ public class GroupPaidTest {
     void setUp() {
         except = "";
         notif = """
-            name: niki
-            Friends:
-            koki approved your payment 5 LV.
-            Groups:
-            *testGroup - koki approved your payment 2 LV.
-            name: ili
-            Groups:
-            *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
+                name: niki
+                Friends:
+                koki approved your payment 5 LV.
+                Groups:
+                *testGroup - koki approved your payment 2 LV.
+                name: ili
+                Groups:
+                *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
         groups = """
-            firstGroup|niki123 0.00,niki 0.00,kolio 0.00
-            secondGroup|niki123 -20.00,niki 10.00,pepi 10.00""";
+                firstGroup|niki123 0.00,niki 0.00,kolio 0.00
+                secondGroup|niki123 -20.00,niki 10.00,pepi 10.00""";
 
         notifications = mock();
         group = mock();
@@ -49,7 +50,8 @@ public class GroupPaidTest {
         tempNotif = mock();
         friends = mock();
         user = mock();
-        paid = new PaidGroup(group, notifications, exc, tempNotif, friends, user);
+        client = mock();
+        paid = new PaidGroup(group, notifications, exc, tempNotif, friends, user, client);
     }
 
     @Test

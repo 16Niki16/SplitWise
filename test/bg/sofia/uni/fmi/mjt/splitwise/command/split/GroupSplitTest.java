@@ -3,11 +3,13 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -19,6 +21,8 @@ public class GroupSplitTest {
     private ReaderWriterCreator notifications;
     private ReaderWriterCreator exc;
     private ReaderWriterCreator tempNotif;
+    private HttpClient client;
+    private User user;
     private String notif;
     private String groups;
     private String except;
@@ -42,7 +46,9 @@ public class GroupSplitTest {
         notifications = mock();
         exc = mock();
         tempNotif = mock();
-        split = new GroupSplit(groupsDirectory, notifications, exc, tempNotif);
+        user = mock();
+        client = mock();
+        split = new GroupSplit(groupsDirectory, notifications, exc, tempNotif, user, client);
     }
 
     @Test

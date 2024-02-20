@@ -1,3 +1,4 @@
-niki|Niki123|ili -6.09,kiro -1.66|BGN
+niki|Niki123|deni 10.00,ili -6.09,kiro -1.66|BGN
 ili|Ili123|kiro -3.67,niki 6.08|BGN
 kiro|Kiro123|ili 3.67,niki 1.67|BGN
+deni|Deni123|niki -5.11|EUR
