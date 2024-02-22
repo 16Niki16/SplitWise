@@ -45,7 +45,7 @@ public class CreateGroup implements CreateGroupAPI {
             return e.getLocalizedMessage();
 
         } catch (IOException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "mistake in file creating group.", e.getStackTrace(),
+            ExceptionFormater.exceptionAdd(command.line(), "Mistake in file creating group.", e.getStackTrace(),
                 exception);
             throw new RuntimeException("Creating group fail IO.", e);
         }

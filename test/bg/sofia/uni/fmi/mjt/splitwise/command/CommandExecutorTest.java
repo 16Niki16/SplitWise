@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CommandExecutorTest {
     private static final String RANDOM = "random";
-    private ClientContainer container;
     @Mock
     private HttpClient client;
     @Mock
@@ -40,7 +39,7 @@ public class CommandExecutorTest {
 
         assertNotNull(command.args());
         assertTrue(
-            executor.execute(command, user, container, client)
+            executor.execute(command, user, client)
                 .contains("create-group <group_name> <username> <username> ... <username>"));
     }
 
@@ -49,7 +48,7 @@ public class CommandExecutorTest {
         when(command.args()).thenReturn(new String[] {"unknown"});
 
         assertNotNull(command.args());
-        assertEquals(executor.execute(command, user, container, client), "Unknown command");
+        assertEquals(executor.execute(command, user, client), "Unknown command");
     }
 
 }

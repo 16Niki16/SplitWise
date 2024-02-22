@@ -16,9 +16,6 @@ import static org.mockito.Mockito.when;
 
 public class CreateGroupTest {
     private CreateGroup create;
-    private ReaderWriterCreator friends;
-    private ReaderWriterCreator group;
-    private ReaderWriterCreator exc;
     private String friend;
     private String groups;
     private String except;
@@ -28,45 +25,52 @@ public class CreateGroupTest {
     void setUp() {
         except = "";
         friend = """
-            niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00
-            kolio|kolio123|niki 0.00
-            pepi|pepi123|niki -10.00""";
+            niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00|BGN
+            kolio|kolio123|niki 0.00|BGN
+            pepi|pepi123|niki -10.00|BGN""";
         groups = """
             firstGroup|niki123 0.00,niki 0.00,kolio 0.00
             secondGroup|niki123 0.00,niki 0.00,kolio 0.00""";
-        exc = mock();
-        friends = mock();
-        group = mock();
+        ReaderWriterCreator exc = mock();
+        ReaderWriterCreator friends = mock();
+        ReaderWriterCreator group = mock();
 
         create = new CreateGroup(friends, group, exc);
+
+        when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
+        when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(friends.getAppend()).thenAnswer(x -> new StringWriter());
+        when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
+        when(group.getAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
+        when(group.getRead()).thenAnswer(x -> new StringReader(groups));
     }
 
     @Test
     void testCreateGroupValid() {
-        String groupTest = groups;
         command = CommandCreator.newCommand("niki create-group thirdGroup kolio pepi");
-        when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
-        when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(friends.getAppend()).thenAnswer(x -> new StringWriter());
-        when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
-        when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(group.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(create.createGroup(command), "Group is successfully created!");
     }
 
     @Test
     void testCreateGroupExceptions() {
-        String groupTest = groups;
         command = CommandCreator.newCommand("niki create-group firstGroup kolio pepi");
-        when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
-        when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(friends.getAppend()).thenAnswer(x -> new StringWriter());
-        when(group.getRead()).thenAnswer(x -> new StringReader(groupTest));
-        when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(group.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         assertEquals(create.createGroup(command),
             "Group with this name already exist.", "Wrong testing in group exist!");
+    }
+
+    @Test
+    void testFriendNotRegisteredException(){
+        command = CommandCreator.newCommand("niki create-group firstGroup kolio unknown");
+        assertEquals(create.createGroup(command), "These people are still not registered: unknown",
+                "Wrong check all people exist checking!");
+    }
+
+    @Test
+    void testYourselfException(){
+        command = CommandCreator.newCommand("niki create-group firstGroup kolio niki");
+        assertEquals(create.createGroup(command),"You are trying to add yourself second time in a group!",
+                "Mistake in checking add yourself second time!");
     }
 }

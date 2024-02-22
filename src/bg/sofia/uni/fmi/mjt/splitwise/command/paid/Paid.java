@@ -39,6 +39,7 @@ public class Paid implements PaidAPI {
         this.httpClient = httpClient;
     }
 
+    @Override
     public String personPay(Command command) {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);

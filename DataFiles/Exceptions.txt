@@ -224,3 +224,11 @@ bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.execute(CommandExecutor.j
 bg.sofia.uni.fmi.mjt.splitwise.server.Server.readable(Server.java:98)
 bg.sofia.uni.fmi.mjt.splitwise.server.Server.serverStart(Server.java:72)
 Main.main(Main.java:15)
+niki | They are friends already | stackTrace:
+bg.sofia.uni.fmi.mjt.splitwise.user.User.checkAlreadyFriends(User.java:112)
+bg.sofia.uni.fmi.mjt.splitwise.command.create.AddFriend.addingFriend(AddFriend.java:36)
+bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.executeCreate(CommandExecutor.java:87)
+bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.execute(CommandExecutor.java:56)
+bg.sofia.uni.fmi.mjt.splitwise.server.Server.readable(Server.java:98)
+bg.sofia.uni.fmi.mjt.splitwise.server.Server.serverStart(Server.java:72)
+Main.main(Main.java:15)
