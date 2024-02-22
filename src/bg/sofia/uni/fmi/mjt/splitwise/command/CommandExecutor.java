@@ -17,12 +17,10 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.status.StatusAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughArgumentsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotNumberException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionHandler;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -62,18 +60,17 @@ public class CommandExecutor {
                 case CommandType.PAID, CommandType.GROUP_PAID -> executePaid(command, user, client);
 
                 case CommandType.GET_STATUS -> {
-                    StatusAPI status = new Status(groupsDirectory, exceptionsDirectory, user);
+                    StatusAPI status = new Status(groupsDirectory, exceptionsDirectory, user, client);
                     yield status.getStatus(command);
                 }
 
                 case CommandType.HELP -> Help.getHelp();
                 case SWITCH_CURRENCY -> {
-                    TransformCurrency transform = new TransformCurrency(directory, user, client);
+                    TransformCurrency transform = new TransformCurrency(directory, user, client, exceptionsDirectory);
                     yield transform.changeCurrency(command);
                 }
             };
-        } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException |
-                 UnknownCurrencyException | NotCorrectQueryException | PersonNotFriendException |
+        } catch (NotNumberException | NotEnoughArgumentsException | UnknownCommandException | PersonNotFriendException |
                  FriendNotRegisteredException e) {
             ExceptionFormater.exceptionAdd(
                     command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptionsDirectory);

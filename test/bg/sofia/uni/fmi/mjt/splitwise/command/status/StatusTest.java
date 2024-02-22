@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,6 +25,7 @@ public class StatusTest {
     private Command command;
     private Command commandEmpty;
     private User user;
+    private HttpClient client;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +37,8 @@ public class StatusTest {
         groupsDirectory = mock();
         exceptions = mock();
         user = mock();
-        status = new Status( groupsDirectory, exceptions, user);
+        client = mock();
+        status = new Status( groupsDirectory, exceptions, user, client);
     }
 
     @Disabled

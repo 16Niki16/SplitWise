@@ -21,13 +21,13 @@ import java.util.Map;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.GROUP_NAME;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 import static java.lang.Math.abs;
 
 public class Group implements GroupAPI {
     private static final int ZERO = 0;
-    private static final int AMOUNT_INDEX = 1;
     private static final int PAYER = 2;
     private static final int GROUP_INDEX = 0;
     private static final int PEOPLE_INDEX = 1;
@@ -68,14 +68,20 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String addOwes() {
+    public String addOwes(User user, Map<String, Double> currencies) {
         StringBuilder build = new StringBuilder(this.group + '\n');
+        double amount;
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
+            amount = abs(map.getValue());
+            if (currencies.size() == TWO && map.getValue() != 0) {
+                amount = user.amountToAdd(currencies, amount, true);
+            }
             if (map.getValue() > 0) {
-                build.append(String.format("*%s owes to the group %.2f LV.\n", map.getKey(),
-                        map.getValue()));
+                build.append(String.format("*%s owes to the group %.2f%s.\n", map.getKey(),
+                        amount, user.getCurrency()));
             } else if (map.getValue() < 0) {
-                build.append(String.format("*Group owes %.2f to %s LV.\n", abs(map.getValue()), map.getKey()));
+                build.append(String.format("*Group owes %.2f%s to %s.\n",
+                        amount, user.getCurrency(), map.getKey()));
             }
         }
         return (build.toString().equals(this.group + '\n')) ? "" : build.toString();

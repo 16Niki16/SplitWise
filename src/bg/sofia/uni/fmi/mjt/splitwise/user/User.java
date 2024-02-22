@@ -11,6 +11,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FRIEND_LIST;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.PASSWORD;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
+import static java.lang.Math.abs;
 
 public class User implements UserAPI {
     private static final double START = 0.00;
@@ -126,9 +127,9 @@ public class User implements UserAPI {
     public String getStatus() {
         StringBuilder build = new StringBuilder();
         for (Map.Entry<String, Double> map : this.friendList.entrySet()) {
-            if (map.getValue() > ZERO) {
-                build.append(String.format("%s owes you %.2f%s.\n", map.getKey(), map.getValue(), currency));
-            } else if (map.getValue() < ZERO) {
+            if (map.getValue() < ZERO) {
+                build.append(String.format("%s owes you %.2f%s.\n", map.getKey(), abs(map.getValue()), currency));
+            } else if (map.getValue() > ZERO) {
                 build.append(String.format("You owe %s %.2f%s.\n", map.getKey(), map.getValue(), currency));
             }
         }

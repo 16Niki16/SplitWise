@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.currency.client;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
@@ -15,16 +16,19 @@ import java.util.Map;
 public class TransformCurrency {
     private static final int CURRENCY = 1;
     private final ReaderWriterCreator directory;
+    private final ReaderWriterCreator exceptions;
     private final User user;
     private final HttpClient client;
 
-    public TransformCurrency(ReaderWriterCreator directory, User user, HttpClient client) {
+    public TransformCurrency(ReaderWriterCreator directory, User user, HttpClient client,
+                             ReaderWriterCreator exceptions) {
         this.directory = directory;
         this.user = user;
         this.client = client;
+        this.exceptions = exceptions;
     }
 
-    public String changeCurrency(Command command) throws UnknownCurrencyException, NotCorrectQueryException {
+    public String changeCurrency(Command command) {
         try {
             GetExchangeRate exchange = new GetExchangeRate(client);
             Map<String, Double> currencies = exchange.exchange(command.args()[CURRENCY], user.getCurrency());
@@ -34,7 +38,12 @@ public class TransformCurrency {
             Helpers.addInformation(Helpers.updatedGroup(command.line(), directory, userAppend), directory);
             return "Currency successfully changed!";
         } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
+            ExceptionFormater.exceptionAdd(user.getUsername(), "IO exception in currency",
+                    e.getStackTrace(), exceptions);
+            throw new RuntimeException("IO exception in currency", e);
+        } catch (UnknownCurrencyException | NotCorrectQueryException e) {
+            ExceptionFormater.exceptionAdd(user.getUsername(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
+            return e.getLocalizedMessage();
         }
     }
 }

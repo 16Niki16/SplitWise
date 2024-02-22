@@ -8,6 +8,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface GroupAPI {
     /**
@@ -18,7 +19,7 @@ public interface GroupAPI {
     /**
      * add owes to group
      */
-    String addOwes();
+    String addOwes(User user, Map<String, Double> currencies);
 
     /**
      * add new balance to group people

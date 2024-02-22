@@ -45,6 +45,7 @@ Groups:
 *firstGroup - You owes niki 3.33 LV[taka]
 name:niki
 Friends:
+You owe user 10.00 LV[taka]
 You owe deni 10.00 LV[party 2 mart]
 kiro approved your payment 5.00 LV.
 ili approved your payment 10.00 LV.

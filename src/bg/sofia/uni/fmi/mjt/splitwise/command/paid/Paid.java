@@ -39,7 +39,7 @@ public class Paid implements PaidAPI {
         this.httpClient = httpClient;
     }
 
-    public String personPay(Command command) throws PersonNotFriendException, FriendNotRegisteredException {
+    public String personPay(Command command) {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
             String appendUser = user.paidMoney(command.args()[USERNAME_OWE], -1 * amount);
@@ -60,11 +60,11 @@ public class Paid implements PaidAPI {
             return "Successfully paid!";
 
         } catch (IOException e) {
-
             ExceptionFormater.exceptionAdd(command.line(), "paid IO exception", e.getStackTrace(), exceptions);
             throw new RuntimeException("could not pay, server problem!", e);
 
-        } catch (NotCorrectQueryException | URISyntaxException | UnknownCurrencyException e) {
+        } catch (NotCorrectQueryException | URISyntaxException | UnknownCurrencyException |
+                 PersonNotFriendException | FriendNotRegisteredException e) {
             ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return "Unsuccessful payment!";
         }
