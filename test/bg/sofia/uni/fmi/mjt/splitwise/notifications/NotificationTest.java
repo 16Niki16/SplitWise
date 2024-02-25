@@ -25,12 +25,12 @@ public class NotificationTest {
     @BeforeEach
     void setUp() {
         notif = """
-            name: niki
+            name:niki
             Friends:
             koki approved your payment 5 LV.
             Groups:
             *testGroup - koki approved your payment 2 LV.
-            name: ili
+            name:ili
             Groups:
             *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
 

@@ -7,11 +7,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.http.HttpClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,12 +18,9 @@ import static org.mockito.Mockito.when;
 public class StatusTest {
     private StatusAPI status;
     private ReaderWriterCreator groupsDirectory;
-    private ReaderWriterCreator exceptions;
     private String direcGroup;
     private Command command;
     private Command commandEmpty;
-    private User user;
-    private ExchangeRate client;
 
     @BeforeEach
     void setUp() {
@@ -36,9 +30,9 @@ public class StatusTest {
         command = CommandCreator.newCommand("niki get-status");
         commandEmpty = CommandCreator.newCommand("ili get-status");
         groupsDirectory = mock();
-        exceptions = mock();
-        user = mock();
-        client = mock();
+        ReaderWriterCreator exceptions = mock();
+        User user = mock();
+        ExchangeRate client = mock();
         status = new Status( groupsDirectory, exceptions, user, client);
     }
 

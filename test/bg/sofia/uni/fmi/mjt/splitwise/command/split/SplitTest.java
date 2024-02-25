@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.Map;
 

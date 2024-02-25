@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
-import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.net.http.HttpClient;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
