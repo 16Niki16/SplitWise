@@ -3,6 +3,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,53 +12,50 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class GroupSplitTest {
     private GroupSplit split;
-    private ReaderWriterCreator groupsDirectory;
-    private ReaderWriterCreator notifications;
-    private ReaderWriterCreator exc;
-    private ReaderWriterCreator tempNotif;
-    private ExchangeRate client;
-    private User user;
     private String notif;
     private String groups;
     private String except;
+    ExchangeRate rate;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NotCorrectQueryException, URISyntaxException, UnknownCurrencyException {
         except = "";
         notif = """
-            name: niki
+            name:niki
             Friends:
             koki approved your payment 5 LV.
             Groups:
             *testGroup - koki approved your payment 2 LV.
-            name: ili
+            name:ili
             Groups:
             *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
+
         groups = """
             firstGroup|niki123 0.00,niki 0.00,kolio 0.00
             secondGroup|niki123 0.00,niki 0.00,kolio 0.00""";
-        groupsDirectory = mock();
-        notifications = mock();
-        exc = mock();
-        tempNotif = mock();
-        user = mock();
-        client = mock();
-        split = new GroupSplit(groupsDirectory, notifications, exc, tempNotif, user, client);
-    }
 
-    @Test
-    void testGroupsOweValid() {
-        String testGroups = groups;
-        Command command = CommandCreator.newCommand("niki split-group 18 firstGroup qjca");
-        when(groupsDirectory.getRead()).thenAnswer(x -> new StringReader(testGroups));
+        User user = User.of("niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00|EUR");
+
+        ReaderWriterCreator groupsDirectory = mock();
+        ReaderWriterCreator notifications = mock();
+        ReaderWriterCreator exc = mock();
+        ReaderWriterCreator tempNotif = mock();
+        rate = mock();
+        split = new GroupSplit(groupsDirectory, notifications, exc, tempNotif, user, rate);
+
+        when(groupsDirectory.getRead()).thenAnswer(x -> new StringReader(groups));
         when(groupsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(groupsDirectory.getAppend()).thenAnswer(x -> new StringWriter());
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
@@ -65,22 +64,32 @@ public class GroupSplitTest {
         when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
         when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
+        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
+        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
+        Map<String, Double> currencies = new HashMap<>();
+        currencies.put("EUR", 0.92786);
+        currencies.put("BGN", 1.807805);
+        when(rate.exchange(any(), any())).thenReturn(currencies);
+    }
+
+    @Test
+    void testGroupsOweValid() {
+        Command command = CommandCreator.newCommand("niki split-group 18 firstGroup qjca");
         assertEquals(split.groupsOwe(command), "Information successfully added", "failed test split group.");
     }
 
     @Test
     void testGroupsOweException() {
-        String testGroups = groups;
         Command command = CommandCreator.newCommand("niki split-group 18 unknown qjca");
-        when(groupsDirectory.getRead()).thenAnswer(x -> new StringReader(testGroups));
-        when(groupsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(groupsDirectory.getAppend()).thenAnswer(x -> new StringWriter());
-        when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
-        when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
-        when(notifications.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
-        assertEquals(split.groupsOwe(command), "Group with that name does not exist",
+        assertEquals(split.groupsOwe(command), "Group with this name does not exist!",
             "failed test split group invalid.");
+    }
+
+    @Test
+    void unknownCurrencyException() throws NotCorrectQueryException, URISyntaxException, UnknownCurrencyException {
+        Command command = CommandCreator.newCommand("niki split-group 18 firstGroup qjca");
+        UnknownCurrencyException currencyException = new UnknownCurrencyException("Unknown currency!");
+        when(rate.exchange(any(), any())).thenThrow(currencyException);
+        assertEquals(split.groupsOwe(command), "Unknown currency!", "failed test split not valid.");
     }
 }

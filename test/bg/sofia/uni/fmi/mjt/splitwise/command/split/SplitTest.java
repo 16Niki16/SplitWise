@@ -24,13 +24,10 @@ import static org.mockito.Mockito.when;
 
 public class SplitTest {
     private Split split;
-    private ReaderWriterCreator friends;
-    private ReaderWriterCreator notifications;
-    private ReaderWriterCreator exc;
-    private ReaderWriterCreator tempNotif;
     private String friend;
     private String notif;
     private String except;
+    ExchangeRate rate;
 
     @BeforeEach
     void setUp() throws NotCorrectQueryException, URISyntaxException, UnknownCurrencyException {
@@ -48,12 +45,13 @@ public class SplitTest {
             niki|niki123|pepi 10.00,ili 0.00,koki 5.00|BGN
             kolio|kolio123|pepi 0.00|BGN
             pepi|pepi123|niki -10.00|EUR""";
+
         User user = User.of("niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00|BGN");
-        friends = mock();
-        notifications = mock();
-        exc = mock();
-        tempNotif = mock();
-        ExchangeRate rate = mock();
+        ReaderWriterCreator friends = mock();
+        ReaderWriterCreator notifications = mock();
+        ReaderWriterCreator exc = mock();
+        ReaderWriterCreator tempNotif = mock();
+        rate = mock();
         split = new Split(friends, user, notifications, exc, tempNotif, rate);
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
@@ -85,4 +83,17 @@ public class SplitTest {
         assertEquals(split.moneyOwe(command), "You are not still friends", "failed test split not valid.");
     }
 
+    @Test
+    void testPersonNotRegisteredYet() {
+        Command command = CommandCreator.newCommand("niki split 20 ili qjca");
+        assertEquals(split.moneyOwe(command), "This person is still not registered!", "failed test split not valid.");
+    }
+
+    @Test
+    void unknownCurrencyException() throws NotCorrectQueryException, URISyntaxException, UnknownCurrencyException {
+        Command command = CommandCreator.newCommand("niki split 20 pepi qjca");
+        UnknownCurrencyException currencyException = new UnknownCurrencyException("Unknown currency!");
+        when(rate.exchange(any(), any())).thenThrow(currencyException);
+        assertEquals(split.moneyOwe(command), "Unknown currency!", "failed test split not valid.");
+    }
 }

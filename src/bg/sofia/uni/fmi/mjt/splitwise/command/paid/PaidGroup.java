@@ -47,8 +47,8 @@ public class PaidGroup implements PaidGroupAPI {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
             GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
 
-            if (!user.getCurrency().equalsIgnoreCase("bgn")) {
-                amount = user.amountToAdd(rate.exchange(user.getCurrency(), "bgn"), amount, false);
+            if (!user.getCurrency().equalsIgnoreCase("BGN")) {
+                amount = user.amountToAdd(rate.exchange(user.getCurrency(), "BGN"), amount, false);
             }
             String payment = updateGroup.payInGroup(command, notifications, tempNotif, friends, user, amount);
 
