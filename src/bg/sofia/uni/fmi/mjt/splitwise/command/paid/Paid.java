@@ -16,7 +16,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
@@ -43,9 +42,8 @@ public class Paid implements PaidAPI {
     public String personPay(Command command) {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
-            String appendUser = user.paidMoney(command.args()[USERNAME_OWE], -1 * amount);
-
             UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
+            String appendUser = user.paidMoney(command.args()[USERNAME_OWE], -1 * amount);
 
             if (!friend.getCurrency().equals(user.getCurrency())) {
                 amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount, true);
