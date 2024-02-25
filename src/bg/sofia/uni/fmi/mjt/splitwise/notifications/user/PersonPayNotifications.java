@@ -86,9 +86,8 @@ public class PersonPayNotifications implements PersonPayNotificationsAPI {
 
     private void appendAtEnd(String name, String amount, String friend, ReaderWriterCreator creator)
         throws IOException {
-        StringBuilder build = new StringBuilder(String.format("name: %s\n", friend));
-        build.append(
-            String.format("Friends:\n%s approved your payment %s LV.\nGroups:\nNo information!", name, amount));
-        Helpers.appendToFile(String.valueOf(build), creator);
+        String build = String.format("name: %s\n", friend) +
+            String.format("Friends:\n%s approved your payment %s LV.\nGroups:\nNo information!", name, amount);
+        Helpers.appendToFile(build, creator);
     }
 }

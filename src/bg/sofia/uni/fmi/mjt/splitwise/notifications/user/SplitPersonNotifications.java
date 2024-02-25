@@ -86,10 +86,9 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
     private void appendAtEnd(String name, String amount, String friend, String reason,
                              ReaderWriterCreator creator)
         throws IOException {
-        StringBuilder build = new StringBuilder(String.format("name:%s\n", friend));
         double am = Double.parseDouble(amount) / TWO;
-        build.append(
-            String.format("Friends:\nYou owe %s %.2f[%s].\nGroups:\nNo information!", name, am, reason));
-        Helpers.appendToFile(String.valueOf(build), creator);
+        String build = String.format("name:%s\n", friend) +
+            String.format("Friends:\nYou owe %s %.2f[%s].\nGroups:\nNo information!", name, am, reason);
+        Helpers.appendToFile(build, creator);
     }
 }
