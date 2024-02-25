@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.GetExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
@@ -27,16 +27,16 @@ public class Split implements SplitAPI {
     private final User user;
     private final ReaderWriterCreator exception;
     private final ReaderWriterCreator tempNotif;
-    private final HttpClient client;
+    private final ExchangeRate rate;
 
     public Split(ReaderWriterCreator directory, User user, ReaderWriterCreator notifications,
-                 ReaderWriterCreator exception, ReaderWriterCreator tempNotif, HttpClient client) {
+                 ReaderWriterCreator exception, ReaderWriterCreator tempNotif, ExchangeRate rate) {
         this.user = user;
         this.directory = directory;
         this.notifications = notifications;
         this.exception = exception;
         this.tempNotif = tempNotif;
-        this.client = client;
+        this.rate = rate;
     }
 
     @Override
@@ -47,7 +47,6 @@ public class Split implements SplitAPI {
             UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
 
             if (!friend.getCurrency().equals(user.getCurrency())) {
-                GetExchangeRate rate = new GetExchangeRate(client);
                 amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount, true);
             }
             String appendReceiver = friend.appendMoney(command.line(), amount);

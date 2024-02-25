@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
@@ -31,7 +32,7 @@ public class Server {
     private final ReaderWriterCreator friends;
     private final ReaderWriterCreator tempNotifications;
     private final ReaderWriterCreator exception;
-    private final HttpClient httpClient;
+    private final ExchangeRate rate;
 
     public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;
@@ -39,7 +40,7 @@ public class Server {
         this.tempNotifications = new ReaderWriterCreator(tempNotifications);
         this.exception = new ReaderWriterCreator(exception);
         this.users = new ClientContainer(this.friends);
-        this.httpClient = HttpClient.newBuilder().build();
+        this.rate = new ExchangeRate(HttpClient.newBuilder().build());
     }
 
     public void serverStart() {
@@ -96,7 +97,7 @@ public class Server {
         } else {
             String[] user = line.split(" ");
             clientOutput(buffer, sc, commandExecutor.execute(
-                    CommandCreator.newCommand(line), users.getUser(user[USER]), httpClient));
+                    CommandCreator.newCommand(line), users.getUser(user[USER]), rate));
         }
     }
 

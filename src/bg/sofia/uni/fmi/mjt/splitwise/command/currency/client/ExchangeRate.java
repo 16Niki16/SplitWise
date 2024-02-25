@@ -12,7 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
-public class GetExchangeRate {
+public class ExchangeRate {
     private static final String APIKEY = "&apikey=fc74e945025942028f624f24b4b5b240";
     private static final String SITE = "api.currencyfreaks.com";
     private static final String ENDPOINT = "/v2.0/rates/latest";
@@ -24,7 +24,7 @@ public class GetExchangeRate {
     private static final int END_CORRECT = 300;
     private final HttpClient client;
 
-    public GetExchangeRate(HttpClient client) {
+    public ExchangeRate(HttpClient client) {
         this.client = client;
     }
 

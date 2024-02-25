@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ public class GroupSplitTest {
     private ReaderWriterCreator notifications;
     private ReaderWriterCreator exc;
     private ReaderWriterCreator tempNotif;
-    private HttpClient client;
+    private ExchangeRate client;
     private User user;
     private String notif;
     private String groups;

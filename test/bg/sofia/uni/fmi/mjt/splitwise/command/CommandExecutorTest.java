@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
-import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class CommandExecutorTest {
     private static final String RANDOM = "random";
     @Mock
-    private HttpClient client;
+    private ExchangeRate client;
     @Mock
     private User user;
     @Mock

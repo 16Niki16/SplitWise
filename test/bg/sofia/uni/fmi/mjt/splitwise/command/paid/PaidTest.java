@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ public class PaidTest {
     private ReaderWriterCreator friend;
     private ReaderWriterCreator exceptions;
     private ReaderWriterCreator temp;
-    private HttpClient client;
+    private ExchangeRate client;
     private User user;
     private String friends;
     private String notif;

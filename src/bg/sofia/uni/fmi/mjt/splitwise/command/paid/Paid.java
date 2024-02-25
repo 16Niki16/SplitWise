@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.GetExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
@@ -27,16 +27,16 @@ public class Paid implements PaidAPI {
     private final User user;
     private final ReaderWriterCreator exceptions;
     private final ReaderWriterCreator tempNotif;
-    private final HttpClient httpClient;
+    private final ExchangeRate rate;
 
     public Paid(ReaderWriterCreator directory, User user, ReaderWriterCreator notificationDirectory,
-                ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, HttpClient httpClient) {
+                ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ExchangeRate rate) {
         this.directory = directory;
         this.user = user;
         this.notificationDirectory = notificationDirectory;
         this.exceptions = exceptions;
         this.tempNotif = tempNotif;
-        this.httpClient = httpClient;
+        this.rate = rate;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class Paid implements PaidAPI {
             String appendUser = user.paidMoney(command.args()[USERNAME_OWE], -1 * amount);
 
             UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
+
             if (!friend.getCurrency().equals(user.getCurrency())) {
-                GetExchangeRate rate = new GetExchangeRate(httpClient);
                 amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount, true);
             }
 

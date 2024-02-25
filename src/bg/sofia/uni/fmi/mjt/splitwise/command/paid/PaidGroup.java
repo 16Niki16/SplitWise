@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.GetExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
@@ -17,7 +17,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 
 public class PaidGroup implements PaidGroupAPI {
     private static final int GROUP_INDEX = 3;
@@ -28,18 +27,18 @@ public class PaidGroup implements PaidGroupAPI {
     private final ReaderWriterCreator tempNotif;
     private final ReaderWriterCreator friends;
     private final User user;
-    private final HttpClient client;
+    private final ExchangeRate rate;
 
     public PaidGroup(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
                      ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ReaderWriterCreator friends,
-                     User user, HttpClient client) {
+                     User user, ExchangeRate rate) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
         this.exceptions = exceptions;
         this.tempNotif = tempNotif;
         this.friends = friends;
         this.user = user;
-        this.client = client;
+        this.rate = rate;
     }
 
     @Override
@@ -47,8 +46,8 @@ public class PaidGroup implements PaidGroupAPI {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
             GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
+
             if (!user.getCurrency().equalsIgnoreCase("bgn")) {
-                GetExchangeRate rate = new GetExchangeRate(client);
                 amount = user.amountToAdd(rate.exchange(user.getCurrency(), "bgn"), amount, false);
             }
             String payment = updateGroup.payInGroup(command, notifications, tempNotif, friends, user, amount);

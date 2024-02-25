@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.GetExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -14,7 +14,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 
 public class GroupSplit implements GroupSplitAPI {
     private static final int GROUP_INDEX = 2;
@@ -24,17 +23,17 @@ public class GroupSplit implements GroupSplitAPI {
     private final ReaderWriterCreator exceptions;
     private final ReaderWriterCreator tempNotif;
     private final User user;
-    private final HttpClient client;
+    private final ExchangeRate rate;
 
     public GroupSplit(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
                       ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, User user,
-                      HttpClient client) {
+                      ExchangeRate rate) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
         this.exceptions = exceptions;
         this.tempNotif = tempNotif;
         this.user = user;
-        this.client = client;
+        this.rate = rate;
     }
 
     @Override
@@ -43,10 +42,11 @@ public class GroupSplit implements GroupSplitAPI {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
             GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
+
             if (!user.getCurrency().equalsIgnoreCase("bgn")) {
-                GetExchangeRate rate = new GetExchangeRate(client);
                 amount = user.amountToAdd(rate.exchange(user.getCurrency(), "bgn"), amount, false);
             }
+
             String payment = updateGroup.addInformation(command, notifications, tempNotif, amount);
 
             Helpers.addInformation(Helpers.updatedGroup(command.args()[GROUP_INDEX], groupsDirectory, payment),

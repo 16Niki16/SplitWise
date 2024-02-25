@@ -10,7 +10,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 import java.util.Map;
 
 public class TransformCurrency {
@@ -18,20 +17,19 @@ public class TransformCurrency {
     private final ReaderWriterCreator directory;
     private final ReaderWriterCreator exceptions;
     private final User user;
-    private final HttpClient client;
+    private final ExchangeRate rate;
 
-    public TransformCurrency(ReaderWriterCreator directory, User user, HttpClient client,
+    public TransformCurrency(ReaderWriterCreator directory, User user, ExchangeRate rate,
                              ReaderWriterCreator exceptions) {
         this.directory = directory;
         this.user = user;
-        this.client = client;
+        this.rate = rate;
         this.exceptions = exceptions;
     }
 
     public String changeCurrency(Command command) {
         try {
-            GetExchangeRate exchange = new GetExchangeRate(client);
-            Map<String, Double> currencies = exchange.exchange(command.args()[CURRENCY], user.getCurrency());
+            Map<String, Double> currencies = rate.exchange(command.args()[CURRENCY], user.getCurrency());
             String userAppend = user.changeCurrency(currencies);
             System.out.println(userAppend);
 
