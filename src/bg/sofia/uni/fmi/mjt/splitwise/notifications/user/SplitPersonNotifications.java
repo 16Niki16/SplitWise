@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.notifications.user;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
@@ -28,34 +27,30 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
     @Override
     public void addNotificationFriendSplit(Command command) {
         try {
-            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], notificationsDirectory)) {
-                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY],
-                    Helpers.getReason(command), notificationsDirectory);
-            } else {
-                appendAtPositionSplit(command, notificationsDirectory);
-            }
-            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], tempNotif)) {
-                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY],
-                    Helpers.getReason(command), tempNotif);
-            } else {
-                appendAtPositionSplit(command, tempNotif);
-            }
+
+            appendNotification(command, notificationsDirectory);
+
+            appendNotification(command, tempNotif);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void appendAtPositionSplit(Command command, ReaderWriterCreator creator) throws IOException {
+    private void appendNotification(Command command, ReaderWriterCreator creator) throws IOException {
         List<String> lines = new ArrayList<>();
+        boolean everReached = false;
+
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
+
             String line;
             boolean reachedSection = false;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[NAME].equals("name") &&
-                    checkName[FRIEND_NAME].equals(command.args()[FRIEND_PAY])) {
+                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(command.args()[FRIEND_PAY])) {
                     lines.add(line);
                     reachedSection = true;
+                    everReached = true;
                 } else if (reachedSection) {
                     appendInList(lines, line, command);
                     reachedSection = false;
@@ -63,32 +58,31 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
                     lines.add(line);
                 }
             }
-            Helpers.addInformation(lines, creator);
+            if (!everReached) {
+                appendAtEnd(command, creator);
+            } else {
+                Helpers.addInformation(lines, creator);
+            }
         }
     }
 
     private void appendInList(List<String> lines, String line, Command command) {
-        double am = Double.parseDouble(command.args()[AMOUNT]) / TWO;
-        if (!line.trim().equals("Friends:")) {
+        if (!line.equals("Friends:")) {
             lines.add("Friends:");
-            lines.add(
-                String.format(String.format("You owe %s %.2f LV[%s]", command.line(), am,
-                    Helpers.getReason(command))));
+            lines.add(String.format(String.format("You owe %s %.2f LV[%s]",
+                    command.line(), Double.parseDouble(command.args()[AMOUNT]) / TWO, Helpers.getReason(command))));
             lines.add(line);
         } else {
             lines.add(line);
-            lines.add(
-                String.format(String.format("You owe %s %.2f LV[%s]", command.line(), am,
-                    Helpers.getReason(command))));
+            lines.add(String.format(String.format("You owe %s %.2f LV[%s]",
+                    command.line(), Double.parseDouble(command.args()[AMOUNT]) / TWO, Helpers.getReason(command))));
         }
     }
 
-    private void appendAtEnd(String name, String amount, String friend, String reason,
-                             ReaderWriterCreator creator)
-        throws IOException {
-        double am = Double.parseDouble(amount) / TWO;
-        String build = String.format("name:%s\n", friend) +
-            String.format("Friends:\nYou owe %s %.2f[%s].\nGroups:\nNo information!", name, am, reason);
+    private void appendAtEnd(Command command, ReaderWriterCreator creator) throws IOException {
+        String build = String.format("name:%s\n", command.args()[FRIEND_PAY]) +
+                String.format("Friends:\nYou owe %s %.2f[%s].",
+                        command.line(), Double.parseDouble(command.args()[AMOUNT]) / TWO, Helpers.getReason(command));
         Helpers.appendToFile(build, creator);
     }
 }

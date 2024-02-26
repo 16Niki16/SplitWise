@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.notifications.group;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 
 public class SplitGroupNotifications implements SplitGroupNotificationAPI {
@@ -26,73 +26,66 @@ public class SplitGroupNotifications implements SplitGroupNotificationAPI {
     }
 
     @Override
-    public void appendToGroupSplit(Command command, String friend, String amount) {
+    public void appendToGroupSplit(Command command, String friend) {
         try {
-            if (HelpersNotifications.isSectionExistNotification(friend, notificationsDirectory)) {
-                appendAtEnd(command.line(), amount, friend, Helpers.getReason(command),
-                    command.args()[GROUP_NAME], notificationsDirectory);
-            } else {
-                appendAtPositionSplit(command, friend, amount, notificationsDirectory);
-            }
-            if (HelpersNotifications.isSectionExistNotification(friend, tempNotif)) {
-                appendAtEnd(command.line(), amount, friend, Helpers.getReason(command),
-                    command.args()[GROUP_NAME], tempNotif);
-            } else {
-                appendAtPositionSplit(command, friend, amount, tempNotif);
-            }
+            double amount = Double.parseDouble(command.args()[AMOUNT]);
+
+            appendAtPositionSplit(command, amount, friend, notificationsDirectory);
+
+            appendAtPositionSplit(command, amount, friend, tempNotif);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void appendAtPositionSplit(Command command, String friend, String amount, ReaderWriterCreator creator)
-        throws IOException {
+    private void appendAtPositionSplit(Command command, double amount, String friend, ReaderWriterCreator creator)
+            throws IOException {
         List<String> lines = new ArrayList<>();
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             boolean reachedSection = false;
-            boolean reachedGroups = false;
+            boolean everReached = false;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
 
-                if (checkName[NAME].trim().equals("name") &&
-                    checkName[FRIEND_NAME].trim().equals(friend)) {
+                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(friend)) {
                     reachedSection = true;
+                    everReached = true;
                     lines.add(line);
-                } else if (reachedSection && line.trim().equals("Groups:")) {
-                    reachedGroups = true;
+                } else if (reachedSection && line.equals("Groups:")) {
                     reachedSection = false;
                     lines.add(line);
-                } else if (reachedGroups) {
-                    appendNewInfoSplit(lines, line, command, amount);
-                    reachedGroups = false;
+                    lines.add(appendNewInfoSplit(command, amount));
+
+                } else if (reachedSection && checkName[NAME].equals("name")) {
+                    reachedSection = false;
+                    lines.add("Groups:");
+                    lines.add(appendNewInfoSplit(command, amount));
+                    lines.add(line);
+
                 } else {
                     lines.add(line);
                 }
             }
-            Helpers.addInformation(lines, creator);
+            if (!everReached) {
+                appendAtEnd(command, amount, friend, creator);
+            } else {
+                Helpers.addInformation(lines, creator);
+            }
         }
     }
 
-    private void appendNewInfoSplit(List<String> lines, String line, Command command, String amount) {
-        if (line.trim().equals("No information!")) {
-            lines.add(
-                String.format("*%s - You owes %s %.2f LV[%s]", command.args()[TWO], command.line(),
-                    Double.parseDouble(amount), Helpers.getReason(command)));
-        } else {
-            lines.add(
-                String.format("*%s - You owes %s %2f LV[%s]", command.args()[TWO], command.line(),
-                    Double.parseDouble(amount), Helpers.getReason(command)));
-            lines.add(line);
-        }
+    private String appendNewInfoSplit(Command command,  double amount) {
+        return String.format("*%s - You owe %s %2f LV[%s]",
+                command.args()[TWO], command.line(), amount, Helpers.getReason(command));
     }
 
-    private void appendAtEnd(String name, String amount, String friend, String reason, String groupName,
-                             ReaderWriterCreator creator)
-        throws IOException {
+    private void appendAtEnd(Command command, double amount, String friend, ReaderWriterCreator creator)
+            throws IOException {
         String build = String.format("name:%s\n", friend) +
-            String.format("Groups:\n*%s - You owes %s %.2f LV[%s]", groupName, name,
-                Double.parseDouble(amount), reason.strip());
+                String.format("Groups:\n*%s - You owe %s %.2f LV[%s]", command.args()[GROUP_NAME],
+                        command.line(), amount, Helpers.getReason(command));
         Helpers.appendToFile(build, creator);
     }
 }

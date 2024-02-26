@@ -6,5 +6,5 @@ public interface SplitGroupNotificationAPI {
     /**
      * append information about splitting money between friends group
      * */
-    void appendToGroupSplit(Command command, String friend, String amount);
+    void appendToGroupSplit(Command command, String friend);
 }

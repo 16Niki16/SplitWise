@@ -16,7 +16,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;

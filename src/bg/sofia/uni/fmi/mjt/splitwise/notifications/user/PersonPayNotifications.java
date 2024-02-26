@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.notifications.user;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.BufferedReader;
@@ -27,18 +26,11 @@ public class PersonPayNotifications implements PersonPayNotificationsAPI {
     @Override
     public void addNotificationFriendPayment(Command command) {
         try {
-            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], notificationsDirectory)) {
-                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY],
-                    notificationsDirectory);
-            } else {
-                appendAtPositionPayment(command, notificationsDirectory);
-            }
-            if (HelpersNotifications.isSectionExistNotification(command.args()[FRIEND_PAY], tempNotif)) {
-                appendAtEnd(command.line(), command.args()[AMOUNT], command.args()[FRIEND_PAY],
-                    tempNotif);
-            } else {
-                appendAtPositionPayment(command, tempNotif);
-            }
+
+            appendAtPositionPayment(command, notificationsDirectory);
+
+            appendAtPositionPayment(command, tempNotif);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -50,15 +42,15 @@ public class PersonPayNotifications implements PersonPayNotificationsAPI {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             boolean reachedSection = false;
+            boolean everReached = false;
 
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
 
-                if (checkName[NAME].trim().equals("name") &&
-                    checkName[FRIEND_NAME].trim().equals(command.args()[FRIEND_PAY])) {
+                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(command.args()[FRIEND_PAY])) {
                     reachedSection = true;
+                    everReached = true;
                     lines.add(line);
-
                 } else if (reachedSection) {
                     appendInListPaid(lines, line, command);
                     reachedSection = false;
@@ -66,28 +58,32 @@ public class PersonPayNotifications implements PersonPayNotificationsAPI {
                     lines.add(line);
                 }
             }
+            if (!everReached) {
+                appendAtEnd(command, creator);
+            }
             Helpers.addInformation(lines, creator);
         }
     }
 
     private void appendInListPaid(List<String> lines, String line, Command command) {
-        if (line.strip().equals("Friends:")) {
+        if (line.equals("Friends:")) {
             lines.add(line);
             lines.add(String.format("%s approved your payment %.2f LV.", command.line(),
-                Double.parseDouble(command.args()[AMOUNT])));
+                    Double.parseDouble(command.args()[AMOUNT])));
         } else {
             lines.add("Friends:");
             lines.add(
-                String.format("%s approved your payment %.2f LV.", command.line(),
-                    Double.parseDouble(command.args()[AMOUNT])));
+                    String.format("%s approved your payment %.2f LV.", command.line(),
+                            Double.parseDouble(command.args()[AMOUNT])));
             lines.add(line);
         }
     }
 
-    private void appendAtEnd(String name, String amount, String friend, ReaderWriterCreator creator)
-        throws IOException {
-        String build = String.format("name: %s\n", friend) +
-            String.format("Friends:\n%s approved your payment %s LV.\nGroups:\nNo information!", name, amount);
+    private void appendAtEnd(Command command, ReaderWriterCreator creator)
+            throws IOException {
+        String build = String.format("name:%s\n", command.args()[FRIEND_PAY]) +
+                String.format("Friends:\n%s approved your payment %s LV.",
+                        command.line(), Double.parseDouble(command.args()[AMOUNT]));
         Helpers.appendToFile(build, creator);
     }
 }

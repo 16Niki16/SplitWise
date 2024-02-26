@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotificationsAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +26,14 @@ public class NotificationTest {
     @BeforeEach
     void setUp() {
         notif = """
-            name:niki
-            Friends:
-            koki approved your payment 5 LV.
-            Groups:
-            *testGroup - koki approved your payment 2 LV.
-            name:ili
-            Groups:
-            *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
+                name:niki
+                Friends:
+                koki approved your payment 5 LV.
+                Groups:
+                *testGroup - koki approved your payment 2 LV.
+                name:ili
+                Groups:
+                *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
 
         notificationsDirectory = mock();
         tempNotif = mock();
