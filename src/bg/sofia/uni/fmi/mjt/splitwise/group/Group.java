@@ -103,7 +103,7 @@ public class Group implements GroupAPI {
                 this.members.put(map.getKey(), balance);
             } else {
                 SplitGroupNotificationAPI group = new SplitGroupNotifications(notifications, tempNotif);
-                group.appendToGroupSplit(command, map.getKey());
+                group.appendToGroupSplit(command, sumToPay, map.getKey());
                 double balance = map.getValue() + sumToPay;
                 this.members.put(map.getKey(), balance);
             }

@@ -1,5 +1,5 @@
-niki|Niki123|deni -1.88,ili -5.00,kiro -0.85,user 5.11|EUR
-ili|Ili123|kiro -3.67,niki 9.76|BGN
+niki|Niki123|deni 0.68,ili 13.75,kiro -0.85,user 5.11|EUR
+ili|Ili123|kiro -3.67,niki 0.56|BGN
 kiro|Kiro123|ili 3.67,niki 1.67|BGN
-deni|Deni123|niki 8.23|BGN
+deni|Deni123|niki 3.23|BGN
 user|User123|niki -5.53|USD

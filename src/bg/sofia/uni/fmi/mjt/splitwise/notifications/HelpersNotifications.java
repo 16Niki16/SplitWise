@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
+import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -12,20 +13,91 @@ import java.util.List;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 
 public class HelpersNotifications {
-    private static final int NAME = 0;
     private static final int FRIEND_NAME = 1;
+    private static final int NAME = 0;
+    static final int FRIEND_PAY = 2;
 
-    public static boolean isSectionExistNotification(String friend, ReaderWriterCreator reader) throws IOException {
-        try (BufferedReader r = new BufferedReader(reader.getRead())) {
+    public static void appendNotification(Command command, String message,
+                                    ReaderWriterCreator creator) throws IOException {
+        List<String> lines = new ArrayList<>();
+        boolean everReached = false;
+
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
+
             String line;
+            boolean reachedSection = false;
             while ((line = r.readLine()) != null) {
                 String[] checkName = line.split(":");
-                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(friend)) {
-                    return false;
+                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(command.args()[FRIEND_PAY])) {
+                    lines.add(line);
+                    reachedSection = true;
+                    everReached = true;
+
+                } else if (reachedSection) {
+                    HelpersNotifications.appendInList(lines, line, message);
+                    reachedSection = false;
+
+                } else {
+                    lines.add(line);
                 }
             }
+            if (!everReached) {
+                HelpersNotifications.appendAtEnd(command.args()[FRIEND_PAY], message, creator);
+            } else {
+                Helpers.addInformation(lines, creator);
+            }
         }
-        return true;
+    }
+
+    public static void appendInList(List<String> lines, String line, String message) {
+        if (!line.equals("Friends:")) {
+            lines.add("Friends:");
+            lines.add(message);
+            lines.add(line);
+        } else {
+            lines.add(line);
+            lines.add(message);
+        }
+    }
+
+    public static void appendAtEnd(String friendName, String message, ReaderWriterCreator creator) throws IOException {
+        Helpers.appendToFile(String.format("name:%s\nFriends:\n%s", friendName, message), creator);
+    }
+
+    public static void appendAtPosition(String friend, String message, ReaderWriterCreator creator) throws IOException {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader r = new BufferedReader(creator.getRead())) {
+            String line;
+            boolean reachedSection = false;
+            boolean everReached = false;
+            while ((line = r.readLine()) != null) {
+                String[] checkName = line.split(":");
+
+                if (checkName[NAME].equals("name") && checkName[FRIEND_NAME].equals(friend)) {
+                    reachedSection = true;
+                    everReached = true;
+                    lines.add(line);
+                } else if (reachedSection && line.equals("Groups:")) {
+                    reachedSection = false;
+                    lines.add(line);
+                    lines.add(message);
+
+                } else if (reachedSection && checkName[NAME].equals("name")) {
+                    reachedSection = false;
+                    lines.add("Groups:");
+                    lines.add(message);
+                    lines.add(line);
+
+                } else {
+                    lines.add(line);
+                }
+            }
+            if (!everReached) {
+                Helpers.appendToFile(String.format("name:%s\nGroups:\n%s", friend, message), creator);
+            } else {
+                Helpers.addInformation(lines, creator);
+            }
+        }
     }
 
     public static String getNotifications(String username, ReaderWriterCreator search, ReaderWriterCreator exception) {
