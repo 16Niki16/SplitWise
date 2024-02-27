@@ -39,6 +39,7 @@ public class TransformCurrency {
             ExceptionFormater.exceptionAdd(user.getUsername(), "IO exception in currency",
                     e.getStackTrace(), exceptions);
             throw new RuntimeException("IO exception in currency", e);
+
         } catch (UnknownCurrencyException | NotCorrectQueryException e) {
             ExceptionFormater.exceptionAdd(user.getUsername(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
             return e.getLocalizedMessage();
