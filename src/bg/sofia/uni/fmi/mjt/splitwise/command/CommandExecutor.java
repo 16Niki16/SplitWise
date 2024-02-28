@@ -132,8 +132,7 @@ public class CommandExecutor {
             }
 
             case CommandType.SPLIT_GROUP -> {
-                GroupSplitAPI splitG =
-                        new GroupSplit(groupsDirectory, notificationsDirectory,
+                GroupSplitAPI splitG = new GroupSplit(groupsDirectory, notificationsDirectory,
                                 exceptionsDirectory, tempNotif, user, rate);
                 yield splitG.groupsOwe(command);
             }
