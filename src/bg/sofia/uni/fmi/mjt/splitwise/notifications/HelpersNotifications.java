@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -17,8 +17,8 @@ public class HelpersNotifications {
     private static final int NAME = 0;
     static final int FRIEND_PAY = 2;
 
-    public static void appendNotification(Command command, String message,
-                                    ReaderWriterCreator creator) throws IOException {
+    public static void appendNotification(CommandLine command, String message,
+                                          ReaderWriterCreator creator) throws IOException {
         List<String> lines = new ArrayList<>();
         boolean everReached = false;
 

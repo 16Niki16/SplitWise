@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CommandCreatorTest {
+public class CommandLineCreatorTest {
 
-    private Command command;
+    private CommandLine command;
 
     @BeforeEach
     void setUp() {
-        command = new Command("kiro", "split", "20", "niki", "gas");
+        command = new CommandLine("kiro", "split", "20", "niki", "gas");
     }
 
     @Test
     void testCommandCreator() {
-        Command testCommand = CommandCreator.newCommand("kiro split 20 niki gas");
+        CommandLine testCommand = CommandCreator.newCommand("kiro split 20 niki gas");
         assertEquals(command.line(), testCommand.line());
     }
 }

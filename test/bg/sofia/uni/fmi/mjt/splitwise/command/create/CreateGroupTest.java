@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ public class CreateGroupTest {
     private String friend;
     private String groups;
     private String except;
-    private Command command;
+    private CommandLine command;
 
     @BeforeEach
     void setUp() {
@@ -30,19 +30,16 @@ public class CreateGroupTest {
         groups = """
             firstGroup|niki123 0.00,niki 0.00,kolio 0.00
             secondGroup|niki123 0.00,niki 0.00,kolio 0.00""";
-        ReaderWriterCreator exc = mock();
         ReaderWriterCreator friends = mock();
         ReaderWriterCreator group = mock();
 
-        create = new CreateGroup(friends, group, exc);
+        create = new CreateGroup(friends, group);
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(friends.getAppend()).thenAnswer(x -> new StringWriter());
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         when(group.getRead()).thenAnswer(x -> new StringReader(groups));
     }
 

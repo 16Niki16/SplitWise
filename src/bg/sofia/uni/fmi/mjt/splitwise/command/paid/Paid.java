@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
@@ -24,22 +24,20 @@ public class Paid implements PaidAPI {
     private final ReaderWriterCreator notificationDirectory;
     private final ReaderWriterCreator directory;
     private final User user;
-    private final ReaderWriterCreator exceptions;
     private final ReaderWriterCreator tempNotif;
     private final ExchangeRate rate;
 
     public Paid(ReaderWriterCreator directory, User user, ReaderWriterCreator notificationDirectory,
-                ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ExchangeRate rate) {
+                ReaderWriterCreator tempNotif, ExchangeRate rate) {
         this.directory = directory;
         this.user = user;
         this.notificationDirectory = notificationDirectory;
-        this.exceptions = exceptions;
         this.tempNotif = tempNotif;
         this.rate = rate;
     }
 
     @Override
-    public String personPay(Command command) {
+    public String personPay(CommandLine command) {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
             UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
@@ -51,21 +49,18 @@ public class Paid implements PaidAPI {
 
             String appendReceiver = friend.paidMoney(command.line(), amount);
             Helpers.addInformation(
-                    Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,
-                            directory), directory);
+                Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,
+                    directory), directory);
 
             PersonPayNotificationsAPI notification = new PersonPayNotifications(notificationDirectory, tempNotif);
             notification.addNotificationFriendPayment(command);
             return "Successfully paid!";
 
         } catch (IOException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "paid IO exception", e.getStackTrace(), exceptions);
             throw new RuntimeException("could not pay, server problem!", e);
 
-        } catch (NotCorrectQueryException | URISyntaxException | UnknownCurrencyException |
-                 PersonNotFriendException | FriendNotRegisteredException e) {
-            ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
-            return "Unsuccessful payment!";
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("future fix", e);
         }
     }
 }

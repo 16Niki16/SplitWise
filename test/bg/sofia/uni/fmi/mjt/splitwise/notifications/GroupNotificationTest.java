@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.PayGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class GroupNotificationTest {
     @Test
     void addNotificationFriendPaymentValid() {
         String notificationTest = notif;
-        Command command = new Command("koki", "group-paid", "10", "niki", "firstGroup");
+        CommandLine command = new CommandLine("koki", "group-paid", "10", "niki", "firstGroup");
         when(notificationsDirectory.getRead()).thenAnswer(x -> new StringReader(notificationTest));
         when(notificationsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notificationsDirectory.getAppend()).thenAnswer(x -> new StringWriter());

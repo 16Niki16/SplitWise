@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
@@ -40,7 +40,7 @@ public class Group implements GroupAPI {
         this.members = members;
     }
 
-    public static Group of(Command command) {
+    public static Group of(CommandLine command) {
         Map<String, Double> participant = new LinkedHashMap<>();
         participant.put(command.line(), STARTER);
 
@@ -93,7 +93,7 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String addInformation(Command command, ReaderWriterCreator notifications,
+    public String addInformation(CommandLine command, ReaderWriterCreator notifications,
                                  ReaderWriterCreator tempNotif, double totalAmount) {
         double sumToPay = totalAmount / this.members.size();
 
@@ -112,7 +112,7 @@ public class Group implements GroupAPI {
     }
 
     @Override
-    public String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
+    public String payInGroup(CommandLine command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
                              ReaderWriterCreator friends, User user, double totalAmount)
             throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
 
@@ -134,7 +134,7 @@ public class Group implements GroupAPI {
         return toString();
     }
 
-    private double getSumToAdd(Command command, double totalAmount, ReaderWriterCreator friends,
+    private double getSumToAdd(CommandLine command, double totalAmount, ReaderWriterCreator friends,
                                ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, User user)
             throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
         int membersPay = ZERO;
@@ -166,7 +166,7 @@ public class Group implements GroupAPI {
         return totalAmount / membersPay;
     }
 
-    private double getTotalAmount(Command command, double totalAmount) {
+    private double getTotalAmount(CommandLine command, double totalAmount) {
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
             if (map.getKey().equals(command.args()[PAYER]) && map.getValue() < totalAmount) {
                 return map.getValue();

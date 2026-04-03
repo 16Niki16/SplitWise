@@ -1,11 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.status;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
@@ -17,25 +14,18 @@ import java.util.Map;
 
 public class Status implements StatusAPI {
     private final ReaderWriterCreator groupsDirectory;
-    private final ReaderWriterCreator exceptions;
     private final User user;
     private final ExchangeRate rate;
 
-    public Status(ReaderWriterCreator groupsDirectory, ReaderWriterCreator exceptionsDirectory,
-                  User user, ExchangeRate rate) {
+    public Status(ReaderWriterCreator groupsDirectory, User user, ExchangeRate rate) {
         this.groupsDirectory = groupsDirectory;
-        this.exceptions = exceptionsDirectory;
         this.user = user;
         this.rate = rate;
     }
 
-    public String getStatus(Command command) {
+    public String getStatus(CommandLine command) {
         try {
             return peopleOwes() + groupAppend(command);
-
-        } catch (NotCorrectQueryException | UnknownCurrencyException e) {
-            ExceptionFormater.exceptionAdd(user.getUsername(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
-            return e.getLocalizedMessage();
         } catch (URISyntaxException e) {
             throw new RuntimeException("IO exceptions", e);
         }
@@ -52,8 +42,7 @@ public class Status implements StatusAPI {
         return build.append(status).toString();
     }
 
-    private String groupAppend(Command command) throws NotCorrectQueryException,
-            URISyntaxException, UnknownCurrencyException {
+    private String groupAppend(CommandLine command) throws URISyntaxException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
 
             StringBuilder build = new StringBuilder("Groups:\n");
@@ -73,8 +62,7 @@ public class Status implements StatusAPI {
 
             return (build.toString().equals("Groups:\n")) ? "You do not have debts in the groups!" : build.toString();
         } catch (IOException e) {
-            ExceptionFormater.exceptionAdd(command.line(), "Could not extract in status groups", e.getStackTrace(),
-                    exceptions);
+
             throw new RuntimeException("Could not extract groups. IO", e);
         }
     }

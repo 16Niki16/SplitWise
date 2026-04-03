@@ -1,11 +1,11 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications.user;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 
 public interface PersonPayNotificationsAPI {
     /**
      * add information about payment
      */
-    void addNotificationFriendPayment(Command command);
+    void addNotificationFriendPayment(CommandLine command);
 }
 

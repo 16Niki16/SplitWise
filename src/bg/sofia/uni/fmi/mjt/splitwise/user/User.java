@@ -35,7 +35,7 @@ public class User implements UserAPI {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == FOUR) {
             return new User(splitLine[USER], splitLine[PASSWORD], extractFriends(splitLine[FRIEND_LIST]),
-                    splitLine[CURRENCY_FRIENDS_EXIST]);
+                splitLine[CURRENCY_FRIENDS_EXIST]);
         }
         return new User(splitLine[USER], splitLine[PASSWORD], new HashMap<>(), splitLine[CURRENCY_FRIENDS_NOT_EXIST]);
     }
@@ -97,24 +97,27 @@ public class User implements UserAPI {
             }
         }
         return (transformCurrent) ? (amountPersonCurrency / exchangeRate) * wantedCurrency :
-                (amountPersonCurrency / wantedCurrency) * exchangeRate;
+            (amountPersonCurrency / wantedCurrency) * exchangeRate;
     }
 
     @Override
     public String addFriend(String friend) {
+        if (friendList.containsKey(friend)) {
+            throw new AlreadyFriendsException("They are friends already");
+        }
         friendList.put(friend, START);
         return toString();
     }
 
     @Override
-    public void checkAlreadyFriends(String friend) throws AlreadyFriendsException {
+    public void checkAlreadyFriends(String friend) {
         if (friendList.containsKey(friend)) {
             throw new AlreadyFriendsException("They are friends already");
         }
     }
 
     @Override
-    public String appendMoney(String friend, double amount) throws PersonNotFriendException {
+    public String appendMoney(String friend, double amount) {
         if (this.friendList.containsKey(friend)) {
             double newAmount = this.friendList.get(friend) + amount / 2;
             this.friendList.put(friend, newAmount);
@@ -137,7 +140,7 @@ public class User implements UserAPI {
     }
 
     @Override
-    public String paidMoney(String friend, double amount) throws PersonNotFriendException {
+    public String paidMoney(String friend, double amount) {
         if (this.friendList.containsKey(friend)) {
             double newAmount = this.friendList.get(friend) - amount;
             this.friendList.put(friend, newAmount);
@@ -147,7 +150,7 @@ public class User implements UserAPI {
     }
 
     @Override
-    public void checkUserPasswordValid(String username, String password) throws PasswordNotCorrectException {
+    public void checkUserPasswordValid(String username, String password) {
         if (!this.password.equals(password)) {
             throw new PasswordNotCorrectException("Password is not correct!");
         }

@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
@@ -82,19 +82,19 @@ public class GroupPaidTest {
 
     @Test
     void testCreateGroupValid() {
-        Command command = CommandCreator.newCommand("niki paid-group 10 niki123 secondGroup");
+        CommandLine command = CommandCreator.newCommand("niki paid-group 10 niki123 secondGroup");
         assertEquals(paid.personPaidToGroup(command), "Successful payment in a group!", "failed test pay in group.");
     }
 
     @Test
     void testGroupDoesNotExistException(){
-        Command command = CommandCreator.newCommand("niki paid-group 10 niki123 unknownGroup");
+        CommandLine command = CommandCreator.newCommand("niki paid-group 10 niki123 unknownGroup");
         assertEquals(paid.personPaidToGroup(command), "Group with this name does not exist!", "failed test pay in group.");
     }
 
     @Test
     void testPersonNotAFriendException(){
-        Command command = CommandCreator.newCommand("niki paid-group 10 kolio secondGroup");
+        CommandLine command = CommandCreator.newCommand("niki paid-group 10 kolio secondGroup");
         assertEquals(paid.personPaidToGroup(command), "You are not still friends", "failed test pay in group.");
     }
 }

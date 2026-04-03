@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications.user;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -20,7 +20,7 @@ public class SplitPersonNotifications implements SplitPersonNotificationsAPI {
     }
 
     @Override
-    public void addNotificationFriendSplit(Command command) {
+    public void addNotificationFriendSplit(CommandLine command) {
         try {
             String message = String.format("You owe %s %.2f LV[%s]",
                     command.line(), Double.parseDouble(command.args()[AMOUNT]) / TWO, Helpers.getReason(command));

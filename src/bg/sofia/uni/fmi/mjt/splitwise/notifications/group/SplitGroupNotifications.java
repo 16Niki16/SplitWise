@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications.group;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -18,7 +18,7 @@ public class SplitGroupNotifications implements SplitGroupNotificationAPI {
     }
 
     @Override
-    public void appendToGroupSplit(Command command, double amount, String friend) {
+    public void appendToGroupSplit(CommandLine command, double amount, String friend) {
         try {
             String message = String.format("*%s - You owe %s %.2f LV[%s]",
                     command.args()[GROUP_NAME], command.line(), amount, Helpers.getReason(command));

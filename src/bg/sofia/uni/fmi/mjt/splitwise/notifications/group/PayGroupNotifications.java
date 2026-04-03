@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications.group;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
@@ -18,7 +18,7 @@ public class PayGroupNotifications implements PayGroupNotificationsAPI {
         this.tempNotif = tempNotif;
     }
 
-    public void appendToGroupPayment(Command command, String friend) {
+    public void appendToGroupPayment(CommandLine command, String friend) {
         try {
             String message = String.format("*%s - %s approved your payment %.2f LV.", command.args()[GROUP_PAYMENT],
                     command.line(), Double.parseDouble(command.args()[AMOUNT]));

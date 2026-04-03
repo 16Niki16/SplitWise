@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class NotNumberException extends Exception {
+public class NotNumberException extends RuntimeException {
     public NotNumberException(String message) {
         super(message);
     }

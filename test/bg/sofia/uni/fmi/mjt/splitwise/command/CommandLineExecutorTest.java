@@ -14,20 +14,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CommandExecutorTest {
+public class CommandLineExecutorTest {
     private static final String RANDOM = "random";
     @Mock
     private ExchangeRate client;
     @Mock
     private User user;
     @Mock
-    private Command command;
+    private CommandLine command;
     @InjectMocks
     private CommandExecutor executor;
 
     @BeforeEach
     void setUp() {
-        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM, RANDOM, RANDOM);
+        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM, RANDOM);
     }
 
     @Test

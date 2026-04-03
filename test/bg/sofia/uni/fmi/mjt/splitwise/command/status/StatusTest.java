@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.status;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
@@ -19,8 +19,8 @@ public class StatusTest {
     private StatusAPI status;
     private ReaderWriterCreator groupsDirectory;
     private String direcGroup;
-    private Command command;
-    private Command commandEmpty;
+    private CommandLine command;
+    private CommandLine commandEmpty;
 
     @BeforeEach
     void setUp() {
@@ -30,10 +30,9 @@ public class StatusTest {
         command = CommandCreator.newCommand("niki get-status");
         commandEmpty = CommandCreator.newCommand("ili get-status");
         groupsDirectory = mock();
-        ReaderWriterCreator exceptions = mock();
         User user = mock();
         ExchangeRate client = mock();
-        status = new Status( groupsDirectory, exceptions, user, client);
+        status = new Status( groupsDirectory, user, client);
     }
 
     @Disabled

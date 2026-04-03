@@ -28,8 +28,7 @@ public class ExchangeRate {
         this.client = client;
     }
 
-    public Map<String, Double> exchange(String wantedCurrency, String momentCurrency)
-        throws URISyntaxException, NotCorrectQueryException, UnknownCurrencyException {
+    public Map<String, Double> exchange(String wantedCurrency, String momentCurrency) throws URISyntaxException {
         URI uri = new URI("https", SITE, ENDPOINT, APIKEY + "&symbols=" + wantedCurrency + "," + momentCurrency, null);
         String data = takeData(uri);
         checkRequestStatus();

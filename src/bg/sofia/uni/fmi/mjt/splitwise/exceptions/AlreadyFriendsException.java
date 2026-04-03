@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class AlreadyFriendsException extends Exception {
+public class AlreadyFriendsException extends RuntimeException {
     public AlreadyFriendsException(String message) {
         super(message);
     }

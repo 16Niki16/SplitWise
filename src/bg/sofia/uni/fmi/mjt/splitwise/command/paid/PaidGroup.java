@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
@@ -23,18 +23,16 @@ public class PaidGroup implements PaidGroupAPI {
     private static final int AMOUNT = 1;
     private final ReaderWriterCreator groupsDirectory;
     private final ReaderWriterCreator notifications;
-    private final ReaderWriterCreator exceptions;
     private final ReaderWriterCreator tempNotif;
     private final ReaderWriterCreator friends;
     private final User user;
     private final ExchangeRate rate;
 
     public PaidGroup(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
-                     ReaderWriterCreator exceptions, ReaderWriterCreator tempNotif, ReaderWriterCreator friends,
+                     ReaderWriterCreator tempNotif, ReaderWriterCreator friends,
                      User user, ExchangeRate rate) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
-        this.exceptions = exceptions;
         this.tempNotif = tempNotif;
         this.friends = friends;
         this.user = user;
@@ -42,7 +40,7 @@ public class PaidGroup implements PaidGroupAPI {
     }
 
     @Override
-    public String personPaidToGroup(Command command) {
+    public String personPaidToGroup(CommandLine command) {
         try {
             double amount = Double.parseDouble(command.args()[AMOUNT]);
             GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
@@ -53,18 +51,9 @@ public class PaidGroup implements PaidGroupAPI {
             String payment = updateGroup.payInGroup(command, notifications, tempNotif, friends, user, amount);
 
             Helpers.addInformation(Helpers.updatedGroup(command.args()[GROUP_INDEX], groupsDirectory, payment),
-                    groupsDirectory);
+                groupsDirectory);
             return "Successful payment in a group!";
-
-        } catch (GroupDoesNotExistException | NoMembersToPayException | PersonNotFriendException |
-                 FriendNotRegisteredException | NotCorrectQueryException | UnknownCurrencyException e) {
-
-            ExceptionFormater.exceptionAdd(command.line(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
-            return e.getLocalizedMessage();
-
         } catch (IOException | URISyntaxException e) {
-
-            ExceptionFormater.exceptionAdd(command.line(), "Problem pay in group IO", e.getStackTrace(), exceptions);
             throw new RuntimeException("Server problem pay in group", e);
         }
     }

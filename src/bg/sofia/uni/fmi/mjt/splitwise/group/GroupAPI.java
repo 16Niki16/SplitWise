@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.group;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
@@ -25,12 +25,12 @@ public interface GroupAPI {
      * add new balance to group people
      */
     String addInformation(
-            Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, double amount);
+        CommandLine command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif, double amount);
 
     /**
      * make payment in a group
      */
-    String payInGroup(Command command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
+    String payInGroup(CommandLine command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
                       ReaderWriterCreator friends, User user, double amount)
             throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException;
 
