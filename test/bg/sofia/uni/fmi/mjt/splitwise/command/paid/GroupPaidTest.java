@@ -51,12 +51,11 @@ public class GroupPaidTest {
 
         ReaderWriterCreator notifications = mock();
         ReaderWriterCreator group = mock();
-        ReaderWriterCreator exc = mock();
         ReaderWriterCreator tempNotif = mock();
         ReaderWriterCreator friends = mock();
         ExchangeRate rate = mock();
 
-        paid = new PaidGroup(group, notifications, exc, tempNotif, friends, user, rate);
+        paid = new PaidGroup(group, notifications, tempNotif, friends, user, rate);
 
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
@@ -67,8 +66,6 @@ public class GroupPaidTest {
         when(group.getRead()).thenAnswer(x -> new StringReader(groups));
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
