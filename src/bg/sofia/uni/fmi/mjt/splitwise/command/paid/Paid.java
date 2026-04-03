@@ -2,11 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.PersonPayNotificationsAPI;
