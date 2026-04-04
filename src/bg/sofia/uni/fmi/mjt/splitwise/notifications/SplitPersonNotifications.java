@@ -1,37 +1,17 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
-import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import lombok.AllArgsConstructor;
 
-import java.io.IOException;
+import java.math.BigDecimal;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
-
+@AllArgsConstructor
 public class SplitPersonNotifications implements Notification {
-    private final ReaderWriterCreator notificationsDirectory;
-    private final ReaderWriterCreator tempNotif;
-
-    public SplitPersonNotifications(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
-        this.notificationsDirectory = notificationsDirectory;
-        this.tempNotif = tempNotif;
-    }
+    private String receiver;
+    private BigDecimal amount;
+    private String reason;
 
     @Override
-    public void addNotificationFriendSplit(CommandLine command) {
-        try {
-            String message = String.format("You owe %s %.2f LV[%s]",
-                    command.line(), Double.parseDouble(command.args()[AMOUNT]) / TWO, Helpers.getReason(command));
-
-            HelpersNotifications.appendNotification(command, message, notificationsDirectory);
-
-            HelpersNotifications.appendNotification(command, message, tempNotif);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public String getNotification() {
+        return String.format("You owe %s %.2f LV[%s]", receiver, amount, reason);
     }
-
 }

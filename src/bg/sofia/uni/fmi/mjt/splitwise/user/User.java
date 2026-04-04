@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.user;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notifications;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class User {
     private final String username;
     private final String password;
     private final Map<String, Double> friendList;
+   // private final Notifications notifications;
     private String currency;
 
     private User(String username, String password, Map<String, Double> friendList, String currency) {
