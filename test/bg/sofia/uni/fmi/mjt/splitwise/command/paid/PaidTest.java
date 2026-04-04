@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -58,7 +59,7 @@ public class PaidTest {
         ReaderWriterCreator notifications = mock();
         ReaderWriterCreator temp = mock();
         ExchangeRate rate = mock();
-        paid = new Paid(friend, user, notifications, temp, rate);
+        paid = new PaidCommand(friend, user, notifications, temp, rate);
 
         when(friend.getRead()).thenAnswer(x -> new StringReader(friends));
         when(friend.getNotAppend()).thenAnswer(x -> new StringWriter());

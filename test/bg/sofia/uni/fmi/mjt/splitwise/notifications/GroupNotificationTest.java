@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.group.PayGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

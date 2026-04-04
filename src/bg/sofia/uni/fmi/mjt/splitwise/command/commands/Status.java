@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.splitwise.command.status;
+package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;

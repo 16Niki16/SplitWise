@@ -1,35 +1,37 @@
-package bg.sofia.uni.fmi.mjt.splitwise.notifications.user;
+package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.IOException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
+import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.TWO;
 
-public class PersonPayNotifications implements PersonPayNotificationsAPI {
+public class SplitPersonNotifications implements Notification {
     private final ReaderWriterCreator notificationsDirectory;
     private final ReaderWriterCreator tempNotif;
-    public PersonPayNotifications(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
+
+    public SplitPersonNotifications(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
         this.notificationsDirectory = notificationsDirectory;
         this.tempNotif = tempNotif;
     }
 
     @Override
-    public void addNotificationFriendPayment(CommandLine command) {
+    public void addNotificationFriendSplit(CommandLine command) {
         try {
-            String message = String.format("%s approved your payment %.2f LV.", command.line(),
-                    Double.parseDouble(command.args()[AMOUNT]));
+            String message = String.format("You owe %s %.2f LV[%s]",
+                    command.line(), Double.parseDouble(command.args()[AMOUNT]) / TWO, Helpers.getReason(command));
+
             HelpersNotifications.appendNotification(command, message, notificationsDirectory);
 
             HelpersNotifications.appendNotification(command, message, tempNotif);
 
         } catch (IOException e) {
-            //ExceptionFormater.exceptionAdd(command.line(),"IO exception in notifications", e.getStackTrace());
             throw new RuntimeException(e);
         }
-
     }
 
 }

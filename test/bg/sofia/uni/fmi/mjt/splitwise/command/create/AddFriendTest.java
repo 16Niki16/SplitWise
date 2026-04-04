@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AddFriendTest {
-    private AddFriendAPI addFriend;
+    private AddFriendCommand addFriend;
     private String data;
     private String except;
 
@@ -28,7 +29,7 @@ public class AddFriendTest {
         except = "";
         ReaderWriterCreator creator = mock();
         User user = User.of("niki|niki123|pepi 10.00|BGN");
-        addFriend = new AddFriend(creator, user);
+        addFriend = new AddFriendCommand(creator, user);
 
         when(creator.getRead()).thenAnswer(x -> new StringReader(data));
         when(creator.getNotAppend()).thenAnswer(x -> new StringWriter());

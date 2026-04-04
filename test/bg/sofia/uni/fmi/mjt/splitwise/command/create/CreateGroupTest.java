@@ -2,7 +2,9 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.create;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +16,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class CreateGroupTest {
-    private CreateGroup create;
+    private CreateGroupCommand create;
     private String friend;
     private String groups;
     private String except;
     private CommandLine command;
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -33,7 +36,7 @@ public class CreateGroupTest {
         ReaderWriterCreator friends = mock();
         ReaderWriterCreator group = mock();
 
-        create = new CreateGroup(friends, group);
+        create = new CreateGroupCommand(user, friends, group);
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
@@ -57,16 +60,16 @@ public class CreateGroupTest {
     }
 
     @Test
-    void testFriendNotRegisteredException(){
+    void testFriendNotRegisteredException() {
         command = CommandCreator.newCommand("niki create-group firstGroup kolio unknown");
         assertEquals(create.createGroup(command), "These people are still not registered: unknown",
-                "Wrong check all people exist checking!");
+            "Wrong check all people exist checking!");
     }
 
     @Test
-    void testYourselfException(){
+    void testYourselfException() {
         command = CommandCreator.newCommand("niki create-group firstGroup kolio niki");
-        assertEquals(create.createGroup(command),"You are trying to add yourself second time in a group!",
-                "Mistake in checking add yourself second time!");
+        assertEquals(create.createGroup(command), "You are trying to add yourself second time in a group!",
+            "Mistake in checking add yourself second time!");
     }
 }

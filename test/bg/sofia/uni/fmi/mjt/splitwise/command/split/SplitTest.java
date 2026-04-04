@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class SplitTest {
-    private Split split;
+    private SplitCommand split;
     private String friend;
     private String notif;
     private String except;
@@ -50,7 +51,7 @@ public class SplitTest {
         ReaderWriterCreator notifications = mock();
         ReaderWriterCreator tempNotif = mock();
         rate = mock();
-        split = new Split(friends, user, notifications, tempNotif, rate);
+        split = new SplitCommand(friends, user, notifications, tempNotif, rate);
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());

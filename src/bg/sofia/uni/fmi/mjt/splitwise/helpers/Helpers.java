@@ -34,19 +34,17 @@ public class Helpers {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
-                if (users.isEmpty()) {
-                    return;
-                }
                 String[] user = line.split("\\|");
                 users.remove(user[USER]);
             }
-            if (users.isEmpty()) {
-                return;
-            }
-            throw new FriendNotRegisteredException(extractNotRegistered(users));
         } catch (IOException e) {
             throw new IOProblemException("Problem in IO", e);
         }
+
+        if (users.isEmpty()) {
+            return;
+        }
+        throw new FriendNotRegisteredException(extractNotRegistered(users));
 
     }
 
@@ -108,13 +106,13 @@ public class Helpers {
         }
     }
 
-    public static String findFriendLine(CommandLine command, int index, ReaderWriterCreator directory)
-        throws IOException, FriendNotRegisteredException {
+    public static String findFriendLine(String username, ReaderWriterCreator directory)
+        throws IOException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] splited = line.split("\\|");
-                if (splited[USER].equals(command.args()[index])) {
+                if (splited[USER].equals(username)) {
                     return line;
                 }
             }
@@ -140,7 +138,7 @@ public class Helpers {
     }
 
     public static String findGroupLine(CommandLine command, ReaderWriterCreator groupsDirectory, int index)
-        throws IOException, GroupDoesNotExistException {
+        throws IOException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {

@@ -1,8 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+
 public class HelpCommand implements Command {
     @Override
-    public String execute() {
+    public String execute(User user) {
         return """
             * Commands:
              - add-friend <username>

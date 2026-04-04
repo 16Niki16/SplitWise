@@ -1,16 +1,8 @@
-package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
+package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;

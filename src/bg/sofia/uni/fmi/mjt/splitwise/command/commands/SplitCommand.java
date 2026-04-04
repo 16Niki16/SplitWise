@@ -1,13 +1,12 @@
-package bg.sofia.uni.fmi.mjt.splitwise.command.split;
+package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.command.split.SplitAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotifications;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotificationsAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitPersonNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
-import bg.sofia.uni.fmi.mjt.splitwise.user.UserAPI;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,15 +14,15 @@ import java.net.URISyntaxException;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
 
-public class Split implements SplitAPI {
+public class SplitCommand implements Command {
     private final ReaderWriterCreator directory;
     private final ReaderWriterCreator notifications;
     private final User user;
     private final ReaderWriterCreator tempNotif;
     private final ExchangeRate rate;
 
-    public Split(ReaderWriterCreator directory, User user, ReaderWriterCreator notifications,
-                 ReaderWriterCreator tempNotif, ExchangeRate rate) {
+    public SplitCommand(ReaderWriterCreator directory, User user, ReaderWriterCreator notifications,
+                        ReaderWriterCreator tempNotif, ExchangeRate rate) {
         this.user = user;
         this.directory = directory;
         this.notifications = notifications;

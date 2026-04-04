@@ -1,29 +1,29 @@
-package bg.sofia.uni.fmi.mjt.splitwise.notifications.group;
+package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
+import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.HelpersNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.IOException;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-
-public class PayGroupNotifications implements PayGroupNotificationsAPI {
-    private static final int GROUP_PAYMENT = 3;
+public class SplitGroupNotifications implements Notification {
+    private static final int GROUP_NAME = 2;
     private final ReaderWriterCreator notificationsDirectory;
     private final ReaderWriterCreator tempNotif;
 
-    public PayGroupNotifications(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
+    public SplitGroupNotifications(ReaderWriterCreator notificationsDirectory, ReaderWriterCreator tempNotif) {
         this.notificationsDirectory = notificationsDirectory;
         this.tempNotif = tempNotif;
     }
 
-    public void appendToGroupPayment(CommandLine command, String friend) {
+    @Override
+    public void appendToGroupSplit(CommandLine command, double amount, String friend) {
         try {
-            String message = String.format("*%s - %s approved your payment %.2f LV.", command.args()[GROUP_PAYMENT],
-                    command.line(), Double.parseDouble(command.args()[AMOUNT]));
-
+            String message = String.format("*%s - You owe %s %.2f LV[%s]",
+                    command.args()[GROUP_NAME], command.line(), amount, Helpers.getReason(command));
             HelpersNotifications.appendAtPosition(friend, message, notificationsDirectory);
+
             HelpersNotifications.appendAtPosition(friend, message, tempNotif);
 
         } catch (IOException e) {

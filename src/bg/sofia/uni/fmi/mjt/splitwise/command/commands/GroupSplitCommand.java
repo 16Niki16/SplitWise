@@ -1,9 +1,7 @@
-package bg.sofia.uni.fmi.mjt.splitwise.command.split;
+package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.group.GroupAPI;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
@@ -11,7 +9,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class GroupSplit implements GroupSplitAPI {
+public class GroupSplitCommand implements Command {
     private static final int GROUP_INDEX = 2;
     private static final int AMOUNT = 1;
     private final ReaderWriterCreator groupsDirectory;
@@ -20,8 +18,8 @@ public class GroupSplit implements GroupSplitAPI {
     private final User user;
     private final ExchangeRate rate;
 
-    public GroupSplit(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
-                      ReaderWriterCreator tempNotif, User user, ExchangeRate rate) {
+    public GroupSplitCommand(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
+                             ReaderWriterCreator tempNotif, User user, ExchangeRate rate) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
         this.tempNotif = tempNotif;
@@ -30,11 +28,10 @@ public class GroupSplit implements GroupSplitAPI {
     }
 
     @Override
-    public String groupsOwe(CommandLine command) {
-
+    public String execute(String... args) {
         try {
-            double amount = Double.parseDouble(command.args()[AMOUNT]);
-            GroupAPI updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
+            double amount = Double.parseDouble(args[AMOUNT]);
+            Group updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
 
             if (!user.getCurrency().equalsIgnoreCase("bgn")) {
                 amount = user.amountToAdd(rate.exchange(user.getCurrency(), "bgn"), amount, false);
