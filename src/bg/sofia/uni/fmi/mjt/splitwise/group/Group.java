@@ -5,6 +5,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NoMembersToPayException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PayGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotifications;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotifications;
@@ -59,12 +60,10 @@ public class Group {
         return new Group(splitGroup[GROUP_INDEX], participant);
     }
 
-    @Override
     public boolean checkPersonContains(String user) {
         return this.members.containsKey(user);
     }
 
-    @Override
     public String addOwes(User user, Map<String, Double> currencies) {
         StringBuilder build = new StringBuilder(this.group + '\n');
         double amount;
@@ -84,14 +83,12 @@ public class Group {
         return (build.toString().equals(this.group + '\n')) ? "" : build.toString();
     }
 
-    @Override
     public String getGroupName() {
         return this.group;
     }
 
-    @Override
-    public String addInformation(CommandLine command, ReaderWriterCreator notifications,
-                                 ReaderWriterCreator tempNotif, double totalAmount) {
+
+    public String addInformation(CommandLine command, double totalAmount) {
         double sumToPay = totalAmount / this.members.size();
 
         for (Map.Entry<String, Double> map : this.members.entrySet()) {
@@ -99,7 +96,7 @@ public class Group {
                 double balance = map.getValue() - totalAmount + sumToPay;
                 this.members.put(map.getKey(), balance);
             } else {
-                SplitGroupNotificationAPI group = new SplitGroupNotifications(notifications, tempNotif);
+                Notification group = new SplitGroupNotifications();
                 group.appendToGroupSplit(command, sumToPay, map.getKey());
                 double balance = map.getValue() + sumToPay;
                 this.members.put(map.getKey(), balance);
@@ -108,7 +105,6 @@ public class Group {
         return toString();
     }
 
-    @Override
     public String payInGroup(CommandLine command, ReaderWriterCreator notifications, ReaderWriterCreator tempNotif,
                              ReaderWriterCreator friends, User user, double totalAmount)
         throws NoMembersToPayException, PersonNotFriendException, IOException, FriendNotRegisteredException {
@@ -147,14 +143,13 @@ public class Group {
 
                 String userAppend = user.paidMoney(command.args()[USERNAME_OWE], -1 * amountPersonalPay);
 
-                UserAPI friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, friends));
+                User friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, friends));
                 String receiverAppend = friend.paidMoney(command.line(), amountPersonalPay);
 
                 Helpers.addInformation(Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE],
                     userAppend, receiverAppend, friends), friends);
 
-                PersonPayNotificationsAPI notification = new PersonPayNotifications(notifications, tempNotif);
-                notification.addNotificationFriendPayment(command);
+                Notification notification = new PersonPayNotifications();
             }
         }
         if (membersPay == 0) {
