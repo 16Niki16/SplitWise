@@ -22,6 +22,8 @@ public class CreateGroupCommand implements Command {
         participantsAccounts.add(creator);
 
         Group group = new Group(groupName, creator.getUsername(), participants);
+        userDataStore.addGroup(group);
+        participantsAccounts.forEach(user -> user.addGroup(group.getGroupId()));
 
         return "Group is successfully created!";
     }

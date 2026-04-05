@@ -32,6 +32,10 @@ public class User {
         friends.add(username);
     }
 
+    public void addGroup(String groupID) {
+        this.groups.add(groupID);
+    }
+
     public double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency,
                               boolean transformCurrent) {
         double exchangeRate = 0;

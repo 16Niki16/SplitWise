@@ -15,19 +15,16 @@ public class AddFriendCommand implements Command {
 
     @Override
     public String execute(User user) {
-        checkAddYourself(user.getUsername(), friendName);
         User newFriend = userData.getUser(friendName);
+        if (user.equals(newFriend)) {
+            throw new AddYourselfException("You can not add yourself as a friend!");
+        }
+
         user.addFriend(newFriend.getUsername());
         newFriend.addFriend(user.getUsername());
 
         return String.format("Friend %s is added.", newFriend.getUsername());
 
-    }
-
-    private void checkAddYourself(String name, String addName) {
-        if (name.equals(addName)) {
-            throw new AddYourselfException("You can not add yourself as a friend!");
-        }
     }
 }
 

@@ -6,7 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.GroupSplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.HelpCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidGroup;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Status;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
@@ -87,8 +87,8 @@ public class CommandRegistry {
             }
 
             case CommandType.GROUP_PAID -> {
-                PaidGroup payment =
-                        new PaidGroup(groupsDirectory, notificationsDirectory, tempNotif, directory, user, rate);
+                PaidGroupCommand payment =
+                        new PaidGroupCommand(groupsDirectory, notificationsDirectory, tempNotif, directory, user, rate);
                 yield payment.personPaidToGroup(command);
             }
 

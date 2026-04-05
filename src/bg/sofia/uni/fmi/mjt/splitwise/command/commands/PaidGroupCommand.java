@@ -10,7 +10,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class PaidGroup implements PaidGroupAPI {
+public class PaidGroupCommand implements Command {
     private static final int GROUP_INDEX = 3;
     private static final int AMOUNT = 1;
     private final ReaderWriterCreator groupsDirectory;
@@ -20,9 +20,9 @@ public class PaidGroup implements PaidGroupAPI {
     private final User user;
     private final ExchangeRate rate;
 
-    public PaidGroup(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
-                     ReaderWriterCreator tempNotif, ReaderWriterCreator friends,
-                     User user, ExchangeRate rate) {
+    public PaidGroupCommand(ReaderWriterCreator groupsDirectory, ReaderWriterCreator notifications,
+                            ReaderWriterCreator tempNotif, ReaderWriterCreator friends,
+                            User user, ExchangeRate rate) {
         this.groupsDirectory = groupsDirectory;
         this.notifications = notifications;
         this.tempNotif = tempNotif;
@@ -50,4 +50,8 @@ public class PaidGroup implements PaidGroupAPI {
         }
     }
 
+    @Override
+    public String execute(User user) {
+        return null;
+    }
 }

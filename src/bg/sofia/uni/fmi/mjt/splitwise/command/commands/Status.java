@@ -1,9 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
 import java.io.BufferedReader;
@@ -12,15 +10,9 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Status implements StatusAPI {
-    private final ReaderWriterCreator groupsDirectory;
-    private final User user;
-    private final ExchangeRate rate;
+public class Status implements Command {
 
-    public Status(ReaderWriterCreator groupsDirectory, User user, ExchangeRate rate) {
-        this.groupsDirectory = groupsDirectory;
-        this.user = user;
-        this.rate = rate;
+    public Status() {
     }
 
     public String getStatus(CommandLine command) {
@@ -65,5 +57,10 @@ public class Status implements StatusAPI {
 
             throw new RuntimeException("Could not extract groups. IO", e);
         }
+    }
+
+    @Override
+    public String execute(User user) {
+        return null;
     }
 }
