@@ -1,6 +1,5 @@
 package bg.sofia.uni.fmi.mjt.splitwise.login;
 
-import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;

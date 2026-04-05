@@ -1,9 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.helpers;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AddYourselfException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotEnoughArgumentsException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotNumberException;
 
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.FOUR;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.THREE;
