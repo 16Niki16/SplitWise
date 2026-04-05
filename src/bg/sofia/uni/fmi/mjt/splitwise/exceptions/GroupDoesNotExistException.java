@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class GroupDoesNotExistException extends Exception {
+public class GroupDoesNotExistException extends RuntimeException {
     public GroupDoesNotExistException(String message) {
         super(message);
     }

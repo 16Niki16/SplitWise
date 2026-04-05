@@ -1,8 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.helpers;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.GroupDoesNotExistException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.IOProblemException;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
@@ -29,22 +30,22 @@ public class Helpers {
         }
     }
 
-    public static void checkInFileGroup(Set<String> users, ReaderWriterCreator creator)
-            throws FriendNotRegisteredException, IOException {
+    public static void checkInFileGroup(Set<String> users, ReaderWriterCreator creator) {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
-                if (users.isEmpty()) {
-                    return;
-                }
                 String[] user = line.split("\\|");
                 users.remove(user[USER]);
             }
-            if (users.isEmpty()) {
-                return;
-            }
-            throw new FriendNotRegisteredException(extractNotRegistered(users));
+        } catch (IOException e) {
+            throw new IOProblemException("Problem in IO", e);
         }
+
+        if (users.isEmpty()) {
+            return;
+        }
+        throw new FriendNotRegisteredException(extractNotRegistered(users));
+
     }
 
     public static String extractNotRegistered(Set<String> users) {
@@ -56,7 +57,7 @@ public class Helpers {
     }
 
     public static User checkInFileExtract(String username, ReaderWriterCreator creator)
-            throws FriendNotRegisteredException, IOException {
+        throws FriendNotRegisteredException, IOException {
         try (BufferedReader r = new BufferedReader(creator.getRead())) {
             String user;
             while ((user = r.readLine()) != null) {
@@ -69,7 +70,7 @@ public class Helpers {
         }
     }
 
-    public static String getReason(Command command) {
+    public static String getReason(CommandLine command) {
         StringBuilder build = new StringBuilder();
         for (int i = REASON; i < command.args().length; i++) {
             build.append(command.args()[i]).append(" ");
@@ -87,7 +88,7 @@ public class Helpers {
 
     public static List<String> updatedInfo(String user, String receiver, String appendUser, String appendReceiver,
                                            ReaderWriterCreator directory)
-            throws IOException {
+        throws IOException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String readline;
             List<String> newLines = new ArrayList<>();
@@ -105,13 +106,13 @@ public class Helpers {
         }
     }
 
-    public static String findFriendLine(Command command, int index, ReaderWriterCreator directory)
-            throws IOException, FriendNotRegisteredException {
+    public static String findFriendLine(String username, ReaderWriterCreator directory)
+        throws IOException {
         try (BufferedReader r = new BufferedReader(directory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {
                 String[] splited = line.split("\\|");
-                if (splited[USER].equals(command.args()[index])) {
+                if (splited[USER].equals(username)) {
                     return line;
                 }
             }
@@ -120,7 +121,7 @@ public class Helpers {
     }
 
     public static List<String> updatedGroup(String name, ReaderWriterCreator groupsDirectory, String payment)
-            throws IOException {
+        throws IOException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
             String line;
             List<String> lines = new ArrayList<>();
@@ -136,8 +137,8 @@ public class Helpers {
         }
     }
 
-    public static String findGroupLine(Command command, ReaderWriterCreator groupsDirectory, int index)
-            throws IOException, GroupDoesNotExistException {
+    public static String findGroupLine(CommandLine command, ReaderWriterCreator groupsDirectory, int index)
+        throws IOException {
         try (BufferedReader r = new BufferedReader(groupsDirectory.getRead())) {
             String line;
             while ((line = r.readLine()) != null) {

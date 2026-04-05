@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class AddYourselfException extends Exception {
+public class AddYourselfException extends RuntimeException {
     public AddYourselfException(String message) {
         super(message);
     }

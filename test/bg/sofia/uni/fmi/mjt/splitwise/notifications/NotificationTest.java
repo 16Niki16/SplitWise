@@ -1,10 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotifications;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.user.SplitPersonNotificationsAPI;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +40,7 @@ public class NotificationTest {
     @Test
     void addNotificationFriendSplitValid() {
         String notificationTest = notif;
-        Command command = new Command("koki", "split", "10", "niki", "qjca");
+        CommandLine command = new CommandLine("koki", "split", "10", "niki", "qjca");
         when(notificationsDirectory.getRead()).thenAnswer(x -> new StringReader(notificationTest));
         when(notificationsDirectory.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(notificationsDirectory.getAppend()).thenAnswer(x -> new StringWriter());

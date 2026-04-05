@@ -9,7 +9,7 @@ public class Main {
         String exceptionsDirectory = "DataFiles\\Exceptions.txt";
         String temporaryNotifications = "DataFiles\\TemporaryNotifications.txt";
         CommandExecutor ex =
-            new CommandExecutor(directory, groupsDirectory, notificationsDirectory, exceptionsDirectory,
+            new CommandExecutor(directory, groupsDirectory, notificationsDirectory,
                 temporaryNotifications);
         Server server = new Server(ex, directory, temporaryNotifications, exceptionsDirectory);
         server.serverStart();

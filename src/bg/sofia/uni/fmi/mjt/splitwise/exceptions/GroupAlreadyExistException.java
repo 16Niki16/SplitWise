@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class GroupAlreadyExistException extends Exception {
+public class GroupAlreadyExistException extends RuntimeException {
     public GroupAlreadyExistException(String message) {
         super(message);
     }

@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.user;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notifications;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,7 @@ import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.PASSWORD;
 import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
 import static java.lang.Math.abs;
 
-public class User implements UserAPI {
+public class User {
     private static final double START = 0.00;
     private static final int FOUR = 4;
     private static final int CURRENCY_FRIENDS_EXIST = 3;
@@ -22,6 +23,7 @@ public class User implements UserAPI {
     private final String username;
     private final String password;
     private final Map<String, Double> friendList;
+   // private final Notifications notifications;
     private String currency;
 
     private User(String username, String password, Map<String, Double> friendList, String currency) {
@@ -35,7 +37,7 @@ public class User implements UserAPI {
         String[] splitLine = line.split("\\|");
         if (splitLine.length == FOUR) {
             return new User(splitLine[USER], splitLine[PASSWORD], extractFriends(splitLine[FRIEND_LIST]),
-                    splitLine[CURRENCY_FRIENDS_EXIST]);
+                splitLine[CURRENCY_FRIENDS_EXIST]);
         }
         return new User(splitLine[USER], splitLine[PASSWORD], new HashMap<>(), splitLine[CURRENCY_FRIENDS_NOT_EXIST]);
     }
@@ -50,17 +52,14 @@ public class User implements UserAPI {
         return friendsOwes;
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
 
-    @Override
     public String getCurrency() {
         return currency;
     }
 
-    @Override
     public String changeCurrency(Map<String, Double> mapWithCurrency) {
         double exchangeRate = 0;
         double wantedCurrency = 0;
@@ -84,7 +83,6 @@ public class User implements UserAPI {
         return toString();
     }
 
-    @Override
     public double amountToAdd(Map<String, Double> mapWithCurrency, double amountPersonCurrency,
                               boolean transformCurrent) {
         double exchangeRate = 0;
@@ -97,24 +95,24 @@ public class User implements UserAPI {
             }
         }
         return (transformCurrent) ? (amountPersonCurrency / exchangeRate) * wantedCurrency :
-                (amountPersonCurrency / wantedCurrency) * exchangeRate;
+            (amountPersonCurrency / wantedCurrency) * exchangeRate;
     }
 
-    @Override
-    public String addFriend(String friend) {
+    public void addFriend(String friend) {
+        if (friendList.containsKey(friend)) {
+            throw new AlreadyFriendsException("They are friends already");
+        }
+
         friendList.put(friend, START);
-        return toString();
     }
 
-    @Override
-    public void checkAlreadyFriends(String friend) throws AlreadyFriendsException {
+    public void checkAlreadyFriends(String friend) {
         if (friendList.containsKey(friend)) {
             throw new AlreadyFriendsException("They are friends already");
         }
     }
 
-    @Override
-    public String appendMoney(String friend, double amount) throws PersonNotFriendException {
+    public String appendMoney(String friend, double amount) {
         if (this.friendList.containsKey(friend)) {
             double newAmount = this.friendList.get(friend) + amount / 2;
             this.friendList.put(friend, newAmount);
@@ -123,7 +121,6 @@ public class User implements UserAPI {
         throw new PersonNotFriendException("You are not still friends");
     }
 
-    @Override
     public String getStatus() {
         StringBuilder build = new StringBuilder();
         for (Map.Entry<String, Double> map : this.friendList.entrySet()) {
@@ -136,8 +133,7 @@ public class User implements UserAPI {
         return build.toString();
     }
 
-    @Override
-    public String paidMoney(String friend, double amount) throws PersonNotFriendException {
+    public String paidMoney(String friend, double amount) {
         if (this.friendList.containsKey(friend)) {
             double newAmount = this.friendList.get(friend) - amount;
             this.friendList.put(friend, newAmount);
@@ -146,8 +142,7 @@ public class User implements UserAPI {
         throw new PersonNotFriendException("You are not still friends");
     }
 
-    @Override
-    public void checkUserPasswordValid(String username, String password) throws PasswordNotCorrectException {
+    public void checkUserPasswordValid(String username, String password) {
         if (!this.password.equals(password)) {
             throw new PasswordNotCorrectException("Password is not correct!");
         }

@@ -1,7 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidGroup;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -51,12 +52,11 @@ public class GroupPaidTest {
 
         ReaderWriterCreator notifications = mock();
         ReaderWriterCreator group = mock();
-        ReaderWriterCreator exc = mock();
         ReaderWriterCreator tempNotif = mock();
         ReaderWriterCreator friends = mock();
         ExchangeRate rate = mock();
 
-        paid = new PaidGroup(group, notifications, exc, tempNotif, friends, user, rate);
+        paid = new PaidGroup(group, notifications, tempNotif, friends, user, rate);
 
         when(notifications.getRead()).thenAnswer(x -> new StringReader(notif));
         when(notifications.getNotAppend()).thenAnswer(x -> new StringWriter());
@@ -67,8 +67,6 @@ public class GroupPaidTest {
         when(group.getRead()).thenAnswer(x -> new StringReader(groups));
         when(group.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(group.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
@@ -82,19 +80,19 @@ public class GroupPaidTest {
 
     @Test
     void testCreateGroupValid() {
-        Command command = CommandCreator.newCommand("niki paid-group 10 niki123 secondGroup");
+        CommandLine command = CommandCreator.newCommand("niki paid-group 10 niki123 secondGroup");
         assertEquals(paid.personPaidToGroup(command), "Successful payment in a group!", "failed test pay in group.");
     }
 
     @Test
     void testGroupDoesNotExistException(){
-        Command command = CommandCreator.newCommand("niki paid-group 10 niki123 unknownGroup");
+        CommandLine command = CommandCreator.newCommand("niki paid-group 10 niki123 unknownGroup");
         assertEquals(paid.personPaidToGroup(command), "Group with this name does not exist!", "failed test pay in group.");
     }
 
     @Test
     void testPersonNotAFriendException(){
-        Command command = CommandCreator.newCommand("niki paid-group 10 kolio secondGroup");
+        CommandLine command = CommandCreator.newCommand("niki paid-group 10 kolio secondGroup");
         assertEquals(paid.personPaidToGroup(command), "You are not still friends", "failed test pay in group.");
     }
 }

@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class UnknownCommandException extends Exception {
+public class UnknownCommandException extends RuntimeException {
     public UnknownCommandException(String message) {
         super(message);
     }

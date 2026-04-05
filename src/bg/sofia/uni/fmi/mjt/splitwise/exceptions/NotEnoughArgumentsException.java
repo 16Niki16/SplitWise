@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class NotEnoughArgumentsException extends Exception {
+public class NotEnoughArgumentsException extends RuntimeException {
     public NotEnoughArgumentsException(String message) {
         super(message);
     }

@@ -1,9 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.currency.client;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
@@ -15,34 +12,24 @@ import java.util.Map;
 public class TransformCurrency {
     private static final int CURRENCY = 1;
     private final ReaderWriterCreator directory;
-    private final ReaderWriterCreator exceptions;
     private final User user;
     private final ExchangeRate rate;
 
-    public TransformCurrency(ReaderWriterCreator directory, User user, ExchangeRate rate,
-                             ReaderWriterCreator exceptions) {
+    public TransformCurrency(ReaderWriterCreator directory, User user, ExchangeRate rate) {
         this.directory = directory;
         this.user = user;
         this.rate = rate;
-        this.exceptions = exceptions;
     }
 
-    public String changeCurrency(Command command) {
+    public String changeCurrency(CommandLine command) {
         try {
             Map<String, Double> currencies = rate.exchange(command.args()[CURRENCY], user.getCurrency());
             String userAppend = user.changeCurrency(currencies);
-            System.out.println(userAppend);
 
             Helpers.addInformation(Helpers.updatedGroup(command.line(), directory, userAppend), directory);
             return "Currency successfully changed!";
         } catch (URISyntaxException | IOException e) {
-            ExceptionFormater.exceptionAdd(user.getUsername(), "IO exception in currency",
-                    e.getStackTrace(), exceptions);
             throw new RuntimeException("IO exception in currency", e);
-
-        } catch (UnknownCurrencyException | NotCorrectQueryException e) {
-            ExceptionFormater.exceptionAdd(user.getUsername(), e.getLocalizedMessage(), e.getStackTrace(), exceptions);
-            return e.getLocalizedMessage();
         }
     }
 }

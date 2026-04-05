@@ -1,7 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.split;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class SplitTest {
-    private Split split;
+    private SplitCommand split;
     private String friend;
     private String notif;
     private String except;
@@ -48,10 +49,9 @@ public class SplitTest {
         User user = User.of("niki|niki123|pepi 10.00,kolio 0.00,ili 0.00,koki 5.00|BGN");
         ReaderWriterCreator friends = mock();
         ReaderWriterCreator notifications = mock();
-        ReaderWriterCreator exc = mock();
         ReaderWriterCreator tempNotif = mock();
         rate = mock();
-        split = new Split(friends, user, notifications, exc, tempNotif, rate);
+        split = new SplitCommand(friends, user, notifications, tempNotif, rate);
 
         when(friends.getRead()).thenAnswer(x -> new StringReader(friend));
         when(friends.getNotAppend()).thenAnswer(x -> new StringWriter());
@@ -62,8 +62,6 @@ public class SplitTest {
         when(tempNotif.getRead()).thenAnswer(x -> new StringReader(notif));
         when(tempNotif.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(tempNotif.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exc.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exc.getAppend()).thenAnswer(x -> new StringWriter());
         Map<String, Double> currencies = new HashMap<>();
         currencies.put("EUR", 0.92786);
         currencies.put("BGN", 1.807805);
@@ -72,25 +70,25 @@ public class SplitTest {
 
     @Test
     void testMoneyOweValid() {
-        Command command = CommandCreator.newCommand("niki split 20 pepi qjca");
+        CommandLine command = CommandCreator.newCommand("niki split 20 pepi qjca");
         assertEquals(split.moneyOwe(command), "Successfully split the money!", "failed test split.");
     }
 
     @Test
     void testMoneyOweExceptions() {
-        Command command = CommandCreator.newCommand("niki split 20 kolio qjca");
+        CommandLine command = CommandCreator.newCommand("niki split 20 kolio qjca");
         assertEquals(split.moneyOwe(command), "You are not still friends", "failed test split not valid.");
     }
 
     @Test
     void testPersonNotRegisteredYet() {
-        Command command = CommandCreator.newCommand("niki split 20 ili qjca");
+        CommandLine command = CommandCreator.newCommand("niki split 20 ili qjca");
         assertEquals(split.moneyOwe(command), "This person is still not registered!", "failed test split not valid.");
     }
 
     @Test
     void unknownCurrencyException() throws NotCorrectQueryException, URISyntaxException, UnknownCurrencyException {
-        Command command = CommandCreator.newCommand("niki split 20 pepi qjca");
+        CommandLine command = CommandCreator.newCommand("niki split 20 pepi qjca");
         UnknownCurrencyException currencyException = new UnknownCurrencyException("Unknown currency!");
         when(rate.exchange(any(), any())).thenThrow(currencyException);
         assertEquals(split.moneyOwe(command), "Unknown currency!", "failed test split not valid.");

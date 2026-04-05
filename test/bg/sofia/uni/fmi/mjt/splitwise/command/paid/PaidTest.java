@@ -1,7 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.paid;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotCorrectQueryException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
@@ -31,35 +32,34 @@ public class PaidTest {
     @BeforeEach
     void setUp() throws NotCorrectQueryException, URISyntaxException, UnknownCurrencyException {
         tempNotif = """
-                name:niki
-                Friends:
-                koki approved your payment 5 LV.
-                Groups:
-                *testGroup - koki approved your payment 2 LV.
-                name:ili
-                Groups:
-                *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
+            name:niki
+            Friends:
+            koki approved your payment 5 LV.
+            Groups:
+            *testGroup - koki approved your payment 2 LV.
+            name:ili
+            Groups:
+            *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
         except = "";
         notif = """
-                name:niki
-                Friends:
-                koki approved your payment 5 LV.
-                Groups:
-                *testGroup - koki approved your payment 2 LV.
-                name:ili
-                Groups:
-                *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
+            name:niki
+            Friends:
+            koki approved your payment 5 LV.
+            Groups:
+            *testGroup - koki approved your payment 2 LV.
+            name:ili
+            Groups:
+            *testGroup - You owes koki 3.3333333333333335 LV[qjca]""";
         friends = """
-                niki|niki123|pepi 10.00,ili 0.00,koki 5.00|BGN
-                kolio|kolio123|pepi 0.00|EUR
-                pepi|pepi123|niki -10.00|BGN""";
+            niki|niki123|pepi 10.00,ili 0.00,koki 5.00|BGN
+            kolio|kolio123|pepi 0.00|EUR
+            pepi|pepi123|niki -10.00|BGN""";
         User user = User.of("niki|niki123|pepi 10.00,ili 0.00,koki 5.00|BGN");
         ReaderWriterCreator friend = mock();
         ReaderWriterCreator notifications = mock();
-        ReaderWriterCreator exceptions = mock();
         ReaderWriterCreator temp = mock();
         ExchangeRate rate = mock();
-        paid = new Paid(friend, user, notifications, exceptions, temp, rate);
+        paid = new PaidCommand(friend, user, notifications, temp, rate);
 
         when(friend.getRead()).thenAnswer(x -> new StringReader(friends));
         when(friend.getNotAppend()).thenAnswer(x -> new StringWriter());
@@ -70,8 +70,6 @@ public class PaidTest {
         when(temp.getRead()).thenAnswer(x -> new StringReader(tempNotif));
         when(temp.getNotAppend()).thenAnswer(x -> new StringWriter());
         when(temp.getAppend()).thenAnswer(x -> new StringWriter());
-        when(exceptions.getRead()).thenAnswer(x -> new StringReader(except));
-        when(exceptions.getAppend()).thenAnswer(x -> new StringWriter());
         Map<String, Double> currencies = new HashMap<>();
         currencies.put("EUR", 0.92786);
         currencies.put("BGN", 1.807805);
@@ -80,19 +78,19 @@ public class PaidTest {
 
     @Test
     void testMoneyOweValid() {
-        Command command = CommandCreator.newCommand("niki paid 10 pepi");
+        CommandLine command = CommandCreator.newCommand("niki paid 10 pepi");
         assertEquals(paid.personPay(command), "Successfully paid!", "failed test pay.");
     }
 
     @Test
-    void testTestNotFriends(){
-        Command command = CommandCreator.newCommand("niki paid 10 kolio");
-            assertEquals(paid.personPay(command), "Unsuccessful payment!", "Unsuccessful check for friends!");
+    void testTestNotFriends() {
+        CommandLine command = CommandCreator.newCommand("niki paid 10 kolio");
+        assertEquals(paid.personPay(command), "Unsuccessful payment!", "Unsuccessful check for friends!");
     }
 
     @Test
-    void testNotRegistered(){
-        Command command = CommandCreator.newCommand("niki paid 10 ili");
+    void testNotRegistered() {
+        CommandLine command = CommandCreator.newCommand("niki paid 10 ili");
         assertEquals(paid.personPay(command), "Unsuccessful payment!", "Unsuccessful check for friends!");
     }
 

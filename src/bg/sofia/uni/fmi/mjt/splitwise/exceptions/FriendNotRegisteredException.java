@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class FriendNotRegisteredException extends Exception {
+public class FriendNotRegisteredException extends RuntimeException {
     public FriendNotRegisteredException(String message) {
         super(message);
     }

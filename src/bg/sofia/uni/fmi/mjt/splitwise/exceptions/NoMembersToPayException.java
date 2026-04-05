@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.exceptions;
 
-public class NoMembersToPayException extends Exception {
+public class NoMembersToPayException extends RuntimeException {
     public NoMembersToPayException(String message) {
         super(message);
     }

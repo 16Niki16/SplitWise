@@ -13,12 +13,6 @@ public class ExceptionHandler {
 
     private static final int ONE = 1;
 
-    public static void checkAddYourself(String name, String addName) throws AddYourselfException {
-        if (name.equals(addName)) {
-            throw new AddYourselfException("You can not add yourself as a friend!");
-        }
-    }
-
     public static void checkNumber(String possibleNumber) throws NotNumberException {
         if (!possibleNumber.matches("\\d+(\\.\\d+)?")) {
             throw new NotNumberException("The format of the number is not correct(Need positive number).");
