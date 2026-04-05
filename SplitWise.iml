@@ -27,9 +27,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="mockito.junit.jupiter" level="project" />
     <orderEntry type="library" name="mockito.core" level="project" />
-    <orderEntry type="library" name="google.code.gson" level="project" />
     <orderEntry type="library" name="lombok" level="project" />
+    <orderEntry type="library" name="byte-buddy-1.14.9" level="project" />
   </component>
 </module>

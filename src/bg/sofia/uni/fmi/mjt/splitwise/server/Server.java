@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.server;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
@@ -28,13 +28,13 @@ public class Server {
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 1024;
     private final ClientContainer users;
-    private final CommandExecutor commandExecutor;
+    private final CommandRegistry commandExecutor;
     private final ReaderWriterCreator friends;
     private final ReaderWriterCreator tempNotifications;
     private final ReaderWriterCreator exception;
     private final ExchangeRate rate;
 
-    public Server(CommandExecutor commandExecutor, String friends, String tempNotifications, String exception) {
+    public Server(CommandRegistry commandExecutor, String friends, String tempNotifications, String exception) {
         this.commandExecutor = commandExecutor;
         this.friends = new ReaderWriterCreator(friends);
         this.tempNotifications = new ReaderWriterCreator(tempNotifications);

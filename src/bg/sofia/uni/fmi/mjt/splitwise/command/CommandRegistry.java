@@ -1,44 +1,39 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.GroupSplitCommand;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.TransformCurrency;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.HelpCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidGroup;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Status;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.TransformCurrency;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.FriendNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.NotNumberException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotFriendException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionHandler;
-import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.COMMAND_NAME;
+import java.util.EnumMap;
+import java.util.Map;
 
-public class CommandExecutor {
-    private final ReaderWriterCreator groupsDirectory;
-    private final ReaderWriterCreator directory;
-    private final ReaderWriterCreator notificationsDirectory;
-    private final ReaderWriterCreator tempNotif;
+public class CommandRegistry {
+    private static final Map<CommandType, CommandParser> COMMANDS = new EnumMap<>(CommandType.class);
+    private static final Command HELP_COMMAND = new HelpCommand();
+    private static final Command STATUS_COMMAND = new Status();
 
-    public CommandExecutor(String directory, String groupsDirectory, String notificationsDirectory, String tempNotif) {
-
-        this.directory = new ReaderWriterCreator(directory);
-        this.groupsDirectory = new ReaderWriterCreator(groupsDirectory);
-        this.notificationsDirectory = new ReaderWriterCreator(notificationsDirectory);
-        this.tempNotif = new ReaderWriterCreator(tempNotif);
+    public CommandRegistry() {
+        COMMANDS.put(CommandType.HELP, args -> HELP_COMMAND);
     }
 
-    public String execute(CommandLine command, User user, ExchangeRate rate) {
+    public Command parse(String input) {
+        CommandLine
         return switch (ExceptionHandler.checkCommandLength(CommandType.of(command.args()[COMMAND_NAME].strip()),
-            command.args())) {
+                command.args())) {
 
             case CommandType.ADD_FRIEND, CommandType.CREATE_GROUP -> executeCreate(command, user);
 
@@ -62,8 +57,7 @@ public class CommandExecutor {
         };
     }
 
-    private String executeCreate(CommandLine command, User user)
-        throws UnknownCommandException {
+    private String executeCreate(CommandLine command, User user) {
         return switch (CommandType.of(command.args()[COMMAND_NAME])) {
 
             case CommandType.ADD_FRIEND -> {
@@ -81,7 +75,7 @@ public class CommandExecutor {
     }
 
     private String executePaid(CommandLine command, User user, ExchangeRate rate)
-        throws UnknownCommandException, NotNumberException, PersonNotFriendException, FriendNotRegisteredException {
+            throws UnknownCommandException, NotNumberException, PersonNotFriendException, FriendNotRegisteredException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
 
@@ -94,7 +88,7 @@ public class CommandExecutor {
 
             case CommandType.GROUP_PAID -> {
                 PaidGroup payment =
-                    new PaidGroup(groupsDirectory, notificationsDirectory, tempNotif, directory, user, rate);
+                        new PaidGroup(groupsDirectory, notificationsDirectory, tempNotif, directory, user, rate);
                 yield payment.personPaidToGroup(command);
             }
 
@@ -103,7 +97,7 @@ public class CommandExecutor {
     }
 
     private String executeSplit(CommandLine command, User user, ExchangeRate rate)
-        throws UnknownCommandException, NotNumberException {
+            throws UnknownCommandException, NotNumberException {
 
         ExceptionHandler.checkNumber(command.args()[AMOUNT]);
 
@@ -116,7 +110,7 @@ public class CommandExecutor {
 
             case CommandType.SPLIT_GROUP -> {
                 Command splitG =
-                    new GroupSplitCommand(groupsDirectory, notificationsDirectory, tempNotif, user, rate);
+                        new GroupSplitCommand(groupsDirectory, notificationsDirectory, tempNotif, user, rate);
                 yield splitG.execute(command.args());
             }
 

@@ -23,11 +23,11 @@ public class CommandLineExecutorTest {
     @Mock
     private CommandLine command;
     @InjectMocks
-    private CommandExecutor executor;
+    private CommandRegistry executor;
 
     @BeforeEach
     void setUp() {
-        executor = new CommandExecutor(RANDOM, RANDOM, RANDOM, RANDOM);
+        executor = new CommandRegistry(RANDOM, RANDOM, RANDOM, RANDOM);
     }
 
     @Test

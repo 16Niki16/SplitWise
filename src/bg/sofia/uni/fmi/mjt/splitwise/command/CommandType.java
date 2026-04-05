@@ -25,7 +25,7 @@ public enum CommandType {
         this.type = type;
     }
 
-    public static CommandType of(String type) throws UnknownCommandException {
+    public static CommandType of(String type) {
 
         for (CommandType value : values()) {
             if (value.type.equals(type)) {

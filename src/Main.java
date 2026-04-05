@@ -1,4 +1,4 @@
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
 
 public class Main {
@@ -8,8 +8,8 @@ public class Main {
         String notificationsDirectory = "DataFiles\\Notifications.txt";
         String exceptionsDirectory = "DataFiles\\Exceptions.txt";
         String temporaryNotifications = "DataFiles\\TemporaryNotifications.txt";
-        CommandExecutor ex =
-            new CommandExecutor(directory, groupsDirectory, notificationsDirectory,
+        CommandRegistry ex =
+            new CommandRegistry(directory, groupsDirectory, notificationsDirectory,
                 temporaryNotifications);
         Server server = new Server(ex, directory, temporaryNotifications, exceptionsDirectory);
         server.serverStart();
