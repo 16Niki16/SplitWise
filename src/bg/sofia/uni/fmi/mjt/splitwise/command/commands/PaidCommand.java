@@ -1,50 +1,21 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotifications;
+import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import lombok.AllArgsConstructor;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.math.BigDecimal;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.AMOUNT;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USERNAME_OWE;
+@AllArgsConstructor
 
 public class PaidCommand implements Command {
-
-    public PaidCommand() {
-    }
-
-    public String personPay(CommandLine command) {
-        try {
-            double amount = Double.parseDouble(command.args()[AMOUNT]);
-            User friend = User.of(Helpers.findFriendLine(command, USERNAME_OWE, directory));
-            String appendUser = user.paidMoney(command.args()[USERNAME_OWE], -1 * amount);
-
-            if (!friend.getCurrency().equals(user.getCurrency())) {
-                amount = friend.amountToAdd(rate.exchange(user.getCurrency(), friend.getCurrency()), amount, true);
-            }
-
-            String appendReceiver = friend.paidMoney(command.line(), amount);
-            Helpers.addInformation(
-                    Helpers.updatedInfo(command.line(), command.args()[USERNAME_OWE], appendUser, appendReceiver,
-                            directory), directory);
-
-            PersonPayNotificationsAPI notification = new PersonPayNotifications(notificationDirectory, tempNotif);
-            notification.addNotificationFriendPayment(command);
-            return "Successfully paid!";
-
-        } catch (IOException e) {
-            throw new RuntimeException("could not pay, server problem!", e);
-
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("future fix", e);
-        }
-    }
+    private DebtsService debtsService;
+    private String payer;
+    private BigDecimal amount;
 
     @Override
     public String execute(User user) {
-        return null;
+        debtsService.addDebt(user.getUsername(), payer, amount);
+        return "successful payment";
     }
 }

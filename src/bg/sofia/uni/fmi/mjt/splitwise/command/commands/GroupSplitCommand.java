@@ -1,41 +1,35 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.Helpers;
+import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import lombok.AllArgsConstructor;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.math.BigDecimal;
+import java.util.Set;
 
+@AllArgsConstructor
 public class GroupSplitCommand implements Command {
-
-    public GroupSplitCommand() {
-
-    }
-
-    @Override
-    public String execute(String... args) {
-        try {
-            double amount = Double.parseDouble(args[AMOUNT]);
-            Group updateGroup = Group.ofSplit(Helpers.findGroupLine(command, groupsDirectory, GROUP_INDEX));
-
-            if (!user.getCurrency().equalsIgnoreCase("bgn")) {
-                amount = user.amountToAdd(rate.exchange(user.getCurrency(), "bgn"), amount, false);
-            }
-
-            String payment = updateGroup.addInformation(command, notifications, tempNotif, amount);
-
-            Helpers.addInformation(Helpers.updatedGroup(command.args()[GROUP_INDEX], groupsDirectory, payment),
-                    groupsDirectory);
-
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("Group not found.", e);
-        }
-        return "Information successfully added";
-    }
+    private String groupName;
+    private BigDecimal amountToAdd;
+    private String reason;
+    private GroupService groupService;
+    private UserService userService;
+    private DebtsService debtsService;
 
     @Override
     public String execute(User user) {
-        return null;
+        Group group = groupService.getGroupByName(groupName);
+        Set<String> participants = group.getParticipants();
+        BigDecimal splitAmount = amountToAdd.divide(BigDecimal.valueOf(participants.size()));
+
+        participants.forEach((participant) -> {
+            if (!participant.equals(user.getUsername())) {
+                debtsService.addDebt(participant, user.getUsername(), splitAmount);
+            }
+        });
+        return "amount split";
     }
 }

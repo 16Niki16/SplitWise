@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.user.Debt;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class DebtsService {
     private final DebtsRepository debtsRepository;
@@ -33,5 +34,13 @@ public class DebtsService {
         } else {
             debtsRepository.addDebt(new Debt(from, to, amount));
         }
+    }
+
+    public List<Debt> getDebtsByUsername(String username) {
+        return debtsRepository.findAllDebts(username);
+    }
+
+    public void updateFile() {
+        debtsRepository.save();
     }
 }

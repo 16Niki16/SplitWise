@@ -49,12 +49,10 @@ public class UserRepository {
 
     public void addUser(User user) {
         users.put(user.getUsername(), user);
-        save();
     }
 
     public void removeUser(String username) {
         users.remove(username);
-        save();
     }
 
     public Map<String, User> getAllUsers() {

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DebtsRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -62,6 +63,12 @@ public class DebtsRepository {
                 .filter(d -> d.getFrom().equals(from) && d.getTo().equals(to))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<Debt> findAllDebts(String username) {
+        return debts.stream()
+                .filter(d -> d.getFrom().equals(username) || d.getTo().equals(username))
+                .collect(Collectors.toList());
     }
 
 }

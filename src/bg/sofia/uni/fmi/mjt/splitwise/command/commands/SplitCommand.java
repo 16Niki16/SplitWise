@@ -18,8 +18,8 @@ public class SplitCommand implements Command {
     @Override
     public String execute(User user) {
         BigDecimal amount = amountToSplit.divide(BigDecimal.valueOf(2));
-        debtsService.addDebt(user.getUsername(), debtor, amount);
-
+        debtsService.addDebt(debtor, user.getUsername(), amount);
+        debtsService.updateFile();
         return null;
     }
 }

@@ -14,6 +14,10 @@ public class GroupService {
         this.groupRepository.addGroup(group);
     }
 
+    public Group getGroupByName(String groupName) {
+        return groupRepository.getGroup(groupName);
+    }
+
     public void updateFile() {
         this.groupRepository.save();
     }

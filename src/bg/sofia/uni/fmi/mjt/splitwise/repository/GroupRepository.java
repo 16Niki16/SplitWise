@@ -50,13 +50,11 @@ public class GroupRepository {
     }
 
     public void addGroup(Group group) {
-        this.groups.put(group.getGroupId(), group);
-        save();
+        this.groups.put(group.getGroupName(), group);
     }
 
     public void removeGroup(String groupID) {
         this.groups.remove(groupID);
-        save();
     }
 
     public Map<String, Group> getAllGroups() {
