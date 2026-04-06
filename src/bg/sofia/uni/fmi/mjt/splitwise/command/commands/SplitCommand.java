@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;

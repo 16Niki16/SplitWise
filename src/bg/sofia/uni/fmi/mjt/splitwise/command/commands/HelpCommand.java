@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 
 public class HelpCommand implements Command {
     @Override

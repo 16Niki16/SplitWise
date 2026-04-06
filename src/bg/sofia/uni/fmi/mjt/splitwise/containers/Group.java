@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.splitwise.group;
+package bg.sofia.uni.fmi.mjt.splitwise.containers;
 
 import lombok.Getter;
 

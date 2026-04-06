@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository;
 
-import bg.sofia.uni.fmi.mjt.splitwise.group.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.GroupWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;

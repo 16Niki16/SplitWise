@@ -3,7 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UsernameAlreadyUsedException;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

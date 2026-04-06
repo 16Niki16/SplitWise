@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository;
 
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.UserWrapper;
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;

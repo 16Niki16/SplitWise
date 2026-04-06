@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 
 public class UserService {
 

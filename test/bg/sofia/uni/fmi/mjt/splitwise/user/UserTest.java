@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.user;
 
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

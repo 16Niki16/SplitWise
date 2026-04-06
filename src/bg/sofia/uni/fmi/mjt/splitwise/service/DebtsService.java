@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
+import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.user.Debt;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,7 +13,7 @@ public class DebtsService {
         this.debtsRepository = debtsRepository;
     }
 
-    public void addDebt(String from, String to, BigDecimal amount) {
+    public void addDebt(String from, String to, BigDecimal amount, String currency) {
         Debt direct = debtsRepository.findDebt(from, to);
         Debt reverse = debtsRepository.findDebt(to, from);
 
@@ -24,7 +24,7 @@ public class DebtsService {
                 reverse.paid(amount);
             } else if (cmp < 0) {
                 debtsRepository.removeDebt(reverse);
-                debtsRepository.addDebt(new Debt(from, to, amount.subtract(reverse.getAmount())));
+                debtsRepository.addDebt(new Debt(from, to, amount.subtract(reverse.getAmount()), currency));
             } else {
                 debtsRepository.removeDebt(reverse);
             }
@@ -32,7 +32,7 @@ public class DebtsService {
         } else if (direct != null) {
             direct.paid(amount);
         } else {
-            debtsRepository.addDebt(new Debt(from, to, amount));
+            debtsRepository.addDebt(new Debt(from, to, amount, currency));
         }
     }
 

@@ -8,9 +8,10 @@ import java.math.BigDecimal;
 public class PersonPayNotifications implements Notification {
     private final String paymentApprover;
     private final BigDecimal amount;
+    private final String currency;
 
     @Override
     public String getNotification() {
-        return String.format("%s approved your payment %.2f LV.", paymentApprover, amount);
+        return String.format("%s approved your payment %.2f %s.", paymentApprover, amount, currency);
     }
 }

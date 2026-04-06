@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.splitwise.user;
+package bg.sofia.uni.fmi.mjt.splitwise.containers;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import lombok.AllArgsConstructor;

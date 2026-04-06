@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers;
 
-import bg.sofia.uni.fmi.mjt.splitwise.user.Debt;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
 
 import java.util.List;
 

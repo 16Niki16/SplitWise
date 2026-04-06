@@ -10,10 +10,11 @@ public class SplitGroupNotifications implements Notification {
     private String receiver;
     private BigDecimal amount;
     private String reason;
+    private String currency;
 
     @Override
     public String getNotification() {
-        return String.format("*%s - You owe %s %.2f LV[%s]",
-            groupName, receiver, amount, reason);
+        return String.format("*%s - You owe %s %.2f %s[%s]",
+                groupName, receiver, amount, reason, currency);
     }
 }

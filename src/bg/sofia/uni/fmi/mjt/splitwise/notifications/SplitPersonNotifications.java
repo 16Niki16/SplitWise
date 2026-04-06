@@ -9,6 +9,7 @@ public class SplitPersonNotifications implements Notification {
     private String receiver;
     private BigDecimal amount;
     private String reason;
+    private String currency;
 
     @Override
     public String getNotification() {

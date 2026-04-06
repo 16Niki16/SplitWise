@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers;
 
-import bg.sofia.uni.fmi.mjt.splitwise.user.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 
 import java.util.Map;
 
