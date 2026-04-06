@@ -19,7 +19,6 @@ public enum CommandType {
     HELP("help"),
 
     PAID("paid"),
-    GROUP_PAID("paid-group"),
     SWITCH_CURRENCY("switch-currency");
     private String type;
 

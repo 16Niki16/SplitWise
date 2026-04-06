@@ -2,12 +2,9 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.ClientContainer;
+import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
-import bg.sofia.uni.fmi.mjt.splitwise.login.Login;
-import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,26 +17,15 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.PASSWORD;
-import static bg.sofia.uni.fmi.mjt.splitwise.constants.Constants.USER;
-
 public class Server {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 1024;
-    private final ClientContainer users;
     private final CommandRegistry commandExecutor;
-    private final ReaderWriterCreator friends;
-    private final ReaderWriterCreator tempNotifications;
-    private final ReaderWriterCreator exception;
     private final ExchangeRate rate;
 
-    public Server(CommandRegistry commandExecutor, String friends, String tempNotifications, String exception) {
-        this.commandExecutor = commandExecutor;
-        this.friends = new ReaderWriterCreator(friends);
-        this.tempNotifications = new ReaderWriterCreator(tempNotifications);
-        this.exception = new ReaderWriterCreator(exception);
-        this.users = new ClientContainer(this.friends);
+    public Server(CommandRegistry commandRegistry) {
+        this.commandExecutor = commandRegistry;
         this.rate = new ExchangeRate(HttpClient.newBuilder().build());
     }
 
@@ -51,8 +37,6 @@ public class Server {
             Selector selector = Selector.open();
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-
-            users.connectUserAtStart();
 
             while (true) {
                 int readyChannels = selector.select();

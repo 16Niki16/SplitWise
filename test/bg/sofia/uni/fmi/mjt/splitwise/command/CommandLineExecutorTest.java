@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

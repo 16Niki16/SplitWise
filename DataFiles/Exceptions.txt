@@ -21,7 +21,7 @@ bg.sofia.uni.fmi.mjt.splitwise.server.Server.readable(Server.java:99)
 bg.sofia.uni.fmi.mjt.splitwise.server.Server.serverStart(Server.java:73)
 Main.main(Main.java:15)
 newUser | Unknown currency! | stackTrace:
-bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate.exchange(ExchangeRate.java:42)
+bg.sofia.uni.fmi.mjt.splitwise.command.currency.ExchangeRate.exchange(ExchangeRate.java:42)
 bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.TransformCurrency.changeCurrency(TransformCurrency.java:32)
 bg.sofia.uni.fmi.mjt.splitwise.command.CommandExecutor.execute(CommandExecutor.java:69)
 bg.sofia.uni.fmi.mjt.splitwise.server.Server.readable(Server.java:99)
