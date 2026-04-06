@@ -8,12 +8,12 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 
 @AllArgsConstructor
-public class Status implements Command {
+public class StatusCommand implements Command {
     private DebtsService debtsService;
 
     @Override
     public String execute(User user) {
         List<Debt> userDebts = debtsService.getDebtsByUsername(user.getUsername());
-        return "ur debts are";
+        return userDebts.toString();
     }
 }

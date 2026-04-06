@@ -3,6 +3,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCommandException;
 
 public enum CommandType {
+    LOGIN("login"),
+    CREATE_ACCOUNT("create-account"),
 
     ADD_FRIEND("add-friend"),
 

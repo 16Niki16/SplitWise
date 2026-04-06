@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.status;
 
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandLine;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Status;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.StatusCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.currency.client.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.streams.ReaderWriterCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.user.User;
@@ -33,7 +33,7 @@ public class StatusTest {
         groupsDirectory = mock();
         User user = mock();
         ExchangeRate client = mock();
-        status = new Status( groupsDirectory, user, client);
+        status = new StatusCommand( groupsDirectory, user, client);
     }
 
     @Disabled
