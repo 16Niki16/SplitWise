@@ -1,9 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import lombok.AllArgsConstructor;
 
 import java.util.Set;
@@ -13,10 +14,12 @@ import java.util.stream.Collectors;
 public class CreateGroupCommand implements Command {
     private final String groupName;
     private final Set<String> participants;
-    private final GroupService groupService;
-    private final UserService userService;
+    private final ApplicationServices applicationServices;
 
     public String execute(User creator) {
+        UserService userService = applicationServices.getUserService();
+        GroupService groupService = applicationServices.getGroupService();
+
         Set<User> participantsAccounts = participants.stream()
                 .map(userService::getUserByUsername)
                 .collect(Collectors.toSet());

@@ -11,9 +11,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.StatusCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CommandNotKnownException;
-import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
-import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
-import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -23,32 +21,28 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CommandRegistry {
-    private final UserService userService;
-    private final GroupService groupService;
-    private final DebtsService debtsService;
+    private final ApplicationServices applicationServices;
     private static final Map<CommandType, CommandParser> COMMANDS = new EnumMap<>(CommandType.class);
     private static final Command HELP_COMMAND = new HelpCommand();
 
-    public CommandRegistry(UserService userService, GroupService groupService, DebtsService debtsService) {
-        this.userService = userService;
-        this.groupService = groupService;
-        this.debtsService = debtsService;
+    public CommandRegistry(ApplicationServices applicationServices) {
+        this.applicationServices = applicationServices;
         registerCommands();
     }
 
     private void registerCommands() {
-        COMMANDS.put(CommandType.CREATE_ACCOUNT, args -> new CreateAccountCommand(args[0], args[1], userService));
+        COMMANDS.put(CommandType.CREATE_ACCOUNT, args -> new CreateAccountCommand(args[0], args[1], applicationServices));
         COMMANDS.put(CommandType.LOGIN, args -> new LoginCommand(args[0], args[1]));
         COMMANDS.put(CommandType.HELP, args -> HELP_COMMAND);
-        COMMANDS.put(CommandType.ADD_FRIEND, args -> new AddFriendCommand(userService, args[0]));
+        COMMANDS.put(CommandType.ADD_FRIEND, args -> new AddFriendCommand(args[0], applicationServices));
         COMMANDS.put(CommandType.CREATE_GROUP,
-                args -> new CreateGroupCommand(args[0], getParticipants(args), groupService, userService));
-        COMMANDS.put(CommandType.GET_STATUS, args -> new StatusCommand(debtsService));
+                args -> new CreateGroupCommand(args[0], getParticipants(args), applicationServices));
+        COMMANDS.put(CommandType.GET_STATUS, args -> new StatusCommand(applicationServices));
         COMMANDS.put(CommandType.SPLIT,
-                args -> new SplitCommand(args[1], args[2], new BigDecimal(args[0]), userService, debtsService));
+                args -> new SplitCommand(args[1], args[2], new BigDecimal(args[0]), applicationServices));
         COMMANDS.put(CommandType.SPLIT_GROUP,
-                args -> new GroupSplitCommand(args[1], new BigDecimal(args[0]), args[2], groupService, userService, debtsService));
-        COMMANDS.put(CommandType.PAID, args -> new PaidCommand(debtsService, args[1], new BigDecimal(args[0])));
+                args -> new GroupSplitCommand(args[1], new BigDecimal(args[0]), args[2], applicationServices));
+        COMMANDS.put(CommandType.PAID, args -> new PaidCommand(args[1], new BigDecimal(args[0]), applicationServices));
     }
 
     public static Command create(CommandLine commandLine) {

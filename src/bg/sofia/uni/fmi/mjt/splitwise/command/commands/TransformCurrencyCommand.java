@@ -1,17 +1,20 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
-import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
+import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
+import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class TransformCurrencyCommand implements Command {
     private String newCurrency;
-    private CurrencyService currencyService;
+    private ApplicationServices applicationServices;
 
     @Override
     public String execute(User user) {
+        CurrencyService currencyService = applicationServices.getCurrencyService();
+
         currencyService.getRates()
                 .thenAccept(rates -> {
                     if (!rates.containsKey(newCurrency)) {

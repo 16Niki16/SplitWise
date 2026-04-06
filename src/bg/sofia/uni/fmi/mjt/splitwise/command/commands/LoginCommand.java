@@ -1,7 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
+import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
