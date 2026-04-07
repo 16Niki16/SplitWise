@@ -1,14 +1,18 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class PersonPayNotification implements Notification {
-    private final String paymentApprover;
-    private final BigDecimal amount;
-    private final String currency;
+    private String paymentApprover;
+    private BigDecimal amount;
+    private String currency;
 
     @Override
     public String getNotification() {

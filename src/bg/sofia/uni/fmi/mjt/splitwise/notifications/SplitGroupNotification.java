@@ -1,20 +1,24 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class SplitGroupNotification implements Notification {
-    private final String groupName;
-    private final String receiver;
-    private final BigDecimal amount;
-    private final String reason;
-    private final String currency;
+    private String groupName;
+    private String receiver;
+    private BigDecimal amount;
+    private String reason;
+    private String currency;
 
     @Override
     public String getNotification() {
         return String.format("*%s - You owe %s %.2f %s[%s]",
-            groupName, receiver, amount, reason, currency);
+            groupName, receiver, amount, currency, reason);
     }
 }

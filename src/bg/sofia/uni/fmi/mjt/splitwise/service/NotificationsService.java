@@ -1,9 +1,23 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
-import java.util.HashMap;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
+
 import java.util.List;
-import java.util.Map;
 
 public class NotificationsService implements Service {
-    private final Map<String, List<String>> notifications = new HashMap<>();
+    private final NotificationsRepository notificationsRepository;
+
+    public NotificationsService(NotificationsRepository notificationsRepository) {
+        this.notificationsRepository = notificationsRepository;
+    }
+
+    public void addNotification(User user, Notification notification) {
+        this.notificationsRepository.addNotification(user.getUsername(), notification);
+    }
+
+    public List<Notification> getUserNotifications(User user) {
+        return this.notificationsRepository.getNotifications(user.getUsername());
+    }
 }

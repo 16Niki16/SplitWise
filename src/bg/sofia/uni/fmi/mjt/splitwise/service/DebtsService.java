@@ -6,7 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class DebtsService implements Service{
+public class DebtsService implements Service {
     private final DebtsRepository debtsRepository;
 
     public DebtsService(DebtsRepository debtsRepository) {
