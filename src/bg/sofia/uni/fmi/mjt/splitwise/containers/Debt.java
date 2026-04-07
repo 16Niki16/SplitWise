@@ -11,7 +11,6 @@ public class Debt {
     private String from;
     private String to;
     private BigDecimal amount;
-    private String currency;
 
     public void paid(BigDecimal amountPaid) {
         this.amount.subtract(amountPaid);

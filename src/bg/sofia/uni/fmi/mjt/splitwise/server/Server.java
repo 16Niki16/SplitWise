@@ -4,7 +4,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.CommandCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
-import bg.sofia.uni.fmi.mjt.splitwise.helpers.ExceptionFormater;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -56,8 +55,6 @@ public class Server {
                             SocketChannel sc = (SocketChannel) key.channel();
                             readable(sc, buffer);
                         } catch (IOException e) {
-                            ExceptionFormater.exceptionAdd("server connection", "connection closed from client",
-                                    e.getStackTrace(), exception);
                             continue;
                         }
                     } else if (key.isAcceptable()) {
@@ -67,8 +64,6 @@ public class Server {
                 }
             }
         } catch (IOException e) {
-            ExceptionFormater.exceptionAdd("server", "There is a problem with the server socket", e.getStackTrace(),
-                    exception);
             throw new RuntimeException("There is a problem with the server socket", e);
         }
     }

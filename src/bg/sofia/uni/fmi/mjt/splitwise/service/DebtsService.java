@@ -13,7 +13,7 @@ public class DebtsService {
         this.debtsRepository = debtsRepository;
     }
 
-    public void addDebt(String from, String to, BigDecimal amount, String currency) {
+    public void addDebt(String from, String to, BigDecimal amount) {
         Debt direct = debtsRepository.findDebt(from, to);
         Debt reverse = debtsRepository.findDebt(to, from);
 
@@ -24,7 +24,7 @@ public class DebtsService {
                 reverse.paid(amount);
             } else if (cmp < 0) {
                 debtsRepository.removeDebt(reverse);
-                debtsRepository.addDebt(new Debt(from, to, amount.subtract(reverse.getAmount()), currency));
+                debtsRepository.addDebt(new Debt(from, to, amount.subtract(reverse.getAmount())));
             } else {
                 debtsRepository.removeDebt(reverse);
             }
@@ -32,7 +32,7 @@ public class DebtsService {
         } else if (direct != null) {
             direct.paid(amount);
         } else {
-            debtsRepository.addDebt(new Debt(from, to, amount, currency));
+            debtsRepository.addDebt(new Debt(from, to, amount));
         }
     }
 
