@@ -1,5 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.server;
 
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
+import lombok.AllArgsConstructor;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -10,10 +13,13 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+@AllArgsConstructor
 public class Server {
     public static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 1024;
+    private final SessionsManager sessionsManager;
+    private final CommandRegistry commandRegistry;
 
     public void server() {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {

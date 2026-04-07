@@ -2,6 +2,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AddYourselfException;
+import bg.sofia.uni.fmi.mjt.splitwise.response.AddFriendResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
@@ -12,7 +14,7 @@ public class AddFriendCommand implements Command {
     private final ApplicationServices applicationServices;
 
     @Override
-    public String execute(User user) {
+    public Response execute(User user) {
         UserService userService = applicationServices.getUserService();
         User newFriend = userService.getUserByUsername(friendName);
         if (user.equals(newFriend)) {
@@ -23,7 +25,7 @@ public class AddFriendCommand implements Command {
         newFriend.addFriend(user.getUsername());
         userService.updateFile();
 
-        return String.format("Friend %s is added.", newFriend.getUsername());
+        return AddFriendResponse.of(friendName);
 
     }
 }

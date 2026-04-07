@@ -13,7 +13,7 @@ public class Client {
 
     private static ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
 
-    public static void main(String[] args) {
+    public void clientStart() {
 
         try (SocketChannel socketChannel = SocketChannel.open();
              Scanner scanner = new Scanner(System.in)) {

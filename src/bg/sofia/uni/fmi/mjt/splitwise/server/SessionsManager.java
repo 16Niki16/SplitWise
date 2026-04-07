@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @NoArgsConstructor
 public class SessionsManager {
-    private Map<String, User> sessions = new HashMap<>();
+    private final Map<String, User> sessions = new HashMap<>();
 
     public String createSession(User user) {
         if (sessions.containsValue(user)) {

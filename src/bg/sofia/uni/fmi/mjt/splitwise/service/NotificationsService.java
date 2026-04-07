@@ -13,8 +13,8 @@ public class NotificationsService implements Service {
         this.notificationsRepository = notificationsRepository;
     }
 
-    public void addNotification(User user, Notification notification) {
-        this.notificationsRepository.addNotification(user.getUsername(), notification);
+    public void addNotification(String username, Notification notification) {
+        this.notificationsRepository.addNotification(username, notification);
     }
 
     public List<Notification> getUserNotifications(User user) {

@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.Request;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateAccountCommand;
@@ -45,7 +46,7 @@ public class CommandRegistry {
         COMMANDS.put(CommandType.PAID, args -> new PaidCommand(args[1], new BigDecimal(args[0]), applicationServices));
     }
 
-    public static Command create(CommandLine commandLine) {
+    public static Command create(Request request) {
         CommandType commandType = CommandType.of(commandLine.line());
         CommandParser parser = COMMANDS.get(commandType);
         if (parser == null) {
