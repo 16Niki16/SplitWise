@@ -11,4 +11,5 @@ public class ApplicationServices implements Service {
     private DebtsService debtsService;
     private CurrencyService currencyService;
     private NotificationsService notificationsService;
+    private ExceptionsService exceptionsService;
 }

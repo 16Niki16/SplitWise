@@ -5,13 +5,14 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 
 @AllArgsConstructor
-public class PersonPayNotifications implements Notification {
-    private final String paymentApprover;
+public class SplitPersonNotification implements Notification {
+    private final String receiver;
     private final BigDecimal amount;
+    private final String reason;
     private final String currency;
 
     @Override
     public String getNotification() {
-        return String.format("%s approved your payment %.2f %s.", paymentApprover, amount, currency);
+        return String.format("You owe %s %.2f %s[%s]", receiver, amount, reason, currency);
     }
 }

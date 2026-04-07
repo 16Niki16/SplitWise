@@ -21,12 +21,12 @@ public class CurrencyService implements Service {
 
     public CompletableFuture<Void> updateCurrencyListAsync() {
         return exchangeRate.getAllRates(BASE_CURRENCY)
-                .thenAccept(rates -> {
-                    cachedRates = rates;
-                })
-                .exceptionally(ex -> {
-                    throw new CurrencyConversionException("Failed to load currencies!", ex);
-                });
+            .thenAccept(rates -> {
+                cachedRates = rates;
+            })
+            .exceptionally(ex -> {
+                throw new CurrencyConversionException("Failed to load currencies!", ex);
+            });
     }
 
     public CompletableFuture<Map<String, Double>> getRates() {
@@ -35,7 +35,7 @@ public class CurrencyService implements Service {
         }
 
         return updateCurrencyListAsync()
-                .thenApply(v -> cachedRates.rates());
+            .thenApply(v -> cachedRates.rates());
     }
 
     public BigDecimal transformAmount(BigDecimal originalAmount, String currentCurrency, String wantedCurrency) {
@@ -51,8 +51,7 @@ public class CurrencyService implements Service {
         }
 
         BigDecimal inBaseCurrency = originalAmount.divide(BigDecimal.valueOf(currentCurrencyRate));
-        BigDecimal inWantedCurrency = inBaseCurrency.multiply(BigDecimal.valueOf(wantedCurrencyRate));
-        return inWantedCurrency;
+        return inBaseCurrency.multiply(BigDecimal.valueOf(wantedCurrencyRate));
     }
 
     public BigDecimal transformToBaseCurrency(BigDecimal amount, String currentCurrency) {
