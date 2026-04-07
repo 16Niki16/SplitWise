@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
@@ -24,7 +25,7 @@ public class GroupSplitCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public String execute(User user) {
+    public Response execute(User user) {
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
         DebtsService debtsService = applicationServices.getDebtsService();

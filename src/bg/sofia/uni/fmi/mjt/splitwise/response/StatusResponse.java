@@ -1,4 +1,13 @@
 package bg.sofia.uni.fmi.mjt.splitwise.response;
 
-public record StatusResponse() implements Response{
+import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
+
+import java.util.List;
+
+public record StatusResponse(ResponseStatus responseStatus, List<String> debts) implements Response {
+    public static StatusResponse of(List<Debt> debts) {
+        List<String> debtsMessages = debts.stream()
+            .map()
+        return new StatusResponse(ResponseStatus.SUCCESSFUL, debts);
+    }
 }
