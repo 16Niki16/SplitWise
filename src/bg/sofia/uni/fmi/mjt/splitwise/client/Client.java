@@ -7,103 +7,52 @@ import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 
 public class Client {
-    private static final int STARTER = 1;
-    public static final int SERVER_PORT = 7777;
+    private static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 512;
+
     private static ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
-    private boolean isLogged;
-    private String usernameTrack;
 
-    public Client() {
-        this.isLogged = false;
-    }
+    public static void main(String[] args) {
 
-    public void serverConnect() {
         try (SocketChannel socketChannel = SocketChannel.open();
              Scanner scanner = new Scanner(System.in)) {
+
             socketChannel.connect(new InetSocketAddress(SERVER_HOST, SERVER_PORT));
-            String message;
+
+            System.out.println("Connected to the server.");
+
             while (true) {
-                if (!isLogged) {
-                    message = isNotLogged(scanner);
-                    if (disconnect(message)) {
-                        break;
-                    }
-                } else {
-                    String usernameCommand = command(scanner);
-                    message = usernameTrack + " " + usernameCommand;
-                    if (disconnect(usernameCommand)) {
-                        break;
-                    }
+                System.out.print("Enter message: ");
+                String message = scanner.nextLine(); // read a line from the console
+
+                if ("quit".equals(message)) {
+                    break;
                 }
-                clientInput(buffer, socketChannel, message);
-                String reply = serverOutput(buffer, socketChannel);
-                if (!isLogged && reply.contains("Welcome")) {
-                    isLogged = true;
-                    usernameTrack = usernameExtract(reply);
-                }
-                System.out.println(reply);
+
+                System.out.println("Sending message <" + message + "> to the server...");
+
+                buffer.clear(); // switch to writing mode
+                buffer.put(message.getBytes()); // buffer fill
+                buffer.flip(); // switch to reading mode
+                socketChannel.write(buffer); // buffer drain
+
+                buffer.clear(); // switch to writing mode
+                socketChannel.read(buffer); // buffer fill
+                buffer.flip(); // switch to reading mode
+
+                byte[] byteArray = new byte[buffer.remaining()];
+                buffer.get(byteArray);
+                String reply = new String(byteArray, "UTF-8"); // buffer drain
+
+                // if the buffer is a non-direct one, it has a wrapped array and we can get it
+                //String reply = new String(buffer.array(), 0, buffer.position(), "UTF-8"); // buffer drain
+
+                System.out.println("The server replied <" + reply + ">");
             }
+
         } catch (IOException e) {
             throw new RuntimeException("There is a problem with the network communication", e);
         }
-    }
-
-    private String serverOutput(ByteBuffer buffer, SocketChannel sc) throws IOException {
-        buffer.clear();
-        sc.read(buffer);
-        buffer.flip();
-
-        byte[] byteArray = new byte[buffer.remaining()];
-        buffer.get(byteArray);
-        return new String(byteArray, "UTF-8");
-    }
-
-    private void clientInput(ByteBuffer buffer, SocketChannel sc, String line) throws IOException {
-        buffer.clear();
-        buffer.put(line.getBytes());
-        buffer.flip();
-        sc.write(buffer);
-    }
-
-    private boolean disconnect(String command) {
-        return command.equals("disconnect");
-    }
-
-    private String usernameExtract(String response) {
-        StringBuilder builder = new StringBuilder();
-        String[] splitt = response.split("\n");
-        String[] splitedRes = splitt[0].split(" ");
-        for (int i = STARTER; i < splitedRes.length; i++) {
-            builder.append(splitedRes[i]).append(" ");
-        }
-        return builder.substring(0, builder.length() - 2);
-    }
-
-    private String isNotLogged(Scanner scanner) {
-        System.out.print("Enter username: ");
-        String usernameCommand = scanner.nextLine();
-        while (usernameCommand.isEmpty()) {
-            System.out.print("Username can not be empty!\nEnter username: ");
-            usernameCommand = scanner.nextLine();
-        }
-        if (disconnect(usernameCommand)) {
-            return usernameCommand;
-        }
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-        while (password.isEmpty()) {
-            System.out.print("Password must contain at least 6 symbols" +
-                "(1 small letter, 1 capital letter and 1 number)\nEnter password: ");
-            password = scanner.nextLine();
-        }
-
-        return usernameCommand + "|" + password;
-    }
-
-    private String command(Scanner scanner) {
-        System.out.print("Enter command: ");
-        return scanner.nextLine();
     }
 }
