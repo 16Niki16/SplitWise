@@ -6,7 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class DebtsService {
+public class DebtsService implements Service{
     private final DebtsRepository debtsRepository;
 
     public DebtsService(DebtsRepository debtsRepository) {
@@ -30,7 +30,7 @@ public class DebtsService {
             }
 
         } else if (direct != null) {
-            direct.paid(amount);
+            direct.addAmount(amount);
         } else {
             debtsRepository.addDebt(new Debt(from, to, amount));
         }

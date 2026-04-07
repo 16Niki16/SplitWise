@@ -3,7 +3,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.service;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
 
-public class GroupService {
+public class GroupService implements Service {
     private final GroupRepository groupRepository;
 
     public GroupService(GroupRepository groupRepository) {

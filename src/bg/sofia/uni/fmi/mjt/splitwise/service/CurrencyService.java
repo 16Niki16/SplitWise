@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class CurrencyService {
+public class CurrencyService implements Service {
     private static final String BASE_CURRENCY = "EUR";
     private final ExchangeRate exchangeRate;
     private volatile ExchangeRateResponse cachedRates;

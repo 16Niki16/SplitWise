@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ApplicationServices {
+public class ApplicationServices implements Service {
     private UserService userService;
     private GroupService groupService;
     private DebtsService debtsService;
     private CurrencyService currencyService;
+    private NotificationsService notificationsService;
 }

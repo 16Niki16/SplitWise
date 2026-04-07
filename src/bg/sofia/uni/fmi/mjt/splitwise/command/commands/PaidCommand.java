@@ -19,6 +19,7 @@ public class PaidCommand implements Command {
     public String execute(User user) {
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();
+
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(amount, user.getCurrency());
         debtsService.addDebt(user.getUsername(), payer, amountInBaseCurrency);
         return "successful payment";

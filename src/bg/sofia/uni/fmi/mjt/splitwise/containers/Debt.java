@@ -13,7 +13,10 @@ public class Debt {
     private BigDecimal amount;
 
     public void paid(BigDecimal amountPaid) {
-        this.amount.subtract(amountPaid);
+        this.amount = this.amount.subtract(amountPaid);
     }
 
+    public void addAmount(BigDecimal amountToAdd) {
+        this.amount = this.amount.add(amountToAdd);
+    }
 }
