@@ -1,9 +1,9 @@
-package bg.sofia.uni.fmi.mjt.splitwise.command;
+package bg.sofia.uni.fmi.mjt.splitwise.client.request;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandCreator {
+public class CommandLineSeparator {
     // straight out of https://stackoverflow.com/a/14656159 with small enhancement
     private static List<String> getCommandArguments(String input) {
         List<String> tokens = new ArrayList<>();
@@ -28,8 +28,8 @@ public class CommandCreator {
         return tokens;
     }
 
-    public static CommandLine newCommand(String clientInput) {
-        List<String> tokens = CommandCreator.getCommandArguments(clientInput);
+    public static CommandLine commandLineSeparated(String clientInput) {
+        List<String> tokens = CommandLineSeparator.getCommandArguments(clientInput);
         String[] args = tokens.subList(1, tokens.size()).toArray(new String[0]);
 
         return new CommandLine(tokens.get(0), args);

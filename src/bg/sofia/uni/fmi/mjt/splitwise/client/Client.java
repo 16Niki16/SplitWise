@@ -1,17 +1,26 @@
 package bg.sofia.uni.fmi.mjt.splitwise.client;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.CommandLine;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.DataCreator;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
+import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 
+import static bg.sofia.uni.fmi.mjt.splitwise.client.request.CommandLineSeparator.commandLineSeparated;
+
 public class Client {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 512;
-
     private static ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
+    private final DataCreator dataCreator = new DataCreator();
+    private String sessionToken = null;
 
     public void clientStart() {
 
@@ -24,15 +33,16 @@ public class Client {
 
             while (true) {
                 System.out.print("Enter message: ");
-                String message = scanner.nextLine(); // read a line from the console
+                String message = scanner.nextLine();
+                CommandLine commandLine = commandLineSeparated(message);
+                Data data = dataCreator.createData(commandLine);
+                Request request = new Request(CommandType.of(commandLine.line()), sessionToken, data);
 
                 if ("quit".equals(message)) {
                     break;
                 }
 
-                System.out.println("Sending message <" + message + "> to the server...");
-
-                buffer.clear(); // switch to writing mode
+                buffer.clear();
                 buffer.put(message.getBytes()); // buffer fill
                 buffer.flip(); // switch to reading mode
                 socketChannel.write(buffer); // buffer drain
