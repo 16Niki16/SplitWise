@@ -10,11 +10,14 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 @AllArgsConstructor
 public class Server {
+    Map<SocketChannel, StringBuilder> clientBuffers = new HashMap<>();
     public static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 1024;
@@ -61,6 +64,8 @@ public class Server {
                         SocketChannel accept = sockChannel.accept();
                         accept.configureBlocking(false);
                         accept.register(selector, SelectionKey.OP_READ);
+
+                        clientBuffers.put(accept, new StringBuilder());
                     }
 
                     keyIterator.remove();

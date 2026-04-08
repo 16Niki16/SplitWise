@@ -55,4 +55,13 @@ public class Client {
             throw new RuntimeException("There is a problem with the network communication", e);
         }
     }
+
+    private void send(SocketChannel channel, String json) throws IOException {
+        byte[] data = json.getBytes();
+
+        String message = data.length + "\n" + json;
+
+        ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
+        channel.write(buffer);
+    }
 }

@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
-import bg.sofia.uni.fmi.mjt.splitwise.client.Request;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateAccountCommand;
