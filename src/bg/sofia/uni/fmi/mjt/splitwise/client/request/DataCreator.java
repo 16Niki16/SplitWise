@@ -9,7 +9,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.PayData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitGroupData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CommandNotKnownException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -36,8 +35,9 @@ public class DataCreator {
     public Data createData(CommandLine commandLine) {
         CommandType commandType = CommandType.of(commandLine.line());
         DataParser parser = DATA.get(commandType);
+
         if (parser == null) {
-            throw new CommandNotKnownException("The provided command is not in the list!");
+            return null;
         }
 
         return parser.parse(commandLine.args());
@@ -45,7 +45,7 @@ public class DataCreator {
 
     private Set<String> getParticipants(String[] args) {
         return Arrays.stream(args)
-                .skip(1)
-                .collect(Collectors.toSet());
+            .skip(1)
+            .collect(Collectors.toSet());
     }
 }
