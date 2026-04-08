@@ -4,4 +4,9 @@ public record HelpResponse(ResponseStatus responseStatus, String message) implem
     public static HelpResponse of(String commandsList) {
         return new HelpResponse(ResponseStatus.SUCCESSFUL, commandsList);
     }
+
+    @Override
+    public String getResponse() {
+        return message;
+    }
 }

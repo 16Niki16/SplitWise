@@ -4,4 +4,9 @@ public record SplitGroupResponse(ResponseStatus responseStatus, String message) 
     public static SplitGroupResponse of(String group) {
         return new SplitGroupResponse(ResponseStatus.SUCCESSFUL, "You successfully split the amount in " + group);
     }
+
+    @Override
+    public String getResponse() {
+        return message;
+    }
 }

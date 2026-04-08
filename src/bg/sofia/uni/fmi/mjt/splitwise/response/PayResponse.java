@@ -4,4 +4,9 @@ public record PayResponse(ResponseStatus responseStatus, String message) impleme
     public static PayResponse of(String username) {
         return new PayResponse(ResponseStatus.SUCCESSFUL, "You successfully accepted the payment from " + username);
     }
+
+    @Override
+    public String getResponse() {
+        return message;
+    }
 }

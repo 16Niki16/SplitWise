@@ -11,4 +11,11 @@ public record StatusResponse(ResponseStatus responseStatus, List<String> debts) 
                 .toList();
         return new StatusResponse(ResponseStatus.SUCCESSFUL, debtsMessages);
     }
+
+    @Override
+    public String getResponse() {
+        StringBuilder buildResponse = new StringBuilder("Your notifications are:\n");
+        debts.forEach(debt -> buildResponse.append(debt).append('\n'));
+        return buildResponse.toString();
+    }
 }

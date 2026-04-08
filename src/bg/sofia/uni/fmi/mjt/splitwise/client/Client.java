@@ -5,6 +5,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.DataCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,6 +17,7 @@ import java.util.Scanner;
 import static bg.sofia.uni.fmi.mjt.splitwise.client.request.CommandLineSeparator.commandLineSeparated;
 
 public class Client {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 512;
@@ -37,13 +40,13 @@ public class Client {
                 CommandLine commandLine = commandLineSeparated(message);
                 Data data = dataCreator.createData(commandLine);
                 Request request = new Request(CommandType.of(commandLine.line()), sessionToken, data);
-
+                String jsonFormatting = MAPPER.writeValueAsString(request);
                 if ("quit".equals(message)) {
                     break;
                 }
 
                 buffer.clear();
-                buffer.put(message.getBytes()); // buffer fill
+                buffer.put(jsonFormatting.getBytes()); // buffer fill
                 buffer.flip(); // switch to reading mode
                 socketChannel.write(buffer); // buffer drain
 
@@ -53,7 +56,8 @@ public class Client {
 
                 byte[] byteArray = new byte[buffer.remaining()];
                 buffer.get(byteArray);
-                String reply = new String(byteArray, "UTF-8"); // buffer drain
+                String response = new String(byteArray, "UTF-8");
+                Response responseJSON = MAPPER.readValue(response, )// buffer drain
 
                 // if the buffer is a non-direct one, it has a wrapped array and we can get it
                 //String reply = new String(buffer.array(), 0, buffer.position(), "UTF-8"); // buffer drain

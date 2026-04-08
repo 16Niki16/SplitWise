@@ -11,4 +11,11 @@ public record LoginResponse(ResponseStatus responseType, List<String> notificati
                 .toList();
         return new LoginResponse(ResponseStatus.SUCCESSFUL, notificationMessages);
     }
+
+    @Override
+    public String getResponse() {
+        StringBuilder buildResponse = new StringBuilder("Your notifications are:\n");
+        notifications.forEach(notification -> buildResponse.append(notification).append('\n'));
+        return buildResponse.toString();
+    }
 }

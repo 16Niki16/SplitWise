@@ -5,4 +5,9 @@ public record SplitResponse(ResponseStatus responseStatus, String message) imple
         return new SplitResponse(ResponseStatus.SUCCESSFUL,
             "Successfully split the amount between you and " + friendName);
     }
+
+    @Override
+    public String getResponse() {
+        return message;
+    }
 }

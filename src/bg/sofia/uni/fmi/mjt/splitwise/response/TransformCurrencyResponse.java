@@ -5,4 +5,9 @@ public record TransformCurrencyResponse(ResponseStatus responseStatus, String me
         return new TransformCurrencyResponse(ResponseStatus.SUCCESSFUL,
                 "You changed the currency from" + currentCurrency + "to " + newCurrency);
     }
+
+    @Override
+    public String getResponse() {
+        return message;
+    }
 }
