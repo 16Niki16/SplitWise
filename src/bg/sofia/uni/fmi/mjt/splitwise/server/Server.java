@@ -1,11 +1,14 @@
 package bg.sofia.uni.fmi.mjt.splitwise.server;
 
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.CreateAccountData;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.LoginData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ErrorResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -19,8 +22,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
-
-import static bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry.create;
 
 @AllArgsConstructor
 public class Server {
@@ -68,21 +69,36 @@ public class Server {
                         byte[] bytes = new byte[buffer.remaining()];
                         buffer.get(bytes);
                         String requestMessage = new String(bytes, "UTF-8");
+
                         Request request = MAPPER.readValue(requestMessage, Request.class);
-                        Command command = create(request);
-                        if (command instanceof LoginCommand loginCommand) {
-                            User user =
+                        try {
+                            Command command = commandRegistry.create(request);
+                            String token = request.token();
+                            User user;
+                            if (request.data() instanceof LoginData loginData) {
+                                user = userService.getUserByUsername(loginData.username());
+                            } else if (request.data() instanceof CreateAccountData) {
+                                user = null;
+                            } else {
+                                user = this.sessionsManager.getUserSession(request.token());
+                            }
+
+                            ResponseData responseData = command.execute(user);
+                            Response response = new Response(token, responseData);
+                            String jsonFormatting = MAPPER.writeValueAsString(response);
+                            sc.write(ByteBuffer.wrap(jsonFormatting.getBytes()));
+                        } catch (RuntimeException e) {
+                            ResponseData responseError = ErrorResponse.of(e.getMessage());
+                            Response response = new Response(request.token(), responseError);
+                            String jsonFormatting = MAPPER.writeValueAsString(response);
+                            sc.write(ByteBuffer.wrap(jsonFormatting.getBytes()));
                         }
-                        Response response = command.execute();
-                        sc.write(ByteBuffer.wrap(message.getBytes()));
 
                     } else if (key.isAcceptable()) {
                         ServerSocketChannel sockChannel = (ServerSocketChannel) key.channel();
                         SocketChannel accept = sockChannel.accept();
                         accept.configureBlocking(false);
                         accept.register(selector, SelectionKey.OP_READ);
-
-                        clientBuffers.put(accept, new StringBuilder());
                     }
 
                     keyIterator.remove();

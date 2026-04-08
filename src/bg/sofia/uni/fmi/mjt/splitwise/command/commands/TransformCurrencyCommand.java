@@ -5,7 +5,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.TransformCurrencyResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
@@ -17,7 +17,7 @@ public class TransformCurrencyCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         if (!(data instanceof TransformCurrencyData transformCurrencyData)) {
             throw new DataException("Problem in transform currency data");
         }

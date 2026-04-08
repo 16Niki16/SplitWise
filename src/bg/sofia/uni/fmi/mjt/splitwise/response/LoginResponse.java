@@ -4,7 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 
 import java.util.List;
 
-public record LoginResponse(ResponseStatus responseType, List<String> notifications) implements Response {
+public record LoginResponse(ResponseStatus responseType, List<String> notifications) implements ResponseData {
     public static LoginResponse of(List<Notification> notifications) {
         List<String> notificationMessages = notifications.stream()
                 .map(Notification::getNotification)

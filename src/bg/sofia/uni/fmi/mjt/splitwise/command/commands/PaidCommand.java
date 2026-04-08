@@ -7,7 +7,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.PayResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
@@ -24,7 +24,7 @@ public class PaidCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         if (!(data instanceof PayData payData)) {
             throw new DataException("Problem in pay data");
         }

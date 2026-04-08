@@ -39,7 +39,7 @@ public class CommandRegistry {
         COMMANDS.put(CommandType.PAID, data -> new PaidCommand(data, applicationServices));
     }
 
-    public static Command create(Request request) {
+    public Command create(Request request) {
         CommandParser parser = COMMANDS.get(request.commandType());
         if (parser == null) {
             throw new CommandNotKnownException("The provided command is not in the list!");

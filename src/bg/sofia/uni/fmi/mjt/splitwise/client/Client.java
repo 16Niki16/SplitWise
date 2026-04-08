@@ -5,7 +5,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.DataCreator;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class Client {
                 byte[] byteArray = new byte[buffer.remaining()];
                 buffer.get(byteArray);
                 String response = new String(byteArray, "UTF-8");
-                Response responseJSON = MAPPER.readValue(response, Response.class);
+                ResponseData responseJSON = MAPPER.readValue(response, ResponseData.class);
 
                 // if the buffer is a non-direct one, it has a wrapped array and we can get it
                 //String reply = new String(buffer.array(), 0, buffer.position(), "UTF-8"); // buffer drain

@@ -2,11 +2,11 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.response.HelpResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 
 public class HelpCommand implements Command {
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         return HelpResponse.of("""
                 * Commands:
                  - add-friend <username>

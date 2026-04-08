@@ -6,7 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AddYourselfException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.AddFriendResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ public class AddFriendCommand implements Command {
     private final ApplicationServices applicationServices;
 
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         if (!(data instanceof AddFriendData addFriendData)) {
             throw new DataException("Data is not in correct form!");
         }

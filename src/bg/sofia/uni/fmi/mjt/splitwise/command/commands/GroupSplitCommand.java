@@ -7,7 +7,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.SplitGroupResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
@@ -27,7 +27,7 @@ public class GroupSplitCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         if (!(data instanceof SplitGroupData splitGroupData)) {
             throw new DataException("Split group data exception");
         }

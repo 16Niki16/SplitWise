@@ -6,7 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateGroupResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
@@ -20,7 +20,7 @@ public class CreateGroupCommand implements Command {
     private final Data data;
     private final ApplicationServices applicationServices;
 
-    public Response execute(User creator) {
+    public ResponseData execute(User creator) {
         if (!(data instanceof CreateGroupData createGroupData)) {
             throw new DataException("Create group data exception!");
         }

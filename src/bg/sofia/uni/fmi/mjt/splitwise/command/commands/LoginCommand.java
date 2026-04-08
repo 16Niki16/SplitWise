@@ -7,7 +7,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.LoginResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.NotificationsService;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class LoginCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         if (!(data instanceof LoginData loginData)) {
             throw new DataException("Problem in Login data");
         }

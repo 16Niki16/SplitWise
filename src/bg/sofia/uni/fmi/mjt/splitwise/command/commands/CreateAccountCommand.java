@@ -7,7 +7,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UsernameAlreadyUsedException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateAccountResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class CreateAccountCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public Response execute(User user) {
+    public ResponseData execute(User user) {
         if (!(data instanceof CreateAccountData createAccountData)) {
             throw new DataException("Create account data exception");
         }
