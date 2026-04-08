@@ -33,7 +33,7 @@ public class CommandRegistry {
 
     private void registerCommands() {
         COMMANDS.put(CommandType.CREATE_ACCOUNT, args -> new CreateAccountCommand(args[0], args[1], applicationServices));
-        COMMANDS.put(CommandType.LOGIN, args -> new LoginCommand(args[0], args[1]));
+        COMMANDS.put(CommandType.LOGIN, args -> new LoginCommand(args[0], args[1], applicationServices));
         COMMANDS.put(CommandType.HELP, args -> HELP_COMMAND);
         COMMANDS.put(CommandType.ADD_FRIEND, args -> new AddFriendCommand(args[0], applicationServices));
         COMMANDS.put(CommandType.CREATE_GROUP,

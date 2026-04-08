@@ -16,6 +16,7 @@ public class TransformCurrencyCommand implements Command {
     @Override
     public Response execute(User user) {
         CurrencyService currencyService = applicationServices.getCurrencyService();
+        String currentCurrency = user.getCurrency();
 
         currencyService.getRates()
                 .thenAccept(rates -> {
@@ -25,6 +26,6 @@ public class TransformCurrencyCommand implements Command {
                 });
         user.changeCurrency(newCurrency);
 
-        return TransformCurrencyResponse.of(newCurrency);
+        return TransformCurrencyResponse.of(currentCurrency, newCurrency);
     }
 }

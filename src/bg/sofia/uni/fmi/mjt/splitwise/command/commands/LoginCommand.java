@@ -7,6 +7,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.response.LoginResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.NotificationsService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -19,7 +20,9 @@ public class LoginCommand implements Command {
 
     @Override
     public Response execute(User user) {
-        if (!user.getPassword().equals(password)) {
+        UserService userService = applicationServices.getUserService();
+        User userProfile = userService.getUserByUsername(username);
+        if (!userProfile.getPassword().equals(password)) {
             throw new PasswordNotCorrectException("The provided password is not correct!");
         }
         NotificationsService notificationsService = applicationServices.getNotificationsService();
