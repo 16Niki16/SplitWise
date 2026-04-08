@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
@@ -10,7 +11,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class TransformCurrencyCommand implements Command {
-    private String newCurrency;
+    private TransformCurrencyData transformCurrencyData;
     private ApplicationServices applicationServices;
 
     @Override
@@ -20,12 +21,12 @@ public class TransformCurrencyCommand implements Command {
 
         currencyService.getRates()
                 .thenAccept(rates -> {
-                    if (!rates.containsKey(newCurrency)) {
-                        throw new UnknownCurrencyException("Unknown currency: " + newCurrency);
+                    if (!rates.containsKey(transformCurrencyData.newCurrency())) {
+                        throw new UnknownCurrencyException("Unknown currency: " + transformCurrencyData.newCurrency());
                     }
                 });
-        user.changeCurrency(newCurrency);
+        user.changeCurrency(transformCurrencyData.newCurrency());
 
-        return TransformCurrencyResponse.of(currentCurrency, newCurrency);
+        return TransformCurrencyResponse.of(currentCurrency, transformCurrencyData.newCurrency());
     }
 }

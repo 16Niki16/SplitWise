@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitGroupData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
@@ -20,9 +21,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class GroupSplitCommand implements Command {
-    private String groupName;
-    private BigDecimal amountToAdd;
-    private String reason;
+    private SplitGroupData splitGroupData;
     private ApplicationServices applicationServices;
 
     @Override
@@ -33,12 +32,12 @@ public class GroupSplitCommand implements Command {
         CurrencyService currencyService = applicationServices.getCurrencyService();
         NotificationsService notificationsService = applicationServices.getNotificationsService();
 
-        Group group = groupService.getGroupByName(groupName);
+        Group group = groupService.getGroupByName(splitGroupData.groupName());
         Set<String> participants = group.getParticipants();
         Set<User> users = participants.stream()
                 .map(userService::getUserByUsername)
                 .collect(Collectors.toSet());
-        BigDecimal splitAmount = amountToAdd.divide(BigDecimal.valueOf(participants.size()));
+        BigDecimal splitAmount = splitGroupData.amount().divide(BigDecimal.valueOf(participants.size()));
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(splitAmount, user.getCurrency());
 
         users.forEach((participant) -> {
@@ -47,11 +46,11 @@ public class GroupSplitCommand implements Command {
                 BigDecimal amountInPersonCurrency =
                         currencyService.transformAmount(splitAmount, user.getCurrency(), participant.getCurrency());
                 Notification groupSplitNotification =
-                        new SplitGroupNotification(groupName, user.getUsername(), amountInPersonCurrency, reason,
-                                participant.getCurrency());
+                        new SplitGroupNotification(splitGroupData.groupName(), user.getUsername(),
+                                amountInPersonCurrency, splitGroupData.reason(), participant.getCurrency());
                 notificationsService.addNotification(participant.getUsername(), groupSplitNotification);
             }
         });
-        return SplitGroupResponse.of(groupName);
+        return SplitGroupResponse.of(splitGroupData.groupName());
     }
 }

@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.PayData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotification;
@@ -17,8 +18,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 
 public class PaidCommand implements Command {
-    private String payer;
-    private BigDecimal amount;
+    private PayData payData;
     private ApplicationServices applicationServices;
 
     @Override
@@ -28,15 +28,15 @@ public class PaidCommand implements Command {
         CurrencyService currencyService = applicationServices.getCurrencyService();
         NotificationsService notificationsService = applicationServices.getNotificationsService();
 
-        User payerAccount = userService.getUserByUsername(payer);
-        BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(amount, user.getCurrency());
-        debtsService.addDebt(user.getUsername(), payer, amountInBaseCurrency);
+        User payerAccount = userService.getUserByUsername(payData.payer());
+        BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(payData.amount(), user.getCurrency());
+        debtsService.addDebt(user.getUsername(), payData.payer(), amountInBaseCurrency);
 
         BigDecimal amountInPersonCurrency =
-                currencyService.transformAmount(amount, user.getCurrency(), payerAccount.getCurrency());
+                currencyService.transformAmount(payData.amount(), user.getCurrency(), payerAccount.getCurrency());
         Notification payNotification =
                 new PersonPayNotification(user.getUsername(), amountInPersonCurrency, payerAccount.getCurrency());
-        notificationsService.addNotification(payer, payNotification);
-        return PayResponse.of(payer);
+        notificationsService.addNotification(payData.payer(), payNotification);
+        return PayResponse.of(payData.payer());
     }
 }

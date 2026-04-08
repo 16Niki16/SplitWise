@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitPersonNotification;
@@ -16,9 +17,7 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 public class SplitCommand implements Command {
-    private String debtor;
-    private String reason;
-    private BigDecimal amountToSplit;
+    private SplitData splitData;
     private ApplicationServices applicationServices;
 
     @Override
@@ -28,17 +27,17 @@ public class SplitCommand implements Command {
         CurrencyService currencyService = applicationServices.getCurrencyService();
         NotificationsService notificationsService = applicationServices.getNotificationsService();
 
-        User debtorProfile = userService.getUserByUsername(debtor);
-        BigDecimal amount = amountToSplit.divide(BigDecimal.valueOf(2));
+        User debtorProfile = userService.getUserByUsername(splitData.debtor());
+        BigDecimal amount = splitData.amountToSplit().divide(BigDecimal.valueOf(2));
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(amount, user.getCurrency());
-        debtsService.addDebt(debtor, user.getUsername(), amountInBaseCurrency);
+        debtsService.addDebt(splitData.debtor(), user.getUsername(), amountInBaseCurrency);
         BigDecimal amountInPersonCurrency =
-            currencyService.transformAmount(amount, user.getCurrency(), debtorProfile.getCurrency());
+                currencyService.transformAmount(amount, user.getCurrency(), debtorProfile.getCurrency());
         Notification splitNotification =
-            new SplitPersonNotification(user.getUsername(), amountInPersonCurrency, reason,
-                debtorProfile.getCurrency());
-        notificationsService.addNotification(debtor, splitNotification);
+                new SplitPersonNotification(user.getUsername(), amountInPersonCurrency, splitData.reason(),
+                        debtorProfile.getCurrency());
+        notificationsService.addNotification(splitData.debtor(), splitNotification);
 
-        return SplitResponse.of(debtor);
+        return SplitResponse.of(splitData.debtor());
     }
 }

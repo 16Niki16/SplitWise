@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.LoginData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
@@ -14,15 +15,14 @@ import java.util.List;
 
 @AllArgsConstructor
 public class LoginCommand implements Command {
-    private String username;
-    private String password;
+    private LoginData loginData;
     private ApplicationServices applicationServices;
 
     @Override
     public Response execute(User user) {
         UserService userService = applicationServices.getUserService();
-        User userProfile = userService.getUserByUsername(username);
-        if (!userProfile.getPassword().equals(password)) {
+        User userProfile = userService.getUserByUsername(loginData.username());
+        if (!userProfile.getPassword().equals(loginData.password())) {
             throw new PasswordNotCorrectException("The provided password is not correct!");
         }
         NotificationsService notificationsService = applicationServices.getNotificationsService();
