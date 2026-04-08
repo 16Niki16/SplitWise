@@ -7,7 +7,8 @@ import java.util.List;
 public record StatusResponse(ResponseStatus responseStatus, List<String> debts) implements Response {
     public static StatusResponse of(List<Debt> debts) {
         List<String> debtsMessages = debts.stream()
-            .map()
-        return new StatusResponse(ResponseStatus.SUCCESSFUL, debts);
+                .map(Debt::debtMessage)
+                .toList();
+        return new StatusResponse(ResponseStatus.SUCCESSFUL, debtsMessages);
     }
 }

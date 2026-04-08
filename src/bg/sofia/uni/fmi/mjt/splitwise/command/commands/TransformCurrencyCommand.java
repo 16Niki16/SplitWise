@@ -2,6 +2,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.TransformCurrencyResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import lombok.AllArgsConstructor;
@@ -12,7 +14,7 @@ public class TransformCurrencyCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public String execute(User user) {
+    public Response execute(User user) {
         CurrencyService currencyService = applicationServices.getCurrencyService();
 
         currencyService.getRates()
@@ -23,6 +25,6 @@ public class TransformCurrencyCommand implements Command {
                 });
         user.changeCurrency(newCurrency);
 
-        return "Successful currency change!";
+        return TransformCurrencyResponse.of(newCurrency);
     }
 }

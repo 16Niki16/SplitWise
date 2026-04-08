@@ -3,6 +3,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitPersonNotification;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.response.SplitResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
@@ -20,7 +22,7 @@ public class SplitCommand implements Command {
     private ApplicationServices applicationServices;
 
     @Override
-    public String execute(User user) {
+    public Response execute(User user) {
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();
@@ -37,6 +39,6 @@ public class SplitCommand implements Command {
                 debtorProfile.getCurrency());
         notificationsService.addNotification(debtor, splitNotification);
 
-        return "Successfully split the money";
+        return SplitResponse.of(debtor);
     }
 }

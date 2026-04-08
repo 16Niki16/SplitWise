@@ -2,6 +2,8 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.response.CreateGroupResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
@@ -16,7 +18,7 @@ public class CreateGroupCommand implements Command {
     private final Set<String> participants;
     private final ApplicationServices applicationServices;
 
-    public String execute(User creator) {
+    public Response execute(User creator) {
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
 
@@ -32,6 +34,6 @@ public class CreateGroupCommand implements Command {
         userService.updateFile();
         groupService.updateFile();
 
-        return "Group is successfully created!";
+        return CreateGroupResponse.of(groupName);
     }
 }
