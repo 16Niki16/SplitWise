@@ -8,14 +8,8 @@
       <root url="jar://$USER_HOME$/Downloads/jackson-databind-2.17.0.jar!/" />
       <root url="jar://$USER_HOME$/Downloads/mockito-core-5.7.0.jar!/" />
       <root url="jar://$USER_HOME$/Downloads/objenesis-3.3.jar!/" />
-      <root url="file://$USER_HOME$/Downloads" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$USER_HOME$/Downloads/TankMania-master/TankMania-master/ProjectTankMania/src" />
-      <root url="file://$USER_HOME$/Downloads" />
-    </SOURCES>
-    <jarDirectory url="file://$USER_HOME$/Downloads" recursive="false" />
-    <jarDirectory url="file://$USER_HOME$/Downloads" recursive="false" type="SOURCES" />
+    <SOURCES />
   </library>
 </component>

@@ -17,7 +17,7 @@ public class ExchangeRate {
     private static final int BAD_REQUEST = 300;
     private static final String APIKEY = "&apikey=1db67adc3b08c1ccb5ffe18d8f5356d0";
     private static final String SITE = "api.exchangeratesapi.io";
-    private static final String ENDPOINT = "v1/latest";
+    private static final String ENDPOINT = "/v1/latest";
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

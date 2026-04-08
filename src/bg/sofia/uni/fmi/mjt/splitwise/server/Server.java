@@ -33,7 +33,7 @@ public class Server {
     private final CommandRegistry commandRegistry;
     private final UserService userService;
 
-    public void server() {
+    public void start() {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
 
             serverSocketChannel.bind(new InetSocketAddress(SERVER_HOST, SERVER_PORT));

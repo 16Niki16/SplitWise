@@ -1,5 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.response;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("split")
 public record SplitResponse(ResponseStatus responseStatus, String message) implements ResponseData {
     public static SplitResponse of(String friendName) {
         return new SplitResponse(ResponseStatus.SUCCESSFUL,

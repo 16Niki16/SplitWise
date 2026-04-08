@@ -4,7 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotRegisteredException;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 
-public class UserService implements Service{
+public class UserService implements Service {
 
     private final UserRepository userRepository;
 
@@ -19,6 +19,10 @@ public class UserService implements Service{
             throw new PersonNotRegisteredException("The provided person is not registered yet!");
         }
         return user;
+    }
+
+    public boolean checkUserExists(String username) {
+        return userRepository.getUser(username) != null;
     }
 
     public void addUser(User user) {

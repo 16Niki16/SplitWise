@@ -1,23 +1,45 @@
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
+import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
+import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.ExceptionsService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
+import bg.sofia.uni.fmi.mjt.splitwise.service.NotificationsService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 
+import java.net.http.HttpClient;
 import java.nio.file.Path;
 
 public class Main {
     public static void main(String[] args) {
         SessionsManager sessionsManager = new SessionsManager();
+
         UserRepository userRepository = new UserRepository(Path.of("DataFiles", "Users"));
         GroupRepository groupRepository = new GroupRepository(Path.of("DataFiles", "Groups"));
-        NotificationsRepository notificationsRepository = new NotificationsRepository(Path.of())
-        UserService userService = new UserService()
-        ApplicationServices applicationServices = new ApplicationServices()
-        CommandRegistry commandRegistry = new CommandRegistry()
-        Server server = new Server()
+        DebtsRepository debtsRepository = new DebtsRepository(Path.of("DataFiles", "Debts"));
+        NotificationsRepository notificationsRepository =
+            new NotificationsRepository(Path.of("DataFiles", "Notifications"));
+        ExchangeRate exchangeRate = new ExchangeRate(HttpClient.newBuilder().build());
+
+        UserService userService = new UserService(userRepository);
+        GroupService groupService = new GroupService(groupRepository);
+        DebtsService debtsService = new DebtsService(debtsRepository);
+        CurrencyService currencyService = new CurrencyService(exchangeRate);
+        NotificationsService notificationsService = new NotificationsService(notificationsRepository);
+        ExceptionsService exceptionsService = new ExceptionsService();
+
+        ApplicationServices applicationServices = new ApplicationServices(
+            userService, groupService, debtsService, currencyService, notificationsService, exceptionsService);
+        CommandRegistry commandRegistry = new CommandRegistry(applicationServices);
+
+        Server server = new Server(sessionsManager, commandRegistry, userService);
+        server.start();
     }
 }

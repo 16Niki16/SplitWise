@@ -35,7 +35,7 @@ public class CreateAccountCommand implements Command {
     private UserService getUserService(CreateAccountData createAccountData) {
         UserService userService = applicationServices.getUserService();
 
-        if (userService.getUserByUsername(createAccountData.username()) != null) {
+        if (userService.checkUserExists(createAccountData.username())) {
             throw new UsernameAlreadyUsedException("The provided username is already taken!");
         } else if (!createAccountData.password().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,}$")) {
             throw new PasswordNotCorrectException(

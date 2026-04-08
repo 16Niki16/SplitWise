@@ -1,14 +1,16 @@
 package bg.sofia.uni.fmi.mjt.splitwise.response;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.List;
 
+@JsonTypeName("status")
 public record StatusResponse(ResponseStatus responseStatus, List<String> debts) implements ResponseData {
     public static StatusResponse of(List<Debt> debts) {
         List<String> debtsMessages = debts.stream()
-                .map(Debt::debtMessage)
-                .toList();
+            .map(Debt::debtMessage)
+            .toList();
         return new StatusResponse(ResponseStatus.SUCCESSFUL, debtsMessages);
     }
 

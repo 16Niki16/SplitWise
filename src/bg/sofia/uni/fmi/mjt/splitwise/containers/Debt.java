@@ -19,7 +19,8 @@ public class Debt {
     public void addAmount(BigDecimal amountToAdd) {
         this.amount = this.amount.add(amountToAdd);
     }
-    public String debtMessage(){
-        return
+
+    public String debtMessage() {
+        return String.format("%s owes %s %.2f", from, to, amount);
     }
 }
