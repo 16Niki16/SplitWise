@@ -1,8 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitGroupData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
@@ -21,11 +23,15 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class GroupSplitCommand implements Command {
-    private SplitGroupData splitGroupData;
+    private Data data;
     private ApplicationServices applicationServices;
 
     @Override
     public Response execute(User user) {
+        if (!(data instanceof SplitGroupData splitGroupData)) {
+            throw new DataException("Split group data exception");
+        }
+
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
         DebtsService debtsService = applicationServices.getDebtsService();
@@ -51,6 +57,7 @@ public class GroupSplitCommand implements Command {
                 notificationsService.addNotification(participant.getUsername(), groupSplitNotification);
             }
         });
+
         return SplitGroupResponse.of(splitGroupData.groupName());
     }
 }

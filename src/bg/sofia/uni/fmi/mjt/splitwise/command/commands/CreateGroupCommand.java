@@ -1,8 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.command.data.CreateGroupData;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.CreateGroupData;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateGroupResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
@@ -15,10 +17,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class CreateGroupCommand implements Command {
-    private final CreateGroupData createGroupData;
+    private final Data data;
     private final ApplicationServices applicationServices;
 
     public Response execute(User creator) {
+        if (!(data instanceof CreateGroupData createGroupData)) {
+            throw new DataException("Create group data exception!");
+        }
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
 

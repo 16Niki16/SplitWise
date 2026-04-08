@@ -1,8 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.AddFriendData;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AddYourselfException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.AddFriendResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
@@ -11,11 +13,15 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class AddFriendCommand implements Command {
-    private AddFriendData addFriendData;
+    private Data data;
     private final ApplicationServices applicationServices;
 
     @Override
     public Response execute(User user) {
+        if (!(data instanceof AddFriendData addFriendData)) {
+            throw new DataException("Data is not in correct form!");
+        }
+
         UserService userService = applicationServices.getUserService();
         User newFriend = userService.getUserByUsername(addFriendData.friendName());
         if (user.equals(newFriend)) {

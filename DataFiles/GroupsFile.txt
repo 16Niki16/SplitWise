@@ -1,3 +1,0 @@
-firstGroup|kiro 26.21,niki -26.21,ili 0.00
-deniGroup|deni 20.20,niki -53.22,kiro 33.03
-secondGroup|deni -6.67,niki 3.33,kiro 3.33

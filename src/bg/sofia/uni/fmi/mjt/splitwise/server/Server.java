@@ -1,6 +1,10 @@
 package bg.sofia.uni.fmi.mjt.splitwise.server;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
@@ -10,14 +14,14 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
+
+import static bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry.create;
 
 @AllArgsConstructor
 public class Server {
-    Map<SocketChannel, StringBuilder> clientBuffers = new HashMap<>();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     public static final int SERVER_PORT = 7777;
     private static final String SERVER_HOST = "localhost";
     private static final int BUFFER_SIZE = 1024;
@@ -57,7 +61,13 @@ public class Server {
                             continue;
                         }
                         buffer.flip();
-                        sc.write(buffer);
+                        byte[] bytes = new byte[buffer.remaining()];
+                        buffer.get(bytes);
+                        String requestMessage = new String(bytes, "UTF-8");
+                        Request request = MAPPER.readValue(requestMessage, Request.class);
+                        Command command = create(request);
+                        Response response = command.execute();
+                        sc.write(ByteBuffer.wrap(message.getBytes()));
 
                     } else if (key.isAcceptable()) {
                         ServerSocketChannel sockChannel = (ServerSocketChannel) key.channel();

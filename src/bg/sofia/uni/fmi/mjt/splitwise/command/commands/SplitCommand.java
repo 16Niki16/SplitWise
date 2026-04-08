@@ -1,7 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitPersonNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
@@ -17,11 +19,15 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 public class SplitCommand implements Command {
-    private SplitData splitData;
+    private Data data;
     private ApplicationServices applicationServices;
 
     @Override
     public Response execute(User user) {
+        if (!(data instanceof SplitData splitData)) {
+            throw new DataException("Problem in split data");
+        }
+
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();

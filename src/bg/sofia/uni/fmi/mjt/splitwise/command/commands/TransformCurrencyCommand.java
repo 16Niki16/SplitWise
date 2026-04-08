@@ -1,7 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.TransformCurrencyResponse;
@@ -11,11 +13,15 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class TransformCurrencyCommand implements Command {
-    private TransformCurrencyData transformCurrencyData;
+    private Data data;
     private ApplicationServices applicationServices;
 
     @Override
     public Response execute(User user) {
+        if (!(data instanceof TransformCurrencyData transformCurrencyData)) {
+            throw new DataException("Problem in transform currency data");
+        }
+
         CurrencyService currencyService = applicationServices.getCurrencyService();
         String currentCurrency = user.getCurrency();
 

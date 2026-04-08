@@ -57,12 +57,12 @@ public class Client {
                 byte[] byteArray = new byte[buffer.remaining()];
                 buffer.get(byteArray);
                 String response = new String(byteArray, "UTF-8");
-                Response responseJSON = MAPPER.readValue(response, )// buffer drain
+                Response responseJSON = MAPPER.readValue(response, Response.class);
 
                 // if the buffer is a non-direct one, it has a wrapped array and we can get it
                 //String reply = new String(buffer.array(), 0, buffer.position(), "UTF-8"); // buffer drain
 
-                System.out.println("The server replied <" + reply + ">");
+                System.out.println(responseJSON.getResponse());
             }
 
         } catch (IOException e) {
