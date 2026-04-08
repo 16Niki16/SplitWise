@@ -1,5 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.containers;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.util.HashSet;
@@ -10,12 +12,16 @@ import java.util.Set;
 public class Group {
     private final String groupName;
     private final String creator;
-    private final Set<String> participants = new HashSet<>();
+    private Set<String> participants = new HashSet<>();
 
-    public Group(String groupName, String creator, Set<String> participants) {
+    @JsonCreator
+    public Group(
+        @JsonProperty("groupName") String groupName,
+        @JsonProperty("creator") String creator,
+        @JsonProperty("participants") Set<String> participants
+    ) {
         this.groupName = groupName;
         this.creator = creator;
-        this.participants.add(creator);
-        this.participants.addAll(participants);
+        this.participants = participants != null ? participants : new HashSet<>();
     }
 }

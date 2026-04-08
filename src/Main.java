@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.request.RequestHandler;
 import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
@@ -39,7 +40,8 @@ public class Main {
             userService, groupService, debtsService, currencyService, notificationsService, exceptionsService);
         CommandRegistry commandRegistry = new CommandRegistry(applicationServices);
 
-        Server server = new Server(sessionsManager, commandRegistry, userService);
+        RequestHandler requestHandler = new RequestHandler(commandRegistry, sessionsManager, userService);
+        Server server = new Server(requestHandler);
         server.start();
     }
 }

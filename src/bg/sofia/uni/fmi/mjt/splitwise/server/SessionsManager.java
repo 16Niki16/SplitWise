@@ -14,7 +14,7 @@ public class SessionsManager {
     private final Map<String, User> sessions = new HashMap<>();
 
     public String createSession(User user) {
-        if (sessions.containsValue(user)) {
+        if (checkActiveSession(user)) {
             throw new PersonAlreadyLoggedException("The provided user is already logged!");
         }
 
@@ -40,5 +40,9 @@ public class SessionsManager {
         if (!sessions.containsKey(uniqueSessionID)) {
             throw new SessionNotActiveException("There is not an active session using the provided token!");
         }
+    }
+
+    public boolean checkActiveSession(User user) {
+        return sessions.containsValue(user);
     }
 }
