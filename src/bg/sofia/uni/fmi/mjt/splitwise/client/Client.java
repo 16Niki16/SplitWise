@@ -46,13 +46,13 @@ public class Client {
                 }
 
                 buffer.clear();
-                buffer.put(jsonFormatting.getBytes()); // buffer fill
-                buffer.flip(); // switch to reading mode
-                socketChannel.write(buffer); // buffer drain
+                buffer.put(jsonFormatting.getBytes());
+                buffer.flip();
+                socketChannel.write(buffer);
 
-                buffer.clear(); // switch to writing mode
-                socketChannel.read(buffer); // buffer fill
-                buffer.flip(); // switch to reading mode
+                buffer.clear();
+                socketChannel.read(buffer);
+                buffer.flip();
 
                 byte[] byteArray = new byte[buffer.remaining()];
                 buffer.get(byteArray);
@@ -60,23 +60,11 @@ public class Client {
                 Response response = MAPPER.readValue(responseMessage, Response.class);
                 this.sessionToken = response.token();
 
-                // if the buffer is a non-direct one, it has a wrapped array and we can get it
-                //String reply = new String(buffer.array(), 0, buffer.position(), "UTF-8"); // buffer drain
-
                 System.out.println(response.responseData().getResponse());
             }
 
         } catch (IOException e) {
             throw new RuntimeException("There is a problem with the network communication", e);
         }
-    }
-
-    private void send(SocketChannel channel, String json) throws IOException {
-        byte[] data = json.getBytes();
-
-        String message = data.length + "\n" + json;
-
-        ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
-        channel.write(buffer);
     }
 }
