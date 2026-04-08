@@ -20,13 +20,25 @@ public class SessionsManager {
 
         String uniqueSessionID = UUID.randomUUID().toString();
         this.sessions.put(uniqueSessionID, user);
+
         return uniqueSessionID;
     }
 
     public void removeSession(String uniqueSessionID) {
+        checkValidSession(uniqueSessionID);
+
+        this.sessions.remove(uniqueSessionID);
+    }
+
+    public User getUserSession(String uniqueSessionID) {
+        checkValidSession(uniqueSessionID);
+
+        return this.sessions.get(uniqueSessionID);
+    }
+
+    private void checkValidSession(String uniqueSessionID) {
         if (!sessions.containsKey(uniqueSessionID)) {
             throw new SessionNotActiveException("There is not an active session using the provided token!");
         }
-        this.sessions.remove(uniqueSessionID);
     }
 }

@@ -3,7 +3,10 @@ package bg.sofia.uni.fmi.mjt.splitwise.server;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
+import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
@@ -27,6 +30,7 @@ public class Server {
     private static final int BUFFER_SIZE = 1024;
     private final SessionsManager sessionsManager;
     private final CommandRegistry commandRegistry;
+    private final UserService userService;
 
     public void server() {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
@@ -66,6 +70,9 @@ public class Server {
                         String requestMessage = new String(bytes, "UTF-8");
                         Request request = MAPPER.readValue(requestMessage, Request.class);
                         Command command = create(request);
+                        if (command instanceof LoginCommand loginCommand) {
+                            User user =
+                        }
                         Response response = command.execute();
                         sc.write(ByteBuffer.wrap(message.getBytes()));
 
