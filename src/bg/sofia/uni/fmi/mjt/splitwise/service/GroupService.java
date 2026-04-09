@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.GroupRepository;
 
 public class GroupService implements Service {
     private final GroupRepository groupRepository;

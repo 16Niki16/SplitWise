@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepository;
 
 import java.math.BigDecimal;
 import java.util.List;

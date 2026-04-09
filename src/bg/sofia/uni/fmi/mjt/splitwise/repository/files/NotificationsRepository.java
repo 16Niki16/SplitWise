@@ -1,7 +1,8 @@
-package bg.sofia.uni.fmi.mjt.splitwise.repository;
+package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.NotificationsWrapper;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.UserWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.mjt.splitwise.repository;
+package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.DebtsWrapper;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;

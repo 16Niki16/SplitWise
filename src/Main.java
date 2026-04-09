@@ -1,10 +1,10 @@
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.GroupRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.NotificationsRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.UserRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.request.RequestHandler;
 import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;

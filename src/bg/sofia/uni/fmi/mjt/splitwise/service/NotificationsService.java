@@ -2,7 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.NotificationsRepository;
 
 import java.util.List;
 
