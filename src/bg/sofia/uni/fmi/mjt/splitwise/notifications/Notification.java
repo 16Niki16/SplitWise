@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.notifications;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -10,6 +11,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = PersonPayNotification.class, name = "pay")
 })
 public interface Notification {
-
+    @JsonIgnore
     String getNotification();
 }

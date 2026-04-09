@@ -1,9 +1,15 @@
 package bg.sofia.uni.fmi.mjt.splitwise.database;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
+import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.database.DebtsRepositoryDB;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.database.GroupRepositoryDB;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.database.NotificationsRepositoryDB;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.database.UserRepositoryDB;
+
+import java.math.BigDecimal;
+import java.util.Set;
 
 public class DatabaseTest {
     public static void main(String[] args) {
@@ -15,8 +21,8 @@ public class DatabaseTest {
         DebtsRepositoryDB debtsRepo = new DebtsRepositoryDB();
 
         // 2. Добавяме users
-        userRepo.addUser(new User("niki", "1234", null, null, "EUR"));
-        userRepo.addUser(new User("ivan", "1234", null, null, "USD"));
+        //userRepo.addUser(new User("niki1", "1234", null, null, "EUR"));
+        //userRepo.addUser(new User("ivan", "1234", null, null, "USD"));
 
         // 3. Проверка дали са записани
         System.out.println("All users:");
@@ -39,11 +45,24 @@ public class DatabaseTest {
         System.out.println("\nUpdated Debt:");
         System.out.println(debtsRepo.findDebt("niki", "ivan").debtMessage());
 
-        // 7. Тест за DELETE CASCADE
-        userRepo.removeUser("ivan");
-
         System.out.println("\nAfter deleting ivan:");
         Debt afterDelete = debtsRepo.findDebt("niki", "ivan");
         System.out.println(afterDelete == null ? "Debt deleted (CASCADE works)" : "Still exists ❌");
+
+        GroupRepositoryDB groupRepo = new GroupRepositoryDB();
+        NotificationsRepositoryDB notifRepo = new NotificationsRepositoryDB();
+
+// group
+        Set<String> participants = Set.of("niki", "ivan", "niki1");
+        groupRepo.addGroup(new Group("trip2", "niki", participants));
+
+        System.out.println(groupRepo.getGroup("trip").getParticipants());
+
+// notifications
+        notifRepo.addNotification("ivan",
+            new SplitGroupNotification("trip", "niki",
+                new BigDecimal("20"), "dinner", "EUR"));
+
+        System.out.println(notifRepo.getNotifications("ivan"));
     }
 }

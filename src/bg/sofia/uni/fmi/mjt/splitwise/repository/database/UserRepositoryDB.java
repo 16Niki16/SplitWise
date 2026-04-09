@@ -22,8 +22,8 @@ public class UserRepositoryDB implements Repository {
                 return new User(
                     rs.getString("username"),
                     rs.getString("password"),
-                    null, // friends ще се зареждат от FriendRepository
-                    null, // groups ще се зареждат от GroupParticipantsRepository
+                    null,
+                    null,
                     rs.getString("currency")
                 );
             }
