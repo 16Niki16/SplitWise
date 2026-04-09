@@ -16,11 +16,11 @@ public class CurrencyService implements Service {
 
     public CurrencyService(ExchangeRate exchangeRate) {
         this.exchangeRate = exchangeRate;
-        updateCurrencyListAsync();
+        updateCurrencyListAsync().join();
     }
 
     public CompletableFuture<Void> updateCurrencyListAsync() {
-        return exchangeRate.getAllRates(BASE_CURRENCY)
+        return exchangeRate.getAllRates()
             .thenAccept(rates -> {
                 cachedRates = rates;
             })

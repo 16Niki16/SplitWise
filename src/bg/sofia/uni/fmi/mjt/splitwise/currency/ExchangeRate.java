@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class ExchangeRate {
     private static final int CORRECT_REQUEST = 200;
     private static final int BAD_REQUEST = 300;
-    private static final String APIKEY = "&apikey=1db67adc3b08c1ccb5ffe18d8f5356d0";
+    private static final String APIKEY = "1db67adc3b08c1ccb5ffe18d8f5356d0";
     private static final String SITE = "api.exchangeratesapi.io";
     private static final String ENDPOINT = "/v1/latest";
 
@@ -28,13 +28,13 @@ public class ExchangeRate {
         this.client = client;
     }
 
-    public CompletableFuture<ExchangeRateResponse> getAllRates(String baseCurrency) {
+    public CompletableFuture<ExchangeRateResponse> getAllRates() {
         try {
             URI uri = new URI(
                     "https",
                     SITE,
                     ENDPOINT,
-                    "?access_key=" + APIKEY + "&base=" + baseCurrency,
+                    "access_key=" + APIKEY,
                     null
             );
 

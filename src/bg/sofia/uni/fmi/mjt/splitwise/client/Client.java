@@ -37,30 +37,34 @@ public class Client {
             while (true) {
                 System.out.print("Enter message: ");
                 String message = scanner.nextLine();
-                CommandLine commandLine = commandLineSeparated(message);
-                Data data = dataCreator.createData(commandLine);
-                Request request = new Request(CommandType.of(commandLine.line()), sessionToken, data);
-                String jsonFormatting = MAPPER.writeValueAsString(request);
-                if ("quit".equals(message)) {
-                    break;
+                try {
+                    CommandLine commandLine = commandLineSeparated(message);
+                    Data data = dataCreator.createData(commandLine);
+                    Request request = new Request(CommandType.of(commandLine.line()), sessionToken, data);
+                    String jsonFormatting = MAPPER.writeValueAsString(request);
+                    if ("quit".equals(message)) {
+                        break;
+                    }
+
+                    buffer.clear();
+                    buffer.put(jsonFormatting.getBytes());
+                    buffer.flip();
+                    socketChannel.write(buffer);
+
+                    buffer.clear();
+                    socketChannel.read(buffer);
+                    buffer.flip();
+
+                    byte[] byteArray = new byte[buffer.remaining()];
+                    buffer.get(byteArray);
+                    String responseMessage = new String(byteArray, "UTF-8");
+                    Response response = MAPPER.readValue(responseMessage, Response.class);
+                    this.sessionToken = response.token();
+
+                    System.out.println(response.responseData().getResponse());
+                } catch (RuntimeException e) {
+                    System.out.println(e.getMessage());
                 }
-
-                buffer.clear();
-                buffer.put(jsonFormatting.getBytes());
-                buffer.flip();
-                socketChannel.write(buffer);
-
-                buffer.clear();
-                socketChannel.read(buffer);
-                buffer.flip();
-
-                byte[] byteArray = new byte[buffer.remaining()];
-                buffer.get(byteArray);
-                String responseMessage = new String(byteArray, "UTF-8");
-                Response response = MAPPER.readValue(responseMessage, Response.class);
-                this.sessionToken = response.token();
-
-                System.out.println(response.responseData().getResponse());
             }
 
         } catch (IOException e) {

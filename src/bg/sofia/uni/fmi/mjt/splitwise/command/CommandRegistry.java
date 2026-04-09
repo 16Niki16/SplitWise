@@ -1,6 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateAccountCommand;
@@ -11,6 +12,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.StatusCommand;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.TransformCurrencyCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CommandNotKnownException;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 
@@ -37,6 +39,7 @@ public class CommandRegistry {
         COMMANDS.put(CommandType.SPLIT, data -> new SplitCommand(data, applicationServices));
         COMMANDS.put(CommandType.SPLIT_GROUP, data -> new GroupSplitCommand(data, applicationServices));
         COMMANDS.put(CommandType.PAID, data -> new PaidCommand(data, applicationServices));
+        COMMANDS.put(CommandType.SWITCH_CURRENCY, data -> new TransformCurrencyCommand(data, applicationServices));
     }
 
     public Command create(Request request) {

@@ -8,6 +8,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.LoginData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.PayData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitGroupData;
+import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class DataCreator {
         DATA.put(CommandType.SPLIT, args -> new SplitData(args[1], args[2], new BigDecimal(args[0])));
         DATA.put(CommandType.SPLIT_GROUP, args -> new SplitGroupData(args[1], new BigDecimal(args[0]), args[2]));
         DATA.put(CommandType.PAID, args -> new PayData(args[1], new BigDecimal(args[0])));
+        DATA.put(CommandType.SWITCH_CURRENCY, args -> new TransformCurrencyData(args[0]));
     }
 
     public Data createData(CommandLine commandLine) {
