@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.splitwise.repository.database;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
 import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 
 import java.sql.Connection;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DebtsRepositoryDB implements Repository {
+public class DebtsRepositoryDB implements Repository, DebtsRepository {
     public Debt findDebt(String from, String to) {
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(

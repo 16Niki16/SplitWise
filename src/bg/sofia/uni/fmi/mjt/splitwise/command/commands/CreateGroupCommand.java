@@ -36,8 +36,6 @@ public class CreateGroupCommand implements Command {
         Group group = new Group(createGroupData.groupName(), creator.getUsername(), createGroupData.participants());
         groupService.addNewGroup(group);
         participantsAccounts.forEach(user -> user.addGroup(group.getGroupName()));
-        userService.updateFile();
-        groupService.updateFile();
 
         return CreateGroupResponse.of(createGroupData.groupName());
     }

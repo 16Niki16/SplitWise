@@ -1,12 +1,12 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.GroupRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.GroupRepositoryFile;
 
 public class GroupService implements Service {
-    private final GroupRepository groupRepository;
+    private final GroupRepositoryFile groupRepository;
 
-    public GroupService(GroupRepository groupRepository) {
+    public GroupService(GroupRepositoryFile groupRepository) {
         this.groupRepository = groupRepository;
     }
 
@@ -16,9 +16,5 @@ public class GroupService implements Service {
 
     public Group getGroupByName(String groupName) {
         return groupRepository.getGroup(groupName);
-    }
-
-    public void updateFile() {
-        this.groupRepository.save();
     }
 }

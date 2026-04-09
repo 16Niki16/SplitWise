@@ -30,7 +30,6 @@ public class AddFriendCommand implements Command {
 
         user.addFriend(newFriend.getUsername());
         newFriend.addFriend(user.getUsername());
-        userService.updateFile();
 
         return AddFriendResponse.of(addFriendData.friendName());
 

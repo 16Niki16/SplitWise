@@ -1,10 +1,10 @@
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
 import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.GroupRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.NotificationsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.UserRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepositoryFile;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.GroupRepositoryFile;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.NotificationsRepositoryFile;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.UserRepositoryFile;
 import bg.sofia.uni.fmi.mjt.splitwise.request.RequestHandler;
 import bg.sofia.uni.fmi.mjt.splitwise.server.Server;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
@@ -24,11 +24,11 @@ public class Main {
     public static void main(String[] args) {
         SessionsManager sessionsManager = new SessionsManager();
 
-        UserRepository userRepository = new UserRepository(Path.of("DataFiles", "Users"));
-        GroupRepository groupRepository = new GroupRepository(Path.of("DataFiles", "Groups"));
-        DebtsRepository debtsRepository = new DebtsRepository(Path.of("DataFiles", "Debts"));
-        NotificationsRepository notificationsRepository =
-            new NotificationsRepository(Path.of("DataFiles", "Notifications"));
+        UserRepositoryFile userRepository = new UserRepositoryFile(Path.of("DataFiles", "Users"));
+        GroupRepositoryFile groupRepository = new GroupRepositoryFile(Path.of("DataFiles", "Groups"));
+        DebtsRepositoryFile debtsRepository = new DebtsRepositoryFile(Path.of("DataFiles", "Debts"));
+        NotificationsRepositoryFile notificationsRepository =
+            new NotificationsRepositoryFile(Path.of("DataFiles", "Notifications"));
         ExchangeRate exchangeRate = new ExchangeRate(HttpClient.newBuilder().build());
 
         UserService userService = new UserService(userRepository);

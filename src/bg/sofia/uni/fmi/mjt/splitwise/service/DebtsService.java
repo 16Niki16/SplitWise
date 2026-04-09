@@ -1,15 +1,15 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepositoryFile;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class DebtsService implements Service {
-    private final DebtsRepository debtsRepository;
+    private final DebtsRepositoryFile debtsRepository;
 
-    public DebtsService(DebtsRepository debtsRepository) {
+    public DebtsService(DebtsRepositoryFile debtsRepository) {
         this.debtsRepository = debtsRepository;
     }
 

@@ -27,7 +27,6 @@ public class CreateAccountCommand implements Command {
         UserService userService = getUserService(createAccountData);
         User newAccount = User.createNewAccount(createAccountData.username(), createAccountData.password());
         userService.addUser(newAccount);
-        userService.updateFile();
 
         return CreateAccountResponse.of(createAccountData.username());
     }

@@ -2,14 +2,14 @@ package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.NotificationsRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.NotificationsRepositoryFile;
 
 import java.util.List;
 
 public class NotificationsService implements Service {
-    private final NotificationsRepository notificationsRepository;
+    private final NotificationsRepositoryFile notificationsRepository;
 
-    public NotificationsService(NotificationsRepository notificationsRepository) {
+    public NotificationsService(NotificationsRepositoryFile notificationsRepository) {
         this.notificationsRepository = notificationsRepository;
     }
 

@@ -1,5 +1,7 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
+import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.UserWrapper;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,12 +12,12 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserRepository {
+public class UserRepositoryFile implements Repository, UserRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private Map<String, User> users = new HashMap<>();
 
-    public UserRepository(Path path) {
+    public UserRepositoryFile(Path path) {
         this.path = path;
         load();
     }
@@ -34,27 +36,33 @@ public class UserRepository {
         }
     }
 
-    public void save() {
+    private void save() {
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(Files.newBufferedWriter(path), new UserWrapper(users));
+                .writeValue(Files.newBufferedWriter(path), new UserWrapper(users));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public User getUser(String username) {
         return users.get(username);
     }
 
+    @Override
     public void addUser(User user) {
         users.put(user.getUsername(), user);
+        save();
     }
 
+    @Override
     public void removeUser(String username) {
         users.remove(username);
+        save();
     }
 
+    @Override
     public Map<String, User> getAllUsers() {
         return users;
     }

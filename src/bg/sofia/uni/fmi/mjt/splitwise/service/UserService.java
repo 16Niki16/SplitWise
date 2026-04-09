@@ -1,14 +1,15 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PersonNotRegisteredException;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.files.UserRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.files.UserRepositoryFile;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 
 public class UserService implements Service {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepositoryFile userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -27,9 +28,5 @@ public class UserService implements Service {
 
     public void addUser(User user) {
         this.userRepository.addUser(user);
-    }
-
-    public void updateFile() {
-        this.userRepository.save();
     }
 }

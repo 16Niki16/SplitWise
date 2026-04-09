@@ -1,6 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.GroupWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -12,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
-public class GroupRepository {
+public class GroupRepositoryFile implements Repository, GroupRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private Map<String, Group> groups = new HashMap<>();
 
-    public GroupRepository(Path path) {
+    public GroupRepositoryFile(Path path) {
         this.path = path;
         load();
     }
@@ -36,7 +38,7 @@ public class GroupRepository {
         }
     }
 
-    public void save() {
+    private void save() {
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
                     .writeValue(Files.newBufferedWriter(path), new GroupWrapper(this.groups));
@@ -51,10 +53,12 @@ public class GroupRepository {
 
     public void addGroup(Group group) {
         this.groups.put(group.getGroupName(), group);
+        save();
     }
 
     public void removeGroup(String groupID) {
         this.groups.remove(groupID);
+        save();
     }
 
     public Map<String, Group> getAllGroups() {

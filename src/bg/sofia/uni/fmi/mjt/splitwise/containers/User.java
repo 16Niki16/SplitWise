@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,9 @@ public class User {
 
     private String username;
     private String password;
+    @Setter
     private Set<String> friends;
+    @Setter
     private Set<String> groups;
     private String currency;
 

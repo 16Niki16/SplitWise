@@ -1,10 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
-import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.NotificationsWrapper;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.UserWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -16,12 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NotificationsRepository implements Repository {
+public class NotificationsRepositoryFile implements Repository, NotificationsRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private Map<String, List<Notification>> notifications = new HashMap<>();
 
-    public NotificationsRepository(Path path) {
+    public NotificationsRepositoryFile(Path path) {
         this.path = path;
         load();
     }
@@ -40,7 +39,7 @@ public class NotificationsRepository implements Repository {
         }
     }
 
-    public void save() {
+    private void save() {
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValue(Files.newBufferedWriter(path), new NotificationsWrapper(this.notifications));
