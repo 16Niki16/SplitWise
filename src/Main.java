@@ -1,5 +1,6 @@
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.currency.ExchangeRate;
+import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
@@ -17,6 +18,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 
 import java.net.http.HttpClient;
 import java.nio.file.Path;
+import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
@@ -43,5 +45,11 @@ public class Main {
         RequestHandler requestHandler = new RequestHandler(commandRegistry, sessionsManager, userService);
         Server server = new Server(requestHandler);
         server.start();
+
+        try {
+            Database.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("gr", e);
+        }
     }
 }
