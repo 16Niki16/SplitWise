@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DebtsRepositoryDB implements Repository, DebtsRepository {
+    @Override
     public Debt findDebt(String from, String to) {
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
@@ -32,7 +33,8 @@ public class DebtsRepositoryDB implements Repository, DebtsRepository {
         }
     }
 
-    public void addOrUpdateDebt(Debt debt) {
+    @Override
+    public void addDebt(Debt debt) {
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                  "INSERT INTO debts(from_user, to_user, amount) VALUES (?, ?, ?) " +
@@ -47,6 +49,7 @@ public class DebtsRepositoryDB implements Repository, DebtsRepository {
         }
     }
 
+    @Override
     public void removeDebt(Debt debt) {
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
@@ -59,6 +62,7 @@ public class DebtsRepositoryDB implements Repository, DebtsRepository {
         }
     }
 
+    @Override
     public List<Debt> getAllDebts() {
         List<Debt> debts = new ArrayList<>();
         try (Connection conn = Database.getConnection();

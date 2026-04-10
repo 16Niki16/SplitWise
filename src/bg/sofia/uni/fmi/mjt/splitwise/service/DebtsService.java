@@ -1,13 +1,15 @@
 package bg.sofia.uni.fmi.mjt.splitwise.service;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
+import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.files.DebtsRepositoryFile;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DebtsService implements Service {
-    private final DebtsRepositoryFile debtsRepository;
+    private final DebtsRepository debtsRepository;
 
     public DebtsService(DebtsRepositoryFile debtsRepository) {
         this.debtsRepository = debtsRepository;
@@ -37,10 +39,10 @@ public class DebtsService implements Service {
     }
 
     public List<Debt> getDebtsByUsername(String username) {
-        return debtsRepository.findAllDebts(username);
+
+        return debtsRepository.getAllDebts().stream()
+            .filter(debt -> debt.getTo().equals(username) || debt.getFrom().equals(username))
+            .toList();
     }
 
-    public void updateFile() {
-        debtsRepository.save();
-    }
 }

@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DebtsRepositoryFile implements Repository, DebtsRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -37,40 +36,38 @@ public class DebtsRepositoryFile implements Repository, DebtsRepository {
         }
     }
 
-    public void save() {
+    private void save() {
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(Files.newBufferedWriter(path), new DebtsWrapper(this.debts));
+                .writeValue(Files.newBufferedWriter(path), new DebtsWrapper(this.debts));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public void addDebt(Debt debt) {
         this.debts.add(debt);
         save();
     }
 
+    @Override
     public void removeDebt(Debt debt) {
         this.debts.remove(debt);
         save();
     }
 
+    @Override
     public List<Debt> getAllDebts() {
         return this.debts;
     }
 
+    @Override
     public Debt findDebt(String from, String to) {
         return debts.stream()
-                .filter(d -> d.getFrom().equals(from) && d.getTo().equals(to))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public List<Debt> findAllDebts(String username) {
-        return debts.stream()
-                .filter(d -> d.getFrom().equals(username) || d.getTo().equals(username))
-                .collect(Collectors.toList());
+            .filter(d -> d.getFrom().equals(from) && d.getTo().equals(to))
+            .findFirst()
+            .orElse(null);
     }
 
 }
