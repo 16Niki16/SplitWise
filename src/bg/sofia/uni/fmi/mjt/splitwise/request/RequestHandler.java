@@ -27,7 +27,6 @@ public class RequestHandler {
             ResponseData responseData = command.execute(authenticationResult.user());
 
             return new Response(authenticationResult.token(), responseData);
-
         } catch (RuntimeException e) {
             return new Response(request.token(), ErrorResponse.of(e.getMessage()));
         }
@@ -37,13 +36,13 @@ public class RequestHandler {
         if (request.data() instanceof LoginData loginData) {
             User user = userService.getUserByUsername(loginData.username());
             String token = sessionsManager.createSession(user);
-
             return new AuthenticationResult(token, user);
-        } else if (request.data() instanceof CreateAccountData) {
 
+        } else if (request.data() instanceof CreateAccountData) {
             return new AuthenticationResult(null, null);
         }
         User user = sessionsManager.getUserSession(request.token());
+
         return new AuthenticationResult(request.token(), user);
     }
 }
