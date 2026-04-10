@@ -30,13 +30,7 @@ public class ExchangeRate {
 
     public CompletableFuture<ExchangeRateResponse> getAllRates() {
         try {
-            URI uri = new URI(
-                    "https",
-                    SITE,
-                    ENDPOINT,
-                    "access_key=" + APIKEY,
-                    null
-            );
+            URI uri = new URI("https", SITE, ENDPOINT, "access_key=" + APIKEY, null);
 
             HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
 

@@ -42,7 +42,7 @@ public class RequestHandlerTest {
     private RequestHandler requestHandler;
 
     @Test
-    void TestLoginRequest() {
+    void testLoginRequest() {
         LoginData data = new LoginData("Niki", "Niki123!");
         when(commandRegistry.create(request)).thenReturn(command);
 
@@ -63,7 +63,7 @@ public class RequestHandlerTest {
     }
 
     @Test
-    void createAccountTest() {
+    void testCreateAccount() {
         CreateAccountData data = new CreateAccountData("Niki", "Niki123!");
         when(commandRegistry.create(request)).thenReturn(command);
 
