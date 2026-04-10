@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GroupRepositoryDB implements Repository, GroupRepository {
+    @Override
     public void addGroup(Group group) {
         try (Connection conn = Database.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(
@@ -46,6 +47,7 @@ public class GroupRepositoryDB implements Repository, GroupRepository {
         }
     }
 
+    @Override
     public void removeGroup(String groupName) {
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
@@ -59,6 +61,7 @@ public class GroupRepositoryDB implements Repository, GroupRepository {
         }
     }
 
+    @Override
     public Group getGroup(String groupName) {
         try (Connection conn = Database.getConnection()) {
 

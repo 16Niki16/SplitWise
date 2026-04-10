@@ -41,21 +41,24 @@ public class GroupRepositoryFile implements Repository, GroupRepository {
     private void save() {
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(Files.newBufferedWriter(path), new GroupWrapper(this.groups));
+                .writeValue(Files.newBufferedWriter(path), new GroupWrapper(this.groups));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public Group getGroup(String groupName) {
         return this.groups.get(groupName);
     }
 
+    @Override
     public void addGroup(Group group) {
         this.groups.put(group.getGroupName(), group);
         save();
     }
 
+    @Override
     public void removeGroup(String groupID) {
         this.groups.remove(groupID);
         save();
