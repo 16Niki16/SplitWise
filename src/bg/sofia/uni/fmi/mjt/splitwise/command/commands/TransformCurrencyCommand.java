@@ -12,25 +12,20 @@ import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class TransformCurrencyCommand implements Command {
-    private Data data;
+public class TransformCurrencyCommand implements Command<TransformCurrencyData> {
     private ApplicationServices applicationServices;
 
     @Override
-    public ResponseData execute(User user) {
-        if (!(data instanceof TransformCurrencyData transformCurrencyData)) {
-            throw new DataException("Problem in transform currency data");
-        }
-
+    public ResponseData execute(User user, TransformCurrencyData transformCurrencyData) {
         CurrencyService currencyService = applicationServices.getCurrencyService();
         String currentCurrency = user.getCurrency();
 
         currencyService.getRates()
-                .thenAccept(rates -> {
-                    if (!rates.containsKey(transformCurrencyData.newCurrency())) {
-                        throw new UnknownCurrencyException("Unknown currency: " + transformCurrencyData.newCurrency());
-                    }
-                });
+            .thenAccept(rates -> {
+                if (!rates.containsKey(transformCurrencyData.newCurrency())) {
+                    throw new UnknownCurrencyException("Unknown currency: " + transformCurrencyData.newCurrency());
+                }
+            });
         user.changeCurrency(transformCurrencyData.newCurrency());
 
         return TransformCurrencyResponse.of(currentCurrency, transformCurrencyData.newCurrency());

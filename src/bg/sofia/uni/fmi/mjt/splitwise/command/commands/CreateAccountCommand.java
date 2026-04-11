@@ -14,16 +14,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 
-public class CreateAccountCommand implements Command {
-    private Data data;
+public class CreateAccountCommand implements Command<CreateAccountData> {
     private ApplicationServices applicationServices;
 
     @Override
-    public ResponseData execute(User user) {
-        if (!(data instanceof CreateAccountData createAccountData)) {
-            throw new DataException("Create account data exception");
-        }
-
+    public ResponseData execute(User user, CreateAccountData createAccountData) {
         UserService userService = getUserService(createAccountData);
         User newAccount = User.createNewAccount(createAccountData.username(), createAccountData.password());
         userService.addUser(newAccount);
@@ -38,7 +33,7 @@ public class CreateAccountCommand implements Command {
             throw new UsernameAlreadyUsedException("The provided username is already taken!");
         } else if (!createAccountData.password().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,}$")) {
             throw new PasswordNotCorrectException(
-                    "Password must contain at least 6 symbols(1 small letter, 1 capital letter and 1 number)");
+                "Password must contain at least 6 symbols(1 small letter, 1 capital letter and 1 number)");
         }
         return userService;
     }

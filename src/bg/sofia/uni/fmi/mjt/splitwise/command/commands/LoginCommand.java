@@ -15,15 +15,11 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 
 @AllArgsConstructor
-public class LoginCommand implements Command {
-    private Data data;
+public class LoginCommand implements Command<LoginData> {
     private ApplicationServices applicationServices;
 
     @Override
-    public ResponseData execute(User user) {
-        if (!(data instanceof LoginData loginData)) {
-            throw new DataException("Problem in Login data");
-        }
+    public ResponseData execute(User user, LoginData loginData) {
 
         if (!user.getPassword().equals(loginData.password())) {
             throw new PasswordNotCorrectException("The provided password is not correct!");
@@ -31,6 +27,7 @@ public class LoginCommand implements Command {
 
         NotificationsService notificationsService = applicationServices.getNotificationsService();
         List<Notification> notifications = notificationsService.getUserNotifications(user);
+
         return LoginResponse.of(notifications);
     }
 

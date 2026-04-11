@@ -19,16 +19,11 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 
-public class PaidCommand implements Command {
-    private Data data;
+public class PaidCommand implements Command<PayData> {
     private ApplicationServices applicationServices;
 
     @Override
-    public ResponseData execute(User user) {
-        if (!(data instanceof PayData payData)) {
-            throw new DataException("Problem in pay data");
-        }
-
+    public ResponseData execute(User user, PayData payData) {
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();

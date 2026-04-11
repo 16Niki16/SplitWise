@@ -1,10 +1,8 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitGroupData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
@@ -22,16 +20,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class GroupSplitCommand implements Command {
-    private Data data;
+public class SplitGroupCommand implements Command<SplitGroupData> {
     private ApplicationServices applicationServices;
 
     @Override
-    public ResponseData execute(User user) {
-        if (!(data instanceof SplitGroupData splitGroupData)) {
-            throw new DataException("Split group data exception");
-        }
-
+    public ResponseData execute(User user, SplitGroupData splitGroupData) {
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
         DebtsService debtsService = applicationServices.getDebtsService();
@@ -41,8 +34,8 @@ public class GroupSplitCommand implements Command {
         Group group = groupService.getGroupByName(splitGroupData.groupName());
         Set<String> participants = group.getParticipants();
         Set<User> users = participants.stream()
-                .map(userService::getUserByUsername)
-                .collect(Collectors.toSet());
+            .map(userService::getUserByUsername)
+            .collect(Collectors.toSet());
         BigDecimal splitAmount = splitGroupData.amount().divide(BigDecimal.valueOf(participants.size()));
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(splitAmount, user.getCurrency());
 
@@ -50,10 +43,10 @@ public class GroupSplitCommand implements Command {
             if (!participant.getUsername().equals(user.getUsername())) {
                 debtsService.addDebt(participant.getUsername(), user.getUsername(), amountInBaseCurrency);
                 BigDecimal amountInPersonCurrency =
-                        currencyService.transformAmount(splitAmount, user.getCurrency(), participant.getCurrency());
+                    currencyService.transformAmount(splitAmount, user.getCurrency(), participant.getCurrency());
                 Notification groupSplitNotification =
-                        new SplitGroupNotification(splitGroupData.groupName(), user.getUsername(),
-                                amountInPersonCurrency, splitGroupData.reason(), participant.getCurrency());
+                    new SplitGroupNotification(splitGroupData.groupName(), user.getUsername(),
+                        amountInPersonCurrency, splitGroupData.reason(), participant.getCurrency());
                 notificationsService.addNotification(participant.getUsername(), groupSplitNotification);
             }
         });

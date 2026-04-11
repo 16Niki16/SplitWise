@@ -18,16 +18,11 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 
 @AllArgsConstructor
-public class SplitCommand implements Command {
-    private Data data;
+public class SplitCommand implements Command<SplitData> {
     private ApplicationServices applicationServices;
 
     @Override
-    public ResponseData execute(User user) {
-        if (!(data instanceof SplitData splitData)) {
-            throw new DataException("Problem in split data");
-        }
-
+    public ResponseData execute(User user, SplitData splitData) {
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();
@@ -38,10 +33,10 @@ public class SplitCommand implements Command {
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(amount, user.getCurrency());
         debtsService.addDebt(splitData.debtor(), user.getUsername(), amountInBaseCurrency);
         BigDecimal amountInPersonCurrency =
-                currencyService.transformAmount(amount, user.getCurrency(), debtorProfile.getCurrency());
+            currencyService.transformAmount(amount, user.getCurrency(), debtorProfile.getCurrency());
         Notification splitNotification =
-                new SplitPersonNotification(user.getUsername(), amountInPersonCurrency, splitData.reason(),
-                        debtorProfile.getCurrency());
+            new SplitPersonNotification(user.getUsername(), amountInPersonCurrency, splitData.reason(),
+                debtorProfile.getCurrency());
         notificationsService.addNotification(splitData.debtor(), splitNotification);
 
         return SplitResponse.of(splitData.debtor());

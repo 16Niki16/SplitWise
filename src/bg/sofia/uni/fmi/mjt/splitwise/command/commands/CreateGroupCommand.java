@@ -16,20 +16,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class CreateGroupCommand implements Command {
-    private final Data data;
+public class CreateGroupCommand implements Command<CreateGroupData> {
     private final ApplicationServices applicationServices;
 
-    public ResponseData execute(User creator) {
-        if (!(data instanceof CreateGroupData createGroupData)) {
-            throw new DataException("Create group data exception!");
-        }
+    public ResponseData execute(User creator, CreateGroupData createGroupData) {
+
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
 
         Set<User> participantsAccounts = createGroupData.participants().stream()
-                .map(userService::getUserByUsername)
-                .collect(Collectors.toSet());
+            .map(userService::getUserByUsername)
+            .collect(Collectors.toSet());
 
         participantsAccounts.add(creator);
 

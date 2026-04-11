@@ -24,7 +24,7 @@ public class RequestHandler {
         try {
             Command command = commandRegistry.create(request);
             AuthenticationResult authenticationResult = resolveUser(request);
-            ResponseData responseData = command.execute(authenticationResult.user());
+            ResponseData responseData = command.execute(authenticationResult.user(), request.data());
 
             return new Response(authenticationResult.token(), responseData);
         } catch (RuntimeException e) {

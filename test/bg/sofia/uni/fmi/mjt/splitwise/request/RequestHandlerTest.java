@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,7 +53,7 @@ public class RequestHandlerTest {
         when(sessionsManager.createSession(user)).thenReturn(TOKEN);
 
         ResponseData responseData = mock();
-        when(command.execute(user)).thenReturn(responseData);
+        when(command.execute(user, data)).thenReturn(responseData);
 
         Response response = requestHandler.handle(request);
 
@@ -70,7 +71,7 @@ public class RequestHandlerTest {
         when(request.data()).thenReturn(data);
 
         ResponseData responseData = mock();
-        when(command.execute(any())).thenReturn(responseData);
+        when(command.execute(eq(null), eq(data))).thenReturn(responseData);
 
         Response response = requestHandler.handle(request);
 

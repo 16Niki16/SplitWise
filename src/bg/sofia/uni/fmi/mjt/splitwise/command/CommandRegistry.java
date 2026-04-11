@@ -1,12 +1,11 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.Request;
-import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateAccountCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateGroupCommand;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.GroupSplitCommand;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.HelpCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
@@ -21,8 +20,7 @@ import java.util.Map;
 
 public class CommandRegistry {
     private final ApplicationServices applicationServices;
-    private static final Map<CommandType, CommandParser> COMMANDS = new EnumMap<>(CommandType.class);
-    private static final Command HELP_COMMAND = new HelpCommand();
+    private static final Map<CommandType, Command> COMMANDS = new EnumMap<>(CommandType.class);
 
     public CommandRegistry(ApplicationServices applicationServices) {
         this.applicationServices = applicationServices;
@@ -30,23 +28,25 @@ public class CommandRegistry {
     }
 
     private void registerCommands() {
-        COMMANDS.put(CommandType.CREATE_ACCOUNT, data -> new CreateAccountCommand(data, applicationServices));
-        COMMANDS.put(CommandType.LOGIN, data -> new LoginCommand(data, applicationServices));
-        COMMANDS.put(CommandType.HELP, data -> HELP_COMMAND);
-        COMMANDS.put(CommandType.ADD_FRIEND, data -> new AddFriendCommand(data, applicationServices));
-        COMMANDS.put(CommandType.CREATE_GROUP, data -> new CreateGroupCommand(data, applicationServices));
-        COMMANDS.put(CommandType.GET_STATUS, data -> new StatusCommand(applicationServices));
-        COMMANDS.put(CommandType.SPLIT, data -> new SplitCommand(data, applicationServices));
-        COMMANDS.put(CommandType.SPLIT_GROUP, data -> new GroupSplitCommand(data, applicationServices));
-        COMMANDS.put(CommandType.PAID, data -> new PaidCommand(data, applicationServices));
-        COMMANDS.put(CommandType.SWITCH_CURRENCY, data -> new TransformCurrencyCommand(data, applicationServices));
+        COMMANDS.put(CommandType.CREATE_ACCOUNT, new CreateAccountCommand(applicationServices));
+        COMMANDS.put(CommandType.LOGIN, new LoginCommand(applicationServices));
+        COMMANDS.put(CommandType.HELP, new HelpCommand());
+        COMMANDS.put(CommandType.ADD_FRIEND, new AddFriendCommand(applicationServices));
+        COMMANDS.put(CommandType.CREATE_GROUP, new CreateGroupCommand(applicationServices));
+        COMMANDS.put(CommandType.GET_STATUS, new StatusCommand(applicationServices));
+        COMMANDS.put(CommandType.SPLIT, new SplitCommand(applicationServices));
+        COMMANDS.put(CommandType.SPLIT_GROUP, new SplitGroupCommand(applicationServices));
+        COMMANDS.put(CommandType.PAID, new PaidCommand(applicationServices));
+        COMMANDS.put(CommandType.SWITCH_CURRENCY, new TransformCurrencyCommand(applicationServices));
     }
 
     public Command create(Request request) {
-        CommandParser parser = COMMANDS.get(request.commandType());
-        if (parser == null) {
+        Command command = COMMANDS.get(request.commandType());
+
+        if (command == null) {
             throw new CommandNotKnownException("The provided command is not in the list!");
         }
-        return parser.parse(request.data());
+
+        return command;
     }
 }
