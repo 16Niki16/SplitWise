@@ -7,7 +7,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UsernameAlreadyUsedException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateAccountResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
+import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
@@ -16,14 +18,15 @@ import lombok.AllArgsConstructor;
 
 public class CreateAccountCommand implements Command<CreateAccountData> {
     private ApplicationServices applicationServices;
+    private SessionsManager sessionsManager;
 
     @Override
-    public ResponseData execute(User user, CreateAccountData createAccountData) {
+    public Response execute(String token, CreateAccountData createAccountData) {
         UserService userService = getUserService(createAccountData);
         User newAccount = User.createNewAccount(createAccountData.username(), createAccountData.password());
         userService.addUser(newAccount);
 
-        return CreateAccountResponse.of(createAccountData.username());
+        return new Response(token, CreateAccountResponse.of(createAccountData.username()));
     }
 
     private UserService getUserService(CreateAccountData createAccountData) {

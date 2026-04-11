@@ -6,8 +6,10 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitPersonNotification;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.SplitResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
@@ -19,10 +21,12 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 public class SplitCommand implements Command<SplitData> {
-    private ApplicationServices applicationServices;
+    private final ApplicationServices applicationServices;
+    private final SessionsManager sessionsManager;
 
     @Override
-    public ResponseData execute(User user, SplitData splitData) {
+    public Response execute(String token, SplitData splitData) {
+        User user = sessionsManager.getUserSession(token);
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();
@@ -39,6 +43,6 @@ public class SplitCommand implements Command<SplitData> {
                 debtorProfile.getCurrency());
         notificationsService.addNotification(splitData.debtor(), splitNotification);
 
-        return SplitResponse.of(splitData.debtor());
+        return new Response(token, SplitResponse.of(splitData.debtor()));
     }
 }

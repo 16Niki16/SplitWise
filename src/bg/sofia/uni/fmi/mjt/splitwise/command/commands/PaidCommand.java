@@ -7,7 +7,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.PayResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
+import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
@@ -20,10 +22,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 
 public class PaidCommand implements Command<PayData> {
-    private ApplicationServices applicationServices;
+    private final ApplicationServices applicationServices;
+    private final SessionsManager sessionsManager;
+
 
     @Override
-    public ResponseData execute(User user, PayData payData) {
+    public Response execute(String token, PayData payData) {
+        User user = sessionsManager.getUserSession(token);
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
         CurrencyService currencyService = applicationServices.getCurrencyService();
@@ -34,10 +39,10 @@ public class PaidCommand implements Command<PayData> {
         debtsService.addDebt(user.getUsername(), payData.payer(), amountInBaseCurrency);
 
         BigDecimal amountInPersonCurrency =
-                currencyService.transformAmount(payData.amount(), user.getCurrency(), payerAccount.getCurrency());
+            currencyService.transformAmount(payData.amount(), user.getCurrency(), payerAccount.getCurrency());
         Notification payNotification =
-                new PersonPayNotification(user.getUsername(), amountInPersonCurrency, payerAccount.getCurrency());
+            new PersonPayNotification(user.getUsername(), amountInPersonCurrency, payerAccount.getCurrency());
         notificationsService.addNotification(payData.payer(), payNotification);
-        return PayResponse.of(payData.payer());
+        return new Response(token, PayResponse.of(payData.payer()));
     }
 }

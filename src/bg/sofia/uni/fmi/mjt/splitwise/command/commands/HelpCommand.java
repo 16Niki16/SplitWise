@@ -3,12 +3,13 @@ package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.EmptyData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.response.HelpResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 
 public class HelpCommand implements Command<EmptyData> {
     @Override
-    public ResponseData execute(User user, EmptyData emptyData) {
-        return HelpResponse.of("""
+    public Response execute(String token, EmptyData emptyData) {
+        return new Response(token, HelpResponse.of("""
             * Commands:
              - add-friend <username>
              - create-group <group_name> <username> <username> ... <username>
@@ -17,6 +18,6 @@ public class HelpCommand implements Command<EmptyData> {
              - get-status
              - paid <amount> <username>
              - paid-group <amount> <user> <group_name>
-             - switch-currency <currency>""");
+             - switch-currency <currency>"""));
     }
 }

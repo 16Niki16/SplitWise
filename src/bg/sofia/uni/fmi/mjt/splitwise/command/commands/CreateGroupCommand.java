@@ -6,7 +6,9 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateGroupResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
+import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.GroupService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
@@ -18,11 +20,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CreateGroupCommand implements Command<CreateGroupData> {
     private final ApplicationServices applicationServices;
+    private final SessionsManager sessionsManager;
 
-    public ResponseData execute(User creator, CreateGroupData createGroupData) {
-
+    public Response execute(String token, CreateGroupData createGroupData) {
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
+        User creator = sessionsManager.getUserSession(token);
 
         Set<User> participantsAccounts = createGroupData.participants().stream()
             .map(userService::getUserByUsername)
@@ -34,6 +37,6 @@ public class CreateGroupCommand implements Command<CreateGroupData> {
         groupService.addNewGroup(group);
         participantsAccounts.forEach(user -> user.addGroup(group.getGroupName()));
 
-        return CreateGroupResponse.of(createGroupData.groupName());
+        return new Response(token, CreateGroupResponse.of(createGroupData.groupName()));
     }
 }

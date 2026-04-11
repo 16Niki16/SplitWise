@@ -17,32 +17,18 @@ import lombok.AllArgsConstructor;
 public class RequestHandler {
 
     private final CommandRegistry commandRegistry;
-    private final SessionsManager sessionsManager;
-    private final UserService userService;
 
     public Response handle(Request request) {
         try {
             Command command = commandRegistry.create(request);
-            AuthenticationResult authenticationResult = resolveUser(request);
-            ResponseData responseData = command.execute(authenticationResult.user(), request.data());
 
-            return new Response(authenticationResult.token(), responseData);
+            ResponseData responseData =
+                command.execute(request.token(), request.data());
+
+            return new Response(request.token(), responseData);
+
         } catch (RuntimeException e) {
             return new Response(request.token(), ErrorResponse.of(e.getMessage()));
         }
-    }
-
-    private AuthenticationResult resolveUser(Request request) {
-        if (request.data() instanceof LoginData loginData) {
-            User user = userService.getUserByUsername(loginData.username());
-            String token = sessionsManager.createSession(user);
-            return new AuthenticationResult(token, user);
-
-        } else if (request.data() instanceof CreateAccountData) {
-            return new AuthenticationResult(null, null);
-        }
-        User user = sessionsManager.getUserSession(request.token());
-
-        return new AuthenticationResult(request.token(), user);
     }
 }

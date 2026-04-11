@@ -40,7 +40,7 @@ public class Main {
 
         ApplicationServices applicationServices = new ApplicationServices(
             userService, groupService, debtsService, currencyService, notificationsService, exceptionsService);
-        CommandRegistry commandRegistry = new CommandRegistry(applicationServices);
+        CommandRegistry commandRegistry = new CommandRegistry(applicationServices, sessionsManager);
 
         RequestHandler requestHandler = new RequestHandler(commandRegistry, sessionsManager, userService);
         Server server = new Server(requestHandler);

@@ -5,19 +5,23 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UnknownCurrencyException;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.TransformCurrencyResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class TransformCurrencyCommand implements Command<TransformCurrencyData> {
-    private ApplicationServices applicationServices;
+    private final ApplicationServices applicationServices;
+    private final SessionsManager sessionsManager;
 
     @Override
-    public ResponseData execute(User user, TransformCurrencyData transformCurrencyData) {
+    public Response execute(String token, TransformCurrencyData transformCurrencyData) {
         CurrencyService currencyService = applicationServices.getCurrencyService();
+        User user = sessionsManager.getUserSession(token);
         String currentCurrency = user.getCurrency();
 
         currencyService.getRates()
@@ -28,6 +32,6 @@ public class TransformCurrencyCommand implements Command<TransformCurrencyData> 
             });
         user.changeCurrency(transformCurrencyData.newCurrency());
 
-        return TransformCurrencyResponse.of(currentCurrency, transformCurrencyData.newCurrency());
+        return new Response(token, TransformCurrencyResponse.of(currentCurrency, transformCurrencyData.newCurrency()));
     }
 }

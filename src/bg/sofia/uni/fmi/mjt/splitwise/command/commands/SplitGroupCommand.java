@@ -5,8 +5,10 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
+import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.SplitGroupResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
 import bg.sofia.uni.fmi.mjt.splitwise.service.DebtsService;
@@ -21,10 +23,12 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class SplitGroupCommand implements Command<SplitGroupData> {
-    private ApplicationServices applicationServices;
+    private final ApplicationServices applicationServices;
+    private final SessionsManager sessionsManager;
 
     @Override
-    public ResponseData execute(User user, SplitGroupData splitGroupData) {
+    public Response execute(String token, SplitGroupData splitGroupData) {
+        User user = sessionsManager.getUserSession(token);
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
         DebtsService debtsService = applicationServices.getDebtsService();
@@ -51,6 +55,6 @@ public class SplitGroupCommand implements Command<SplitGroupData> {
             }
         });
 
-        return SplitGroupResponse.of(splitGroupData.groupName());
+        return new Response(token, SplitGroupResponse.of(splitGroupData.groupName()));
     }
 }
