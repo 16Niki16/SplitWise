@@ -8,8 +8,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 
 public class HelpCommand implements Command<EmptyData> {
     @Override
-    public Response execute(String token, EmptyData emptyData) {
-        return new Response(token, HelpResponse.of("""
+    public ResponseData execute(String token, EmptyData emptyData) {
+        return HelpResponse.of("""
             * Commands:
              - add-friend <username>
              - create-group <group_name> <username> <username> ... <username>
@@ -18,6 +18,6 @@ public class HelpCommand implements Command<EmptyData> {
              - get-status
              - paid <amount> <username>
              - paid-group <amount> <user> <group_name>
-             - switch-currency <currency>"""));
+             - switch-currency <currency>""");
     }
 }

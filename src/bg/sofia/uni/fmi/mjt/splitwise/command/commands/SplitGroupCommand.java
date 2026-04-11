@@ -27,7 +27,7 @@ public class SplitGroupCommand implements Command<SplitGroupData> {
     private final SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, SplitGroupData splitGroupData) {
+    public ResponseData execute(String token, SplitGroupData splitGroupData) {
         User user = sessionsManager.getUserSession(token);
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
@@ -55,6 +55,6 @@ public class SplitGroupCommand implements Command<SplitGroupData> {
             }
         });
 
-        return new Response(token, SplitGroupResponse.of(splitGroupData.groupName()));
+        return SplitGroupResponse.of(splitGroupData.groupName());
     }
 }

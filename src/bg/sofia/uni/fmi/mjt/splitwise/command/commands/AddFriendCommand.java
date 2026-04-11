@@ -19,7 +19,7 @@ public class AddFriendCommand implements Command<AddFriendData> {
     private final SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, AddFriendData addFriendData) {
+    public ResponseData execute(String token, AddFriendData addFriendData) {
         UserService userService = applicationServices.getUserService();
         User user = sessionsManager.getUserSession(token);
         User newFriend = userService.getUserByUsername(addFriendData.friendName());
@@ -31,7 +31,7 @@ public class AddFriendCommand implements Command<AddFriendData> {
         user.addFriend(newFriend.getUsername());
         newFriend.addFriend(user.getUsername());
 
-        return new Response(token, AddFriendResponse.of(addFriendData.friendName()));
+        return AddFriendResponse.of(addFriendData.friendName());
 
     }
 }

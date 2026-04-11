@@ -7,6 +7,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.CommandRegistry;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ErrorResponse;
+import bg.sofia.uni.fmi.mjt.splitwise.response.LoginResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
@@ -21,11 +22,10 @@ public class RequestHandler {
     public Response handle(Request request) {
         try {
             Command command = commandRegistry.create(request);
+            ResponseData responseData = command.execute(request.token(), request.data());
+            String token = (responseData instanceof LoginResponse lr) ? lr.token() : request.token();
 
-            ResponseData responseData =
-                command.execute(request.token(), request.data());
-
-            return new Response(request.token(), responseData);
+            return new Response(token, responseData);
 
         } catch (RuntimeException e) {
             return new Response(request.token(), ErrorResponse.of(e.getMessage()));

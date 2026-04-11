@@ -23,7 +23,7 @@ public class LoginCommand implements Command<LoginData> {
     private SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, LoginData loginData) {
+    public ResponseData execute(String token, LoginData loginData) {
         UserService userService = applicationServices.getUserService();
 
         User user = userService.getUserByUsername(loginData.username());
@@ -35,7 +35,7 @@ public class LoginCommand implements Command<LoginData> {
         NotificationsService notificationsService = applicationServices.getNotificationsService();
         List<Notification> notifications = notificationsService.getUserNotifications(user);
 
-        return new Response(newToken, LoginResponse.of(notifications));
+        return LoginResponse.of(notifications, newToken);
     }
 
 }

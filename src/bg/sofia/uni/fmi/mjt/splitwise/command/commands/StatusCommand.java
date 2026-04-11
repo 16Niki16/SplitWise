@@ -21,11 +21,11 @@ public class StatusCommand implements Command<EmptyData> {
     private final SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, EmptyData emptyData) {
+    public ResponseData execute(String token, EmptyData emptyData) {
         User user = sessionsManager.getUserSession(token);
         DebtsService debtsService = applicationServices.getDebtsService();
         List<Debt> userDebts = debtsService.getDebtsByUsername(user.getUsername());
 
-        return new Response(token, StatusResponse.of(userDebts));
+        return StatusResponse.of(userDebts);
     }
 }

@@ -25,7 +25,7 @@ public class SplitCommand implements Command<SplitData> {
     private final SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, SplitData splitData) {
+    public ResponseData execute(String token, SplitData splitData) {
         User user = sessionsManager.getUserSession(token);
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
@@ -43,6 +43,6 @@ public class SplitCommand implements Command<SplitData> {
                 debtorProfile.getCurrency());
         notificationsService.addNotification(splitData.debtor(), splitNotification);
 
-        return new Response(token, SplitResponse.of(splitData.debtor()));
+        return SplitResponse.of(splitData.debtor());
     }
 }

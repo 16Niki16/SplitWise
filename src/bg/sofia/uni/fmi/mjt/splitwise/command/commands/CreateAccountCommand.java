@@ -21,12 +21,12 @@ public class CreateAccountCommand implements Command<CreateAccountData> {
     private SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, CreateAccountData createAccountData) {
+    public ResponseData execute(String token, CreateAccountData createAccountData) {
         UserService userService = getUserService(createAccountData);
         User newAccount = User.createNewAccount(createAccountData.username(), createAccountData.password());
         userService.addUser(newAccount);
 
-        return new Response(token, CreateAccountResponse.of(createAccountData.username()));
+        return CreateAccountResponse.of(createAccountData.username());
     }
 
     private UserService getUserService(CreateAccountData createAccountData) {

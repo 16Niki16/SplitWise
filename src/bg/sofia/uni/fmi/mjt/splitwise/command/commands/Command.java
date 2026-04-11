@@ -6,5 +6,5 @@ import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 
 public interface Command<T extends Data> {
-    Response execute(String token, T data);
+    ResponseData execute(String token, T data);
 }

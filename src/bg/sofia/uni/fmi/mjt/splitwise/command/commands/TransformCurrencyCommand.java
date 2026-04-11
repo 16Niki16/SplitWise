@@ -19,7 +19,7 @@ public class TransformCurrencyCommand implements Command<TransformCurrencyData> 
     private final SessionsManager sessionsManager;
 
     @Override
-    public Response execute(String token, TransformCurrencyData transformCurrencyData) {
+    public ResponseData execute(String token, TransformCurrencyData transformCurrencyData) {
         CurrencyService currencyService = applicationServices.getCurrencyService();
         User user = sessionsManager.getUserSession(token);
         String currentCurrency = user.getCurrency();
@@ -32,6 +32,6 @@ public class TransformCurrencyCommand implements Command<TransformCurrencyData> 
             });
         user.changeCurrency(transformCurrencyData.newCurrency());
 
-        return new Response(token, TransformCurrencyResponse.of(currentCurrency, transformCurrencyData.newCurrency()));
+        return TransformCurrencyResponse.of(currentCurrency, transformCurrencyData.newCurrency());
     }
 }

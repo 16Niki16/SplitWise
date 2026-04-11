@@ -22,7 +22,7 @@ public class CreateGroupCommand implements Command<CreateGroupData> {
     private final ApplicationServices applicationServices;
     private final SessionsManager sessionsManager;
 
-    public Response execute(String token, CreateGroupData createGroupData) {
+    public ResponseData execute(String token, CreateGroupData createGroupData) {
         UserService userService = applicationServices.getUserService();
         GroupService groupService = applicationServices.getGroupService();
         User creator = sessionsManager.getUserSession(token);
@@ -37,6 +37,6 @@ public class CreateGroupCommand implements Command<CreateGroupData> {
         groupService.addNewGroup(group);
         participantsAccounts.forEach(user -> user.addGroup(group.getGroupName()));
 
-        return new Response(token, CreateGroupResponse.of(createGroupData.groupName()));
+        return CreateGroupResponse.of(createGroupData.groupName());
     }
 }

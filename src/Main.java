@@ -42,7 +42,7 @@ public class Main {
             userService, groupService, debtsService, currencyService, notificationsService, exceptionsService);
         CommandRegistry commandRegistry = new CommandRegistry(applicationServices, sessionsManager);
 
-        RequestHandler requestHandler = new RequestHandler(commandRegistry, sessionsManager, userService);
+        RequestHandler requestHandler = new RequestHandler(commandRegistry);
         Server server = new Server(requestHandler);
         server.start();
 

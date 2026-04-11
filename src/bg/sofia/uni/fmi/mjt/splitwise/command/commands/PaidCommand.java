@@ -27,7 +27,7 @@ public class PaidCommand implements Command<PayData> {
 
 
     @Override
-    public Response execute(String token, PayData payData) {
+    public ResponseData execute(String token, PayData payData) {
         User user = sessionsManager.getUserSession(token);
         UserService userService = applicationServices.getUserService();
         DebtsService debtsService = applicationServices.getDebtsService();
@@ -43,6 +43,6 @@ public class PaidCommand implements Command<PayData> {
         Notification payNotification =
             new PersonPayNotification(user.getUsername(), amountInPersonCurrency, payerAccount.getCurrency());
         notificationsService.addNotification(payData.payer(), payNotification);
-        return new Response(token, PayResponse.of(payData.payer()));
+        return PayResponse.of(payData.payer());
     }
 }
