@@ -5,6 +5,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.LoginData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.LoginResponse;
@@ -68,6 +69,13 @@ public class LoginCommandTest {
 
     @Test
     void testWrongPassword() {
+        UserService userService = mock();
+        User user = new User(DUMMY, DUMMY, null, null, DUMMY);
+        LoginData data = new LoginData(DUMMY, "Wrong password");
 
+        when(applicationServices.getUserService()).thenReturn(userService);
+        when(userService.getUserByUsername(data.username())).thenReturn(user);
+
+        assertThrows(PasswordNotCorrectException.class, () -> loginCommand.execute(DUMMY, data));
     }
 }
