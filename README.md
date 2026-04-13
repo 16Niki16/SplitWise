@@ -1,4 +1,4 @@
-# 💸 Splitwise-like Expense Sharing Application
+# 💸 Splitwise
 
 ## 📌 Overview
 
