@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import static bg.sofia.uni.fmi.mjt.splitwise.containers.User.createNewAccount;
 
 @AllArgsConstructor
-
 public class CreateAccountCommand implements Command<CreateAccountData> {
     private ApplicationServices applicationServices;
     private SessionsManager sessionsManager;
