@@ -81,3 +81,22 @@ The project includes unit testing using:
 - Lombok
 - HTTP Client (external API integration)
 - File I/O
+
+---
+
+## ▶️ How to Run
+
+The application requires Java 21 and above.
+
+### 1. Clone the repository
+git clone https://github.com/16Niki16/SplitWiseServer.git
+
+### 2. Open the project in IntelliJ IDEA as a Java project
+
+### 3. Set Project SDK via File → Project Structure → Project SDK.
+
+### 4. Enable Lombok by installing the plugin and turning on annotation processing in:
+Settings → Build, Execution, Deployment → Compiler → Annotation Processors → Enable annotation processing.
+
+### 5. Configure the external API key for currency conversion
+Register at [exchangeratesapi.io](https://exchangeratesapi.io/)
