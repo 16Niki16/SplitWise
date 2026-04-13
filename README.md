@@ -1,8 +1,14 @@
 # 💸 Splitwise-like Expense Sharing Application
 
 ## 📌 Overview
+
 This project is a Java-based backend system inspired by Splitwise.  
 It allows users to manage shared expenses, track debts, and settle balances within groups.
+
+It was developed as a course project for the **Modern Java Technologies** course at FMI.
+
+👉 Original project requirements: [Splitwise Course Project](https://github.com/fmi/java-course/blob/master/course-projects/splitwise.md)
+
 
 ---
 
