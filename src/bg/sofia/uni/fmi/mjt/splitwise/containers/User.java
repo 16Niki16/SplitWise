@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.containers;
 
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AddYourselfException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.AlreadyFriendsException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,6 +48,8 @@ public class User {
     public void addFriend(String username) {
         if (friends.contains(username)) {
             throw new AlreadyFriendsException("You are already friends!");
+        } else if (username.equals(this.username)) {
+            throw new AddYourselfException("You can not add yourself as a friend!");
         }
 
         friends.add(username);

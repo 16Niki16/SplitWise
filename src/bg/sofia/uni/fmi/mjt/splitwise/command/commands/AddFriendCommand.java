@@ -24,10 +24,6 @@ public class AddFriendCommand implements Command<AddFriendData> {
         User user = sessionsManager.getUserSession(token);
         User newFriend = userService.getUserByUsername(addFriendData.friendName());
 
-        if (user.equals(newFriend)) {
-            throw new AddYourselfException("You can not add yourself as a friend!");
-        }
-
         user.addFriend(newFriend.getUsername());
         newFriend.addFriend(user.getUsername());
 

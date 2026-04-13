@@ -14,6 +14,8 @@ import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
 
+import static bg.sofia.uni.fmi.mjt.splitwise.containers.User.createNewAccount;
+
 @AllArgsConstructor
 
 public class CreateAccountCommand implements Command<CreateAccountData> {
@@ -23,7 +25,7 @@ public class CreateAccountCommand implements Command<CreateAccountData> {
     @Override
     public ResponseData execute(String token, CreateAccountData createAccountData) {
         UserService userService = getUserService(createAccountData);
-        User newAccount = User.createNewAccount(createAccountData.username(), createAccountData.password());
+        User newAccount = createNewAccount(createAccountData.username(), createAccountData.password());
         userService.addUser(newAccount);
 
         return CreateAccountResponse.of(createAccountData.username());
