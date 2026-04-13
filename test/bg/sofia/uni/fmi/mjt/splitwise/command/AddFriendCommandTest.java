@@ -30,13 +30,14 @@ public class AddFriendCommandTest {
     private ApplicationServices applicationServices;
     @Mock
     private SessionsManager sessionsManager;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private AddFriendCommand addFriendCommand;
 
 
     @Test
     void testAddFriend() {
-        UserService userService = mock();
         User user = new User(DUMMY, DUMMY, null, null, DUMMY);
         User friend = new User(FRIEND, DUMMY, null, null, DUMMY);
         AddFriendData data = new AddFriendData(FRIEND);

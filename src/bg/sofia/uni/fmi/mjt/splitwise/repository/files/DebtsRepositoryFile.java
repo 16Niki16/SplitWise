@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
 import bg.sofia.uni.fmi.mjt.splitwise.repository.DebtsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.DebtsWrapper;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Debt;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DebtsRepositoryFile implements Repository, DebtsRepository {
+public class DebtsRepositoryFile implements DebtsRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private List<Debt> debts = new ArrayList<>();

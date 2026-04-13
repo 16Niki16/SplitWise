@@ -40,14 +40,16 @@ public class LoginCommandTest {
     private ApplicationServices applicationServices;
     @Mock
     private SessionsManager sessionsManager;
+    @Mock
+    private UserService userService;
+    @Mock
+    private NotificationsService notificationsService;
     @InjectMocks
     private LoginCommand loginCommand;
 
 
     @Test
     void testCorrectCredentialsLogin() {
-        UserService userService = mock();
-        NotificationsService notificationsService = mock();
         User user = new User(DUMMY, DUMMY, null, null, DUMMY);
         LoginData data = new LoginData(DUMMY, DUMMY);
         Notification notification = new PersonPayNotification(DUMMY, BigDecimal.ZERO, DUMMY);

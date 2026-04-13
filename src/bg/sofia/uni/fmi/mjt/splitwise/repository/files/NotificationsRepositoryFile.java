@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.NotificationsWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NotificationsRepositoryFile implements Repository, NotificationsRepository {
+public class NotificationsRepositoryFile implements NotificationsRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private Map<String, List<Notification>> notifications = new HashMap<>();

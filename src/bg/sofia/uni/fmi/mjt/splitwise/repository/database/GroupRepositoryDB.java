@@ -3,7 +3,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.repository.database;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +11,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GroupRepositoryDB implements Repository, GroupRepository {
+public class GroupRepositoryDB implements GroupRepository {
     @Override
     public void addGroup(Group group) {
         try (Connection conn = Database.getConnection()) {

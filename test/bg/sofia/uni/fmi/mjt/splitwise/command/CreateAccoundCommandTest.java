@@ -35,6 +35,8 @@ public class CreateAccoundCommandTest {
     private ApplicationServices applicationServices;
     @Mock
     private SessionsManager sessionsManager;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private CreateAccountCommand createAccountCommand;
 
@@ -55,7 +57,6 @@ public class CreateAccoundCommandTest {
 
     @Test
     void testIncorrectPasswordFormat() {
-        UserService userService = mock();
         CreateAccountData data = new CreateAccountData(DUMMY, DUMMY);
 
         when(applicationServices.getUserService()).thenReturn(userService);
@@ -65,7 +66,6 @@ public class CreateAccoundCommandTest {
 
     @Test
     void testUserAlreadyExists() {
-        UserService userService = mock();
         CreateAccountData data = new CreateAccountData(DUMMY, DUMMY);
 
         when(applicationServices.getUserService()).thenReturn(userService);

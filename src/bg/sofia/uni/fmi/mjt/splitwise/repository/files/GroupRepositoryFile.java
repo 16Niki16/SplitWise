@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.GroupRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.GroupWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
-public class GroupRepositoryFile implements Repository, GroupRepository {
+public class GroupRepositoryFile implements GroupRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private Map<String, Group> groups = new HashMap<>();

@@ -3,7 +3,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.repository.database;
 import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.NotificationsRepository;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.Connection;
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationsRepositoryDB implements Repository, NotificationsRepository {
+public class NotificationsRepositoryDB implements NotificationsRepository {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public void addNotification(String owner, Notification notification) {

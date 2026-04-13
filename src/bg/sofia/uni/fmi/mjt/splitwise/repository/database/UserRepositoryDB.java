@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.mjt.splitwise.repository.database;
 
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.database.Database;
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
 
 import java.sql.Connection;
@@ -14,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class UserRepositoryDB implements Repository, UserRepository {
+public class UserRepositoryDB implements UserRepository {
     @Override
     public User getUser(String username) {
         try (Connection conn = Database.getConnection();

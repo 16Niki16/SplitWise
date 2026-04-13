@@ -1,6 +1,5 @@
 package bg.sofia.uni.fmi.mjt.splitwise.repository.files;
 
-import bg.sofia.uni.fmi.mjt.splitwise.repository.Repository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.UserRepository;
 import bg.sofia.uni.fmi.mjt.splitwise.repository.wrappers.UserWrapper;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
@@ -12,7 +11,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserRepositoryFile implements Repository, UserRepository {
+public class UserRepositoryFile implements UserRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Path path;
     private Map<String, User> users = new HashMap<>();

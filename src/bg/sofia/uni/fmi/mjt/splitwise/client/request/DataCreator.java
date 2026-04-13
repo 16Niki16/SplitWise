@@ -11,6 +11,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitGroupData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.TransformCurrencyData;
 import bg.sofia.uni.fmi.mjt.splitwise.command.CommandType;
+import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CommandArgumentsNumberException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -39,11 +40,12 @@ public class DataCreator {
         CommandType commandType = CommandType.of(commandLine.line());
         DataParser parser = DATA.get(commandType);
 
-        if (parser == null) {
-            return null;
+        try {
+            return parser.parse(commandLine.args());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new CommandArgumentsNumberException("Incorrect number of arguments in command", e);
         }
 
-        return parser.parse(commandLine.args());
     }
 
     private Set<String> getParticipants(String[] args) {
