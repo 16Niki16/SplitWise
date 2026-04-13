@@ -5,7 +5,6 @@ import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitGroupNotification;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.SplitGroupResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
@@ -38,8 +37,8 @@ public class SplitGroupCommand implements Command<SplitGroupData> {
         Group group = groupService.getGroupByName(splitGroupData.groupName());
         Set<String> participants = group.getParticipants();
         Set<User> users = participants.stream()
-            .map(userService::getUserByUsername)
-            .collect(Collectors.toSet());
+                .map(userService::getUserByUsername)
+                .collect(Collectors.toSet());
         BigDecimal splitAmount = splitGroupData.amount().divide(BigDecimal.valueOf(participants.size()));
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(splitAmount, user.getCurrency());
 
@@ -47,10 +46,10 @@ public class SplitGroupCommand implements Command<SplitGroupData> {
             if (!participant.getUsername().equals(user.getUsername())) {
                 debtsService.addDebt(participant.getUsername(), user.getUsername(), amountInBaseCurrency);
                 BigDecimal amountInPersonCurrency =
-                    currencyService.transformAmount(splitAmount, user.getCurrency(), participant.getCurrency());
+                        currencyService.transformAmount(splitAmount, user.getCurrency(), participant.getCurrency());
                 Notification groupSplitNotification =
-                    new SplitGroupNotification(splitGroupData.groupName(), user.getUsername(),
-                        amountInPersonCurrency, splitGroupData.reason(), participant.getCurrency());
+                        new SplitGroupNotification(splitGroupData.groupName(), user.getUsername(),
+                                amountInPersonCurrency, splitGroupData.reason(), participant.getCurrency());
                 notificationsService.addNotification(participant.getUsername(), groupSplitNotification);
             }
         });

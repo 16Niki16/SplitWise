@@ -5,11 +5,11 @@ import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.Command;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateAccountCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateGroupCommand;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.HelpCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitCommand;
+import bg.sofia.uni.fmi.mjt.splitwise.command.commands.SplitGroupCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.StatusCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.TransformCurrencyCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.CommandNotKnownException;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class CommandRegistry {
     private final ApplicationServices applicationServices;
     private final SessionsManager sessionsManager;
-    private static final Map<CommandType, Command> COMMANDS = new EnumMap<>(CommandType.class);
+    private static final Map<CommandType, Command<?>> COMMANDS = new EnumMap<>(CommandType.class);
 
     public CommandRegistry(ApplicationServices applicationServices, SessionsManager sessionsManager) {
         this.applicationServices = applicationServices;
@@ -31,7 +31,7 @@ public class CommandRegistry {
     }
 
     private void registerCommands() {
-        COMMANDS.put(CommandType.CREATE_ACCOUNT, new CreateAccountCommand(applicationServices, sessionsManager));
+        COMMANDS.put(CommandType.CREATE_ACCOUNT, new CreateAccountCommand(applicationServices));
         COMMANDS.put(CommandType.LOGIN, new LoginCommand(applicationServices, sessionsManager));
         COMMANDS.put(CommandType.HELP, new HelpCommand());
         COMMANDS.put(CommandType.ADD_FRIEND, new AddFriendCommand(applicationServices, sessionsManager));
@@ -43,8 +43,8 @@ public class CommandRegistry {
         COMMANDS.put(CommandType.SWITCH_CURRENCY, new TransformCurrencyCommand(applicationServices, sessionsManager));
     }
 
-    public Command create(Request request) {
-        Command command = COMMANDS.get(request.commandType());
+    public Command<?> create(Request request) {
+        Command<?> command = COMMANDS.get(request.commandType());
 
         if (command == null) {
             throw new CommandNotKnownException("The provided command is not in the list!");

@@ -1,12 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
-import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.SplitData;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.SplitPersonNotification;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.SplitResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
@@ -37,10 +34,10 @@ public class SplitCommand implements Command<SplitData> {
         BigDecimal amountInBaseCurrency = currencyService.transformToBaseCurrency(amount, user.getCurrency());
         debtsService.addDebt(splitData.debtor(), user.getUsername(), amountInBaseCurrency);
         BigDecimal amountInPersonCurrency =
-            currencyService.transformAmount(amount, user.getCurrency(), debtorProfile.getCurrency());
+                currencyService.transformAmount(amount, user.getCurrency(), debtorProfile.getCurrency());
         Notification splitNotification =
-            new SplitPersonNotification(user.getUsername(), amountInPersonCurrency, splitData.reason(),
-                debtorProfile.getCurrency());
+                new SplitPersonNotification(user.getUsername(), amountInPersonCurrency, splitData.reason(),
+                        debtorProfile.getCurrency());
         notificationsService.addNotification(splitData.debtor(), splitNotification);
 
         return SplitResponse.of(splitData.debtor());

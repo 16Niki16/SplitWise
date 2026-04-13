@@ -1,12 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command.commands;
 
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.CreateGroupData;
-import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.Data;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.Group;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.DataException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateGroupResponse;
-import bg.sofia.uni.fmi.mjt.splitwise.response.Response;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
@@ -28,8 +25,8 @@ public class CreateGroupCommand implements Command<CreateGroupData> {
         User creator = sessionsManager.getUserSession(token);
 
         Set<User> participantsAccounts = createGroupData.participants().stream()
-            .map(userService::getUserByUsername)
-            .collect(Collectors.toSet());
+                .map(userService::getUserByUsername)
+                .collect(Collectors.toSet());
 
         participantsAccounts.add(creator);
 

@@ -28,7 +28,7 @@ public class Main {
         GroupRepositoryFile groupRepository = new GroupRepositoryFile(Path.of("DataFiles", "Groups"));
         DebtsRepositoryFile debtsRepository = new DebtsRepositoryFile(Path.of("DataFiles", "Debts"));
         NotificationsRepositoryFile notificationsRepository =
-            new NotificationsRepositoryFile(Path.of("DataFiles", "Notifications"));
+                new NotificationsRepositoryFile(Path.of("DataFiles", "Notifications"));
         ExchangeRate exchangeRate = new ExchangeRate(HttpClient.newBuilder().build());
 
         UserService userService = new UserService(userRepository);
@@ -39,7 +39,7 @@ public class Main {
         ExceptionsService exceptionsService = new ExceptionsService();
 
         ApplicationServices applicationServices = new ApplicationServices(
-            userService, groupService, debtsService, currencyService, notificationsService, exceptionsService);
+                userService, groupService, debtsService, currencyService, notificationsService, exceptionsService);
         CommandRegistry commandRegistry = new CommandRegistry(applicationServices, sessionsManager);
 
         RequestHandler requestHandler = new RequestHandler(commandRegistry);
