@@ -40,7 +40,7 @@ The project is built using clean architecture principles:
 
 ---
 
-## 📡 Data Format
+##  Data Format
 
 All communication between client and server is done using **JSON**.
 Additionally, file-based persistence also uses JSON serialization.
