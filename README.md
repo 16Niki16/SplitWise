@@ -1,33 +1,33 @@
 # 💸 Splitwise
 
-## 📌 Overview
+##  Overview
 
 This project is a Java-based backend system inspired by Splitwise.  
 It allows users to manage shared expenses, track debts, and settle balances within groups.
 
 It was developed as a course project for the **Modern Java Technologies** course at FMI.
 
-👉 Original project requirements: [Splitwise Course Project](https://github.com/fmi/java-course/blob/master/course-projects/splitwise.md)
+ Original project requirements: [Splitwise Course Project](https://github.com/fmi/java-course/blob/master/course-projects/splitwise.md)
 
 
 ---
 
-## 🚀 Features
+##  Features
 
-- ⚡ Server-client architecture with request/response handling (JSON format)
-- 👤 User registration and authentication
-- 👥 Group creation and management
-- 💰 Expense tracking and splitting between users
-- 📊 Debt calculation and balance tracking
-- 💱 Real-time currency conversion via external API
-- 🔔 Notification system for updates and changes
-- 💾 Persistent storage:
+-  Server-client architecture with request/response handling (JSON format)
+-  User registration and authentication
+-  Group creation and management
+-  Expense tracking and splitting between users
+-  Debt calculation and balance tracking
+-  Real-time currency conversion via external API
+-  Notification system for updates and changes
+-  Persistent storage:
   - File-based storage (JSON format)
   - Database support (JDBC-based)
 
 ---
 
-## 🧠 Architecture & Design
+##  Architecture & Design
 
 The project is built using clean architecture principles:
 
@@ -47,21 +47,21 @@ Additionally, file-based persistence also uses JSON serialization.
 
 ---
 
-## 💾 Persistence Layer
+##  Persistence Layer
 
 The system supports two persistence mechanisms:
 
-### 📁 File-based storage
+###  File-based storage
 - Data is stored in JSON files
 - Used for users, groups, debts, and notifications
 
-### 🗄️ Database storage (JDBC)
+###  Database storage (JDBC)
 - Relational database integration (SQLite)
 - Designed to replace or extend file-based storage
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 The project includes unit testing using:
 
@@ -70,7 +70,7 @@ The project includes unit testing using:
 
 ---
 
-## ⚙️ Technologies & Tools
+##  Technologies & Tools
 
 - Java 21
 - Java NIO
@@ -84,7 +84,7 @@ The project includes unit testing using:
 
 ---
 
-## ▶️ How to Run
+##  How to Run
 
 The application requires Java 21 and above.
 
