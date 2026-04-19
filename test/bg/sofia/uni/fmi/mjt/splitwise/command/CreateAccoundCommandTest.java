@@ -1,13 +1,9 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
-import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.AddFriendData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.CreateAccountData;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.AddFriendCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.CreateAccountCommand;
-import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UsernameAlreadyUsedException;
-import bg.sofia.uni.fmi.mjt.splitwise.response.AddFriendResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateAccountResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseStatus;

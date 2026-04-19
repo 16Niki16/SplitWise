@@ -1,17 +1,11 @@
 package bg.sofia.uni.fmi.mjt.splitwise.command;
 
-import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.LoginData;
 import bg.sofia.uni.fmi.mjt.splitwise.client.request.dto.PayData;
-import bg.sofia.uni.fmi.mjt.splitwise.command.commands.LoginCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.command.commands.PaidCommand;
 import bg.sofia.uni.fmi.mjt.splitwise.containers.User;
-import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
-import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.PersonPayNotification;
-import bg.sofia.uni.fmi.mjt.splitwise.response.LoginResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.PayResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
-import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseStatus;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.CurrencyService;
@@ -25,13 +19,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,11 +66,11 @@ public class PaidCommandTest {
         when(userService.getUserByUsername(PAYER)).thenReturn(payerUser);
 
         when(currencyService.transformToBaseCurrency(payData.amount(), user.getCurrency()))
-            .thenReturn(new BigDecimal("200"));
+                .thenReturn(new BigDecimal("200"));
 
         when(currencyService.transformAmount(
-            payData.amount(), user.getCurrency(), payerUser.getCurrency()))
-            .thenReturn(new BigDecimal("50"));
+                payData.amount(), user.getCurrency(), payerUser.getCurrency()))
+                .thenReturn(new BigDecimal("50"));
 
         ResponseData response = paidCommand.execute(TOKEN, payData);
         PayResponse payResponse = (PayResponse) response;
