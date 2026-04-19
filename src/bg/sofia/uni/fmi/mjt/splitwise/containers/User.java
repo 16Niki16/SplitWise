@@ -14,8 +14,8 @@ import java.util.Set;
 public class User {
     private static final String DEFAULT_CURRENCY = "EUR";
 
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     @Setter
     private Set<String> friends;
     @Setter

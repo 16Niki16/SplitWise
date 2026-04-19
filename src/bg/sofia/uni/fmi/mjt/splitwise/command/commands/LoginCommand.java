@@ -6,6 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.notifications.Notification;
 import bg.sofia.uni.fmi.mjt.splitwise.response.LoginResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
+import bg.sofia.uni.fmi.mjt.splitwise.server.PasswordHasher;
 import bg.sofia.uni.fmi.mjt.splitwise.server.SessionsManager;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.NotificationsService;
@@ -18,13 +19,14 @@ import java.util.List;
 public class LoginCommand implements Command<LoginData> {
     private ApplicationServices applicationServices;
     private SessionsManager sessionsManager;
+    private PasswordHasher passwordHasher;
 
     @Override
     public ResponseData execute(String token, LoginData loginData) {
         UserService userService = applicationServices.getUserService();
 
         User user = userService.getUserByUsername(loginData.username());
-        if (!user.getPassword().equals(loginData.password())) {
+        if (!passwordHasher.verifyPassword(loginData.password(), user.getPassword())) {
             throw new PasswordNotCorrectException("The provided password is not correct!");
         }
         String newToken = sessionsManager.createSession(user);

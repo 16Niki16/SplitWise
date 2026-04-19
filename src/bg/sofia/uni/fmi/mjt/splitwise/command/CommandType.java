@@ -20,7 +20,7 @@ public enum CommandType {
 
     PAID("paid"),
     SWITCH_CURRENCY("switch-currency");
-    private String type;
+    private final String type;
 
     CommandType(String type) {
         this.type = type;

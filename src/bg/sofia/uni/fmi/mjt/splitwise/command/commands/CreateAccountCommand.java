@@ -6,6 +6,7 @@ import bg.sofia.uni.fmi.mjt.splitwise.exceptions.PasswordNotCorrectException;
 import bg.sofia.uni.fmi.mjt.splitwise.exceptions.UsernameAlreadyUsedException;
 import bg.sofia.uni.fmi.mjt.splitwise.response.CreateAccountResponse;
 import bg.sofia.uni.fmi.mjt.splitwise.response.ResponseData;
+import bg.sofia.uni.fmi.mjt.splitwise.server.PasswordHasher;
 import bg.sofia.uni.fmi.mjt.splitwise.service.ApplicationServices;
 import bg.sofia.uni.fmi.mjt.splitwise.service.UserService;
 import lombok.AllArgsConstructor;
@@ -15,11 +16,13 @@ import static bg.sofia.uni.fmi.mjt.splitwise.containers.User.createNewAccount;
 @AllArgsConstructor
 public class CreateAccountCommand implements Command<CreateAccountData> {
     private ApplicationServices applicationServices;
+    private PasswordHasher passwordHasher;
 
     @Override
     public ResponseData execute(String token, CreateAccountData createAccountData) {
         UserService userService = getUserService(createAccountData);
-        User newAccount = createNewAccount(createAccountData.username(), createAccountData.password());
+        String hashedPassword = passwordHasher.hashPassword(createAccountData.password());
+        User newAccount = createNewAccount(createAccountData.username(), hashedPassword);
         userService.addUser(newAccount);
 
         return CreateAccountResponse.of(createAccountData.username());
